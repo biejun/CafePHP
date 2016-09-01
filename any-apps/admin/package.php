@@ -1,0 +1,24 @@
+<?php
+return array(
+	'app'=>'admin',
+	'name'=>'系统',
+	'description'=>'网站信息配置，系统清理等',
+	'version'=>'1.0.0',
+	'author'=>'别小俊',
+	'date'=>'2016.06.23',
+	'icon'=>'icon-cube',
+	'special'=>true,
+	'menu'=>array(
+		array(
+			'title'=>'清理临时文件',
+			'url'=>'admin/clear_files.html'
+		),
+		array(
+			'title'=>'清理系统缓存',
+			'url'=>'admin/clear_cache.html'
+		)
+	),
+	'route'=>array(
+		'/^admin\/([a-z0-9_]+)$/'=>'admin/:1'
+	)
+);

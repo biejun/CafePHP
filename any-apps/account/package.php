@@ -1,0 +1,28 @@
+<?php
+return array(
+	'app'=>'account',
+	'name'=>'用户',
+	'description'=>'用户注册，登录，权限管理等',
+	'version'=>'1.0.0',
+	'author'=>'别小俊',
+	'date'=>'2016.06.23',
+	'icon'=>'icon-user',
+	'special'=>false,
+	'menu'=>array(
+		array(
+			'title'=>'用户列表',
+			'url'=>'account/admin_user_list.html'
+		),
+		array(
+			'title'=>'用户组',
+			'url'=>'account/admin_user_group.html'
+		),
+		array(
+			'title'=>'添加用户',
+			'url'=>'account/admin_add_user.html'
+		)
+	),
+	'route'=>array(
+		'/^account\/([a-z0-9_]+)$/'=>'account/:1'
+	)
+);

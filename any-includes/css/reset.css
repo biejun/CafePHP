@@ -1,0 +1,428 @@
+@charset "utf-8";
+/* 添加让用户可以自定义字体 */
+html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;text-rendering:optimizelegibility;}
+/*如果你的项目仅支持 IE9+ | Chrome | Firefox 等，推荐在 <html> 中添加 .html5 这个class*/
+html.html5 *,html.html5 *:after,html.html5 *:before{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+body,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,menu,nav,section{margin:0;padding:0;}
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{display:block;}
+body{font-family: PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans;}
+audio,canvas,progress,video{display:inline-block;vertical-align:baseline}
+audio:not([controls]){display:none;height:0}
+svg:not(:root){overflow:hidden}
+/* 去掉各Table cell 的边距并让其边重合 */
+table{border-collapse:collapse;border-spacing:0}
+th{font-weight: normal;}
+thead{display: table-header-group;}
+tr,img{page-break-inside: avoid;}
+input{outline: 0;border: 0}
+button,input,optgroup,select,textarea{color:inherit;font:inherit;}
+button,input,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}
+button{overflow:visible}
+button,input[type="button"],input[type="submit"],input[type="reset"]{line-height: normal;cursor: pointer;}
+input[type=checkbox],input[type=radio]{margin:4px 0 0;margin-top:1px \9;line-height:normal}
+button[disabled],html input[disabled]{cursor:default}
+code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}
+fieldset,img{border: none}
+label{display:inline-block;max-width:100%;margin-bottom:5px;font-weight:700}
+abbr[data-original-title],abbr[title]{cursor:help;border-bottom:1px dotted #777}
+[v-cloak]{display:none} /*Vue模板标签隐藏*/
+[role=button]{cursor:pointer}
+
+a{background-color:transparent;text-decoration:none}
+
+.container{margin:0 auto;width: 1000px;}
+.row{margin-right:-15px;margin-left:-15px}
+.container:after,.container:before,.row:after,.row:before{content:" ";display:table}
+.container:after,.row:after{clear:both}
+
+.small,small{font-size:85%}
+.text-center{text-align:center}
+.text-nowrap{white-space:nowrap}
+.text-wrap,.text-wrap td,.text-wrap th{word-wrap: break-word;word-break: break-all;} /*强制文本换行*/
+.text-lowercase{text-transform:lowercase}
+.text-uppercase{text-transform:uppercase}
+.text-capitalize{text-transform:capitalize}
+.text-underline{text-decoration:underline}
+.text-muted{color:#777}
+.text-primary{color:#337ab7}
+
+.fl{float: left;} /*向左浮动*/
+.fr{float: right;} /*向右浮动*/
+.cf{zoom: 1;} /*清理浮动*/
+.cf:before,.cf:after{content: '';display: block;height: 0;overflow: hidden;visibility: hidden;}
+.cf:after{clear: both;}
+
+.mg{margin: 0;}
+.mg5{margin: 5px;}
+.mg10{margin: 10px;}
+.mg15{margin: 15px;}
+.mg20{margin: 20px;}
+.mt5{margin-top: 5px;}
+.mt10{margin-top: 10px;}
+.mt15{margin-top: 15px;}
+.ml5{margin-left: 5px;}
+.ml10{margin-left: 10px;}
+.ml15{margin-left: 15px;}
+.mr5{margin-right: 5px;}
+.mr10{margin-right: 10px;}
+.mr15{margin-right: 15px;}
+.mb5{margin-bottom: 5px;}
+.mb10{margin-bottom: 10px;}
+.mb15{margin-bottom: 15px;}
+
+.pd{padding: 0;}
+.pd5{padding: 5px;}
+.pd10{padding: 10px;}
+.pd15{padding: 15px;}
+.pd20{padding: 20px;}
+.pl5{padding-left: 5px;}
+.pl10{padding-left: 10px;}
+.pl15{padding-left: 15px;}
+.pr5{padding-right: 5px;}
+.pr10{padding-right: 10px;}
+.pr15{padding-right: 15px;}
+
+.bra2{border-radius: 2px}
+.bra5{border-radius: 5px;}
+
+.info{background-color: #0090d9;}
+.important{background-color: #f35958;}
+
+.btn{display:inline-block;margin-bottom:0;font-weight:400;text-align:center;vertical-align:middle;-ms-touch-action:manipulation;touch-action:manipulation;cursor:pointer;background-image:none;border:1px solid transparent;white-space:nowrap;padding:4px 12px;font-size:14px;line-height:1.42857143;border-radius:3px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;background-color: #dedede;color: #999}
+.btn:focus,.btn:hover{color:#888;text-decoration:none;outline:0;}
+.btn:active,.btn.active{outline:0;background-image:none}
+/*! 表单 */
+.form-control{display:block;width:100%;height:34px;padding:6px 12px;font-size:14px;line-height:1.42857143;color:#555;background-color:#fff;background-image:none;border:1px solid #ccc;border-radius:4px;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075);box-shadow:inset 0 1px 1px rgba(0,0,0,.075);-webkit-transition:border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;-o-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;-webkit-appearance:none}
+.form-control:focus{border-color:#66afe9;outline:0;}
+.form-control::-moz-placeholder{color:#999;opacity:1}
+.form-control:-ms-input-placeholder{color:#999}
+.form-control::-webkit-input-placeholder{color:#999}
+.form-control[disabled],.form-control[readonly],fieldset[disabled] .form-control{background-color:#eee;opacity:1}
+.form-control[disabled],fieldset[disabled] .form-control{cursor:not-allowed}
+textarea.form-control{height:auto;resize:none}
+
+.hide{display:none!important}
+.show{display:block!important}
+.invisible{visibility:hidden}
+
+/*字体图标*/
+@font-face {
+	font-family: 'fontello';
+	src: url('../font/fontello.eot?47519202');
+	src: url('../font/fontello.eot?47519202#iefix') format('embedded-opentype'),
+		url('../font/fontello.woff?47519202') format('woff'),
+		url('../font/fontello.ttf?47519202') format('truetype'),
+		url('../font/fontello.svg?47519202#fontello') format('svg');
+}
+[class^="icon-"]:before, [class*=" icon-"]:before {
+	font-family: "fontello";
+	font-style: normal;
+	font-weight: normal;
+	speak: none;
+	display: inline-block;
+	text-decoration: inherit;
+	width: 1em;
+	margin-left: .2em;
+	margin-right: .2em;
+	text-align: center;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1em;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.icon-emo-happy:before { content: '\e800'; }
+.icon-emo-unhappy:before { content: '\e801'; }
+.icon-music:before { content: '\e802'; }
+.icon-search:before { content: '\e803'; }
+.icon-mail:before { content: '\e804'; }
+.icon-mail-alt:before { content: '\e805'; }
+.icon-heart:before { content: '\e806'; }
+.icon-heart-empty:before { content: '\e807'; }
+.icon-star:before { content: '\e808'; }
+.icon-star-empty:before { content: '\e809'; }
+.icon-star-half:before { content: '\e80a'; }
+.icon-star-half-alt:before { content: '\e80b'; }
+.icon-user:before { content: '\e80c'; }
+.icon-male:before { content: '\e80d'; }
+.icon-videocam:before { content: '\e80e'; }
+.icon-picture:before { content: '\e80f'; }
+.icon-camera:before { content: '\e810'; }
+.icon-th-large:before { content: '\e811'; }
+.icon-th:before { content: '\e812'; }
+.icon-ok:before { content: '\e813'; } 
+.icon-ok-circled:before { content: '\e814'; } 
+.icon-plus:before { content: '\e815'; } 
+.icon-minus:before { content: '\e816'; } 
+.icon-minus-circled:before { content: '\e817'; } 
+.icon-plus-circled:before { content: '\e818'; } 
+.icon-minus-squared:before { content: '\e819'; } 
+.icon-minus-squared-alt:before { content: '\e81a'; } 
+.icon-flag:before { content: '\e81b'; } 
+.icon-attention:before { content: '\e81c'; } 
+.icon-tags:before { content: '\e81d'; } 
+.icon-left-open:before { content: '\e81e'; } 
+.icon-eye:before { content: '\e81f'; } 
+.icon-pin:before { content: '\e820'; } 
+.icon-right-open:before { content: '\e821'; } 
+.icon-lock-open:before { content: '\e822'; } 
+.icon-lock:before { content: '\e823'; } 
+.icon-link:before { content: '\e824'; } 
+.icon-info-circled:before { content: '\e825'; } 
+.icon-help-circled:before { content: '\e826'; } 
+.icon-tablet:before { content: '\e827'; } 
+.icon-mobile:before { content: '\e828'; } 
+.icon-award:before { content: '\e829'; } 
+.icon-female:before { content: '\e82a'; } 
+.icon-thumbs-up-alt:before { content: '\e82b'; } 
+.icon-thumbs-down-alt:before { content: '\e82c'; } 
+.icon-download-cloud:before { content: '\e82d'; } 
+.icon-quote-left:before { content: '\e82e'; } 
+.icon-quote-right:before { content: '\e82f'; } 
+.icon-code:before { content: '\e830'; } 
+.icon-print:before { content: '\e831'; } 
+.icon-pencil:before { content: '\e832'; } 
+.icon-bell-alt:before { content: '\e833'; } 
+.icon-doc-inv:before { content: '\e834'; } 
+.icon-bell-off:before { content: '\e835'; } 
+.icon-down-open:before { content: '\e836'; } 
+.icon-up-open:before { content: '\e837'; } 
+.icon-attention-circled:before { content: '\e839'; } 
+.icon-location:before { content: '\e83a'; } 
+.icon-direction:before { content: '\e83b'; } 
+.icon-youtube-play:before { content: '\e83c'; } 
+.icon-ok-1:before { content: '\e83d'; } 
+.icon-doc:before { content: '\e83e'; } 
+.icon-docs:before { content: '\e83f'; } 
+.icon-file-pdf:before { content: '\e843'; } 
+.icon-file-word:before { content: '\e844'; } 
+.icon-file-excel:before { content: '\e845'; } 
+.icon-file-powerpoint:before { content: '\e846'; } 
+.icon-file-image:before { content: '\e847'; } 
+.icon-cancel:before { content: '\e848'; } 
+.icon-file-code:before { content: '\e84b'; } 
+.icon-folder:before { content: '\e84c'; } 
+.icon-folder-open:before { content: '\e84d'; } 
+.icon-folder-empty:before { content: '\e84e'; } 
+.icon-folder-open-empty:before { content: '\e84f'; } 
+.icon-phone:before { content: '\e851'; } 
+.icon-menu:before { content: '\e852'; } 
+.icon-cog:before { content: '\e853'; } 
+.icon-wrench:before { content: '\e854'; } 
+.icon-basket:before { content: '\e855'; } 
+.icon-calendar:before { content: '\e856'; } 
+.icon-volume-up:before { content: '\e857'; } 
+.icon-volume-down:before { content: '\e858'; } 
+.icon-volume-off:before { content: '\e859'; } 
+.icon-clock:before { content: '\e85a'; } 
+.icon-resize-full:before { content: '\e85b'; } 
+.icon-resize-full-alt:before { content: '\e85c'; } 
+.icon-resize-small:before { content: '\e85d'; } 
+.icon-zoom-in:before { content: '\e85e'; } 
+.icon-zoom-out:before { content: '\e85f'; } 
+.icon-down-dir:before { content: '\e860'; } 
+.icon-up-dir:before { content: '\e861'; } 
+.icon-right-dir:before { content: '\e863'; } 
+.icon-angle-left:before { content: '\e864'; } 
+.icon-angle-right:before { content: '\e865'; } 
+.icon-angle-up:before { content: '\e866'; } 
+.icon-angle-down:before { content: '\e867'; } 
+.icon-desktop:before { content: '\e86a'; } 
+.icon-laptop:before { content: '\e86b'; } 
+.icon-globe:before { content: '\e86c'; } 
+.icon-off:before { content: '\e884'; } 
+.icon-toggle-on:before { content: '\e887'; } 
+.icon-toggle-off:before { content: '\e888'; } 
+.icon-tint:before { content: '\e889'; } 
+.icon-chart-pie:before { content: '\e88c'; } 
+.icon-chart-area:before { content: '\e88d'; } 
+.icon-chart-bar:before { content: '\e88e'; } 
+.icon-chart-line:before { content: '\e88f'; } 
+.icon-gauge:before { content: '\e891'; } 
+.icon-plug:before { content: '\e892'; } 
+.icon-puzzle:before { content: '\e893'; } 
+.icon-graduation-cap:before { content: '\e894'; } 
+.icon-cube:before { content: '\e895'; } 
+.icon-shield:before { content: '\e897'; } 
+.icon-fire:before { content: '\e898'; } 
+.icon-database:before { content: '\e899'; } 
+.icon-brush:before { content: '\e89b'; } 
+.icon-diamond:before { content: '\e89c'; } 
+.icon-birthday:before { content: '\e89d'; } 
+.icon-venus:before { content: '\e89e'; } 
+.icon-mars:before { content: '\e89f'; } 
+.icon-android:before { content: '\e8a0'; } 
+.icon-apple:before { content: '\e8a1'; } 
+.icon-delicious:before { content: '\e8a2'; } 
+.icon-wechat:before { content: '\e8a4'; } 
+.icon-weibo:before { content: '\e8a5'; } 
+.icon-qq:before { content: '\e8a6'; } 
+.icon-terminal:before { content: '\e8a7'; } 
+.icon-ellipsis-vert:before { content: '\e8a8'; } 
+.icon-cw:before { content: '\e8a9'; } 
+.icon-exchange:before { content: '\e8aa'; } 
+.icon-sliders:before { content: '\e8ab'; } 
+.icon-sort:before { content: '\e8ae'; } 
+.icon-sort-down:before { content: '\e8af'; } 
+.icon-sort-up:before { content: '\e8b0'; } 
+.icon-sort-alt-up:before { content: '\e8b1'; } 
+.icon-sort-alt-down:before { content: '\e8b2'; } 
+.icon-play-1:before { content: '\e8b3'; } 
+.icon-pause-1:before { content: '\e8b4'; } 
+.icon-stop-1:before { content: '\e8b5'; } 
+.icon-to-end-1:before { content: '\e8b6'; } 
+.icon-to-start-1:before { content: '\e8b7'; } 
+.icon-fast-forward:before { content: '\e8b8'; } 
+.icon-fast-backward:before { content: '\e8b9'; } 
+.icon-down-1:before { content: '\e8ba'; } 
+.icon-left-1:before { content: '\e8bb'; } 
+.icon-right-1:before { content: '\e8bc'; } 
+.icon-up-1:before { content: '\e8bd'; } 
+.icon-download:before { content: '\e8be'; } 
+.icon-upload:before { content: '\e8bf'; } 
+.icon-lock-1:before { content: '\e8c0'; } 
+.icon-lock-alt:before { content: '\e8c1'; } 
+.icon-lock-open-1:before { content: '\e8c2'; } 
+.icon-lock-open-alt-1:before { content: '\e8c3'; } 
+.icon-folder-1:before { content: '\e8c4'; } 
+.icon-folder-open-1:before { content: '\e8c5'; } 
+.icon-cog-1:before { content: '\e8c6'; } 
+.icon-chart-bar-1:before { content: '\e8c7'; } 
+.icon-note-beamed:before { content: '\e8c8'; } 
+.icon-spin6:before { content: '\e8ca'; } 
+.icon-spin3:before { content: '\e8cb'; } 
+.icon-upload-cloud:before { content: '\e8ce'; } 
+.icon-magnet:before { content: '\e8d0'; } 
+.icon-beaker:before { content: '\e8d1'; } 
+.icon-truck:before { content: '\e8d2'; } 
+.icon-building:before { content: '\e8d3'; }
+.icon-food:before { content: '\e8d4'; }
+.icon-coffee:before { content: '\e8d5'; }
+.icon-sitemap:before { content: '\e8d6'; }
+
+/*
+ *	漂亮的checkbox
+ *	支持现代浏览器 IE9及以上版本
+ *	https://github.com/forsigner/magic-check
+*/
+@keyframes hover-color {
+	from {
+		border-color: #c0c0c0;
+	}
+
+	to {
+		border-color: #3e97eb;
+	}
+}
+.magic-radio,
+.magic-checkbox {
+	position: absolute;
+	display: none;
+}
+.magic-radio[disabled],
+.magic-checkbox[disabled] {
+	cursor: not-allowed;
+}
+.magic-radio + label,
+.magic-checkbox + label {
+	position: relative;
+	display: block;
+	padding-left: 30px;
+	cursor: pointer;
+	vertical-align: middle;
+}
+.magic-radio + label:hover:before,
+  .magic-checkbox + label:hover:before {
+	animation-duration: 0.4s;
+	animation-fill-mode: both;
+	animation-name: hover-color;
+}
+.magic-radio + label:before,
+  .magic-checkbox + label:before {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	content: '';
+	border: 1px solid #c0c0c0;
+}
+.magic-radio + label:after,
+  .magic-checkbox + label:after {
+	position: absolute;
+	display: none;
+	content: '';
+}
+.magic-radio[disabled] + label,
+.magic-checkbox[disabled] + label {
+	cursor: not-allowed;
+	color: #e4e4e4;
+}
+.magic-radio[disabled] + label:hover, .magic-radio[disabled] + label:before, .magic-radio[disabled] + label:after,
+  .magic-checkbox[disabled] + label:hover,
+  .magic-checkbox[disabled] + label:before,
+  .magic-checkbox[disabled] + label:after {
+	cursor: not-allowed;
+}
+.magic-radio[disabled] + label:hover:before,
+  .magic-checkbox[disabled] + label:hover:before {
+	border: 1px solid #e4e4e4;
+	animation-name: none;
+}
+.magic-radio[disabled] + label:before,
+  .magic-checkbox[disabled] + label:before {
+	border-color: #e4e4e4;
+}
+.magic-radio:checked + label:before,
+.magic-checkbox:checked + label:before {
+	animation-name: none;
+}
+.magic-radio:checked + label:after,
+.magic-checkbox:checked + label:after {
+	display: block;
+}
+.magic-radio + label:before {
+	border-radius: 50%;
+}
+.magic-radio + label:after {
+	top: 6px;
+	left: 6px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #3e97eb;
+}
+.magic-radio:checked + label:before {
+	border: 1px solid #3e97eb;
+}
+.magic-radio:checked[disabled] + label:before {
+	border: 1px solid #c9e2f9;
+}
+.magic-radio:checked[disabled] + label:after {
+	background: #c9e2f9;
+}
+.magic-checkbox + label:before {
+	border-radius: 3px;
+}
+.magic-checkbox + label:after {
+	top: 2px;
+	left: 7px;
+	box-sizing: border-box;
+	width: 6px;
+	height: 12px;
+	transform: rotate(45deg);
+	border-width: 2px;
+	border-style: solid;
+	border-color: #fff;
+	border-top: 0;
+	border-left: 0;
+}
+.magic-checkbox:checked + label:before {
+	border: #3e97eb;
+	background: #3e97eb;
+}
+.magic-checkbox:checked[disabled] + label:before {
+	border: #c9e2f9;
+	background: #c9e2f9;
+}
