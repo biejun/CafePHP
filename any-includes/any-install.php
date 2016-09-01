@@ -1,5 +1,6 @@
 <?php
 if(!defined('ABSPATH'))exit('Access denied!');
+
 # 生成指定长度随机KEY
 function getRandomKey($n = 18) {
 	return substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_~'), 0, $n);
@@ -64,7 +65,7 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 		$config .= "define('ADMIN','$user_name');\n";
 		$config .= "define('PATH','$path');\n";
 		$config .= "define('VALIDATE','$validate');\n";
-		file_put_contents(ABSPATH . ANYINC . 'any-config.php',$config) or die("请检查文件 any-config.php 的权限是否为0777!");
+		@file_put_contents(ANYINC . 'any-config.php',$config) or die("请检查文件 any-config.php 的目录权限是否为0777!");
 		$status = true;
 	}
 }
@@ -80,7 +81,7 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 			padding: 0;
 		}
 		html{
-			background-color: #f4f4f4;
+			background-color: #eee;
 		}
 		body{
 			margin: 100px auto 40px;
@@ -113,7 +114,7 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 			padding: 20px;
 		}
 		.input-group:hover{
-			background-color: #eee;
+			background-color: #F5F5F5;
 		}
 		.input-form,.input-addon{
 			display: block;
@@ -143,17 +144,17 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 			height: 35px;
 			line-height: 35px;
 			text-align: center;
-			border:1px solid #31708f;
+			border:1px solid #3E97EB;
 			border-radius: 20px;
 			margin: 10px auto;
 			display: block;
 			font-size: 14px;
-			color: #31708f;
+			color: #3E97EB;
 			background-color: #fff;
 			cursor: pointer;
 		}
 		.submit:hover{
-			background-color: #31708f;
+			background-color: #3E97EB;
 			color: white;
 		}
 		</style>
