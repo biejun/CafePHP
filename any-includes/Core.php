@@ -11,8 +11,7 @@ class Core{
 
 		array_walk_recursive($_GET,'self::magic_safe');
 		array_walk_recursive($_POST,'self::magic_safe');
-		array_walk_recursive($_REQUEST,'self::magic_safe');
-
+		
 		$_REQUEST = array_merge( $_GET, $_POST);
 
 		error_reporting(ANY_DEBUG?E_ALL:0);
