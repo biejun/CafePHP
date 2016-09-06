@@ -13,8 +13,7 @@ function user_table($db_prefix){
 				`user_password` varchar(32) NOT NULL DEFAULT '',
 				`user_login_time` int(11) unsigned NOT NULL DEFAULT '0',
 				`user_group` tinyint(4) unsigned NOT NULL DEFAULT '1',
-			PRIMARY KEY (`user_id`),
-			KEY `qq_token` (`qq_token`)
+			PRIMARY KEY (`user_id`)
 			) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
 }
 # 写入配置表
@@ -50,7 +49,7 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 		$query[] = user_table($db_prefix);
 		$query[] = config_table($db_prefix);
 		$query[] = "INSERT INTO `".$db_prefix."user` VALUES (1,'$user_name','$user_password','$time','3','');";
-		$query[] = "INSERT INTO `".$db_prefix."config` VALUES ('apps','admin'),('theme','simple'),('admin','YToyNDp7aTowO3M6NToidGl0bGUiO2k6MTtzOjg6InN1YnRpdGxlIjtpOjI7czo4OiJrZXl3b3JkcyI7aTozO3M6MTE6ImRlc2NyaXB0aW9uIjtpOjQ7czo4OiJzdGF0Y29kZSI7aTo1O3M6Njoibm90aWNlIjtpOjY7czoyOiJhZCI7aTo3O3M6MzoiaWNwIjtpOjg7czoxMToic210cF9zZXJ2ZXIiO2k6OTtzOjk6InNtdHBfcG9ydCI7aToxMDtzOjk6InNtdHBfdXNlciI7aToxMTtzOjEzOiJzbXRwX3Bhc3N3b3JkIjtzOjU6InRpdGxlIjtzOjEyOiLnq5nngrnmoIfpopgiO3M6ODoic3VidGl0bGUiO3M6MDoiIjtzOjg6ImtleXdvcmRzIjtzOjA6IiI7czoxMToiZGVzY3JpcHRpb24iO3M6MDoiIjtzOjg6InN0YXRjb2RlIjtzOjA6IiI7czo2OiJub3RpY2UiO3M6MDoiIjtzOjI6ImFkIjtzOjA6IiI7czozOiJpY3AiO3M6MDoiIjtzOjExOiJzbXRwX3NlcnZlciI7czoxODoic210cC5leG1haWwucXEuY29tIjtzOjk6InNtdHBfcG9ydCI7czoyOiIyNSI7czo5OiJzbXRwX3VzZXIiO3M6MDoiIjtzOjEzOiJzbXRwX3Bhc3N3b3JkIjtzOjA6IiI7fQ==');";
+		$query[] = "INSERT INTO `".$db_prefix."config` VALUES ('apps','admin'),('theme','simple'),('admin','YToyNjp7aTowO3M6NToidGl0bGUiO2k6MTtzOjg6InN1YnRpdGxlIjtpOjI7czo4OiJrZXl3b3JkcyI7aTozO3M6MTE6ImRlc2NyaXB0aW9uIjtpOjQ7czo4OiJzdGF0Y29kZSI7aTo1O3M6Njoibm90aWNlIjtpOjY7czoyOiJhZCI7aTo3O3M6MzoiaWNwIjtpOjg7czoxMToic210cF9zZXJ2ZXIiO2k6OTtzOjk6InNtdHBfcG9ydCI7aToxMDtzOjk6InNtdHBfdXNlciI7aToxMTtzOjEzOiJzbXRwX3Bhc3N3b3JkIjtpOjEyO3M6MTA6InNtdHBfZW1haWwiO3M6NToidGl0bGUiO3M6MTI6IuermeeCueagh+mimCI7czo4OiJzdWJ0aXRsZSI7czowOiIiO3M6ODoia2V5d29yZHMiO3M6MDoiIjtzOjExOiJkZXNjcmlwdGlvbiI7czowOiIiO3M6ODoic3RhdGNvZGUiO3M6MDoiIjtzOjY6Im5vdGljZSI7czowOiIiO3M6MjoiYWQiO3M6MDoiIjtzOjM6ImljcCI7czowOiIiO3M6MTE6InNtdHBfc2VydmVyIjtzOjE4OiJzbXRwLmV4bWFpbC5xcS5jb20iO3M6OToic210cF9wb3J0IjtzOjI6IjI1IjtzOjk6InNtdHBfdXNlciI7czowOiIiO3M6MTM6InNtdHBfcGFzc3dvcmQiO3M6MDoiIjtzOjEwOiJzbXRwX2VtYWlsIjtzOjA6IiI7fQ==');";
 
 		foreach($query as $sql){
 			$any_db->query($sql);
@@ -65,7 +64,7 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 		$config .= "define('ADMIN','$user_name');\n";
 		$config .= "define('PATH','$path');\n";
 		$config .= "define('VALIDATE','$validate');\n";
-		@file_put_contents(ANYINC . 'any-config.php',$config) or die("请检查文件 any-config.php 的目录权限是否为0777!");
+		@file_put_contents(ANYINC . 'any-config.php',$config) or die("请检查any-includes目录权限是否为0777!");
 		$status = true;
 	}
 }
@@ -133,7 +132,7 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 		.input-form:focus{
 			outline: 0;
 			border:1px solid #ddd;
-			border-left: 3px solid blue
+			border-left: 3px solid #3E97EB;
 		}
 		.input-addon{
 			margin-bottom: 5px;
@@ -210,7 +209,7 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 				form.user_name.focus();
 				return false;
 			}
-			if(form.user_password.value<6){
+			if(form.user_password.value.length<6){
 				alert('管理员密码不能少于6位!');
 				form.user_password.focus();
 				return false;

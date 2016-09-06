@@ -36,19 +36,11 @@
 					<td v-text="row.description" class="text-muted"></td>
 					<td v-text="row.version"></td>
 					<td v-text="row.author" class="text-muted"></td>
-					<template v-if="row.special">
-						<td>
-							系统应用
-						</td>
-					</template>
-					<template v-else>
-						<td v-if="row.install">
-							<a href="{{path}}admin/uninstall.html?app_name={{row.app}}">卸载</a>
-						</td>
-						<td v-else>
-							<a href="{{path}}admin/install.html?app_name={{row.app}}">安装</a>
-						</td>
-					</template>
+					<td v-if="row.special">系统应用</td>
+					<td v-else>
+						<a v-if="row.install" href="{{path}}admin/uninstall.html?app_name={{row.app}}">卸载</a>
+						<a v-else href="{{path}}admin/install.html?app_name={{row.app}}">安装</a>
+					</td>
 				</tr>
 			</tbody>
 		</table>

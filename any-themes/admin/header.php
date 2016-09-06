@@ -9,12 +9,6 @@
 <nav class="nav">
 	<div class="menu">
 		<ul>
-			<li>
-				<a class="menu-item" href="{$path}" title="返回网站首页">
-					<i class="icon-desktop"></i>
-					<div class="menu-name">网站首页</div>
-				</a>
-			</li>
 			<li v-bind:class="{active : active == 1}">
 				<a class="menu-item" href="{$path}admin/index.html" title="仪表盘">
 					<i class="icon-gauge"></i>

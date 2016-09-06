@@ -100,8 +100,7 @@ function model($app='',$name='class'){
 		$_model[$instance] = new $instance($app);
 		return $_model[$instance];
 	}else{
-		global $debug;
-		$debug[] = '没有找到"'.$app.'"的"'.$file.'"文件';
+		throw new Exception('没有找到"'.$app.'"的"'.$file.'"文件');
 	}
 }
 # 自动加载系统类
