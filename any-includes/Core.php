@@ -9,9 +9,9 @@ class Core{
 
 	public static function init(){
 
-		array_walk_recursive($_GET,		'self::magic_safe');
-		array_walk_recursive($_POST,	'self::magic_safe');
-		array_walk_recursive($_REQUEST,	'self::magic_safe');
+		array_walk_recursive($_GET,'self::magic_safe');
+		array_walk_recursive($_POST,'self::magic_safe');
+		array_walk_recursive($_REQUEST,'self::magic_safe');
 
 		$_REQUEST = array_merge( $_GET, $_POST);
 
@@ -20,10 +20,9 @@ class Core{
 		spl_autoload_register('self::autoload');
 		set_exception_handler('self::error_tip');
 
-		if(!file_exists( ANYINC .'any-config.php')){
-			# 执行安装
+		# 执行安装
+		if(!file_exists( ANYINC .'any-config.php'))
 			return include( ANYINC . 'any-install.php');
-		}
 
 		# 加载配置文件
 		require_once( ANYINC . 'any-config.php');
