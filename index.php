@@ -7,6 +7,7 @@
  *	@since  2016.04.06
  */
 
+# 定义系统路径
 define( 'ABSPATH',dirname(__FILE__).DIRECTORY_SEPARATOR);
 define( 'ANYAPP',ABSPATH . 'any-apps' . DIRECTORY_SEPARATOR);
 define( 'ANYTHEME',ABSPATH . 'any-themes' . DIRECTORY_SEPARATOR);
@@ -24,13 +25,7 @@ if(version_compare(PHP_VERSION,'5.4.0','<')){
 	ini_set( 'magic_quotes_sybase',  0 );
 }
 
-require_once( ANYINC . 'any-init.php' );
-
-$_GET     = magic_safe( $_GET    );
-$_POST    = magic_safe( $_POST   );
-$_COOKIE  = magic_safe( $_COOKIE );
-$_SERVER  = magic_safe( $_SERVER );
-$_REQUEST = array_merge( $_GET, $_POST , $_COOKIE);
+require_once( ANYINC . 'Core.php' );
 
 session_start();
 
@@ -40,15 +35,8 @@ header('Content-Type: text/html; charset=utf-8');
 
 if(ANY_DEBUG) header('Access-Control-Allow-Origin:http://localhost:3366');
 
-spl_autoload_register("autoload");
-
-if(!file_exists( ANYINC .'any-config.php')){
-	# 执行安装
-	return include( ANYINC . 'any-install.php');
-}
-
-# 加载配置文件
-require_once( ANYINC . 'any-config.php');
+# 系统核心初始化
+Core::init();
 
 # 全局数据缓存变量
 $cache = new Cache(ANYINC . 'cache/data/');
