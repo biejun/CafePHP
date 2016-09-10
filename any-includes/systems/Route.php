@@ -20,7 +20,7 @@ class Route {
 		$app = isset($_GET['app'])?$_GET['app']:$app;
 		$act = isset($_GET['act'])?$_GET['act']:$act;
 		if($app == $act){
-			throw new \Exception('app 与 act 命名不能相同，防止重复实例化');
+			if(ANY_DEBUG) throw new \Exception('app 与 act 命名不能相同，防止重复实例化');
 		}else{
 			$page =  ANYAPP . $app.'/'. $app. '.php';
 			if(is_file($page)){

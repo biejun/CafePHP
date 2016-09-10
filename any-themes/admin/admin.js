@@ -35,6 +35,11 @@ var app = new Vue({
 	el : '#app',
 	data : data,
 	components:{
-		'app-menu':appMenu
+		appMenu
+	},
+	methods:{
+		changeTheme:function(theme){
+			this.themeCurrent = theme;
+		}
 	}
 });

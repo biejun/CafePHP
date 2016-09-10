@@ -74,7 +74,7 @@
 						<input type="email" autocomplete="off" name="smtp_email" placeholder="请输入您的邮箱" class="form-control" value="<?php echo $config['smtp_email'] ;?>">
 					</div>
 				</fieldset>
-				<button type="submit" class="btn btn-primary btn-sm">更新设置</button>
+				<button type="submit" class="btn btn-primary">更新设置</button>
 			</form>
 		</div>
 		<div class="setting fr">

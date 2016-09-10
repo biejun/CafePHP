@@ -10,11 +10,15 @@ return array(
 	'special'=>true,
 	'menu'=>array(
 		array(
-			'title'=>'清理临时文件',
+			'title'=>'管理员管理',
+			'url'=>'admin/admin_group_set.html'
+		),
+		array(
+			'title'=>'清理文件',
 			'url'=>'admin/clear_files.html'
 		),
 		array(
-			'title'=>'清理系统缓存',
+			'title'=>'清空缓存',
 			'url'=>'admin/clear_cache.html'
 		)
 	),

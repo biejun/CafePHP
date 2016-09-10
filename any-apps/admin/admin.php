@@ -47,7 +47,10 @@ class admin extends UI{
 				if($theme_name!='admin'){
 					$meta = $name.'/meta.php';
 					if(file_exists($meta)){
-						$themes[] = include $meta;
+						$item = include $meta;
+						$item['themeName'] = $theme_name;
+						$item['themeThumb'] = PATH.'any-themes/'.$theme_name.'/screenshot.png';
+						array_push($themes,$item);
 					}
 				}
 			}

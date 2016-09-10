@@ -15,7 +15,7 @@ $setting='
 			<input type="text" id="qq_appid" name="qq_appid" value="" class="form-control"/>
 		</div>
 	</fieldset>
-	<button type="submit" class="btn btn-primary btn-sm">更新设置</button>
+	<button type="submit" class="btn btn-primary">更新设置</button>
 </form>';
 return $setting;
 ?>
