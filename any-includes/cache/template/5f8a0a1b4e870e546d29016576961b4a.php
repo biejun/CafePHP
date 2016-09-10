@@ -35,6 +35,18 @@
 			</li>
 			<li v-bind:class="{active : active == 5}">
 				<a class="menu-item" href="<?php echo $path ;?>admin/fontello.html">
+					<i class="icon-link"></i>
+					<div class="menu-name">链接</div>
+				</a>
+			</li>
+			<li v-bind:class="{active : active == 6}">
+				<a class="menu-item" href="<?php echo $path ;?>admin/fontello.html">
+					<i class="icon-database"></i>
+					<div class="menu-name">数据库</div>
+				</a>
+			</li>
+			<li v-bind:class="{active : active == 7}">
+				<a class="menu-item" href="<?php echo $path ;?>admin/fontello.html">
 					<i class="icon-flag"></i>
 					<div class="menu-name">字体图标</div>
 				</a>

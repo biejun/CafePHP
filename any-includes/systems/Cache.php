@@ -42,8 +42,11 @@ class Cache {
     private function filename($key){
     	return $this->dir.md5($key.VALIDATE);
     }
-    public function clear_cache(){
-        $file = glob($this->dir.'*');
+    public function get_cache_files(){
+        return glob($this->dir.'*');
+    }
+    public function clear_caches(){
+        $file = $this->get_cache_files();
         $result = array_map("unlink",$file);
         if($result !== false){
             return true;

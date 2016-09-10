@@ -37,8 +37,7 @@
 					<td v-text="row.author" class="text-muted"></td>
 					<td v-if="row.special">系统应用</td>
 					<td v-else>
-						<a v-if="row.install" href="{{path}}admin/uninstall.html?app_name={{row.app}}">卸载</a>
-						<a v-else href="{{path}}admin/install.html?app_name={{row.app}}">安装</a>
+						<a v-bind:href="row.install.path" v-text="row.install.status"></a>
 					</td>
 				</tr>
 			</tbody>

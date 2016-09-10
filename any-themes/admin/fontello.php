@@ -1,6 +1,6 @@
 <?php exit?>
 <!doctype html>
-<html class="html5">
+<html class="html5" lang="zh-cn">
 <head>
 <title>字体图标 - 管理中心 - {$config.title}</title>
 {import ('static') }
@@ -344,7 +344,7 @@ small {
 <script type="text/javascript">
 	var data = {
 		path : '{$path}',
-		active :'5'
+		active :'7'
 	};
 	function toggleCodes(on) {
 		var obj = document.getElementById('icons');

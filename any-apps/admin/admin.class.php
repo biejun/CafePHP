@@ -29,8 +29,26 @@ class admin_model extends Model{
 		$this->db->update("config","config_value='".implode("|",$apps)."'","config_key='apps'");
 		$cache->delete_cache('apps');
 	}
-	# 检查应用程序列表
-	public function check_apps(){
+	# 获取应用程序状态
+	public function get_app_status($app){
+		$array = array();
+		$path = PATH.'admin/';
+		if($this->check_install($app)){
+			$array['status'] = '卸载';
+			$array['path'] = $path.'uninstall.html?app_name='.$app;
+		}else{
+			if(is_file(ANYAPP.$app.'/update.php')){
+				$array['status'] = '更新';
+				$array['path'] = $path.'update.html?app_name='.$app;
+			}else{
+				$array['status'] = '安装';
+				$array['path'] = $path.'install.html?app_name='.$app;
+			}
+		}
+		return $array;
+	}
+	# 获取应用程序列表
+	public function get_system_apps(){
 		global $cache;
 		$packages = $cache->read('packages');
 		$array=array();
@@ -45,11 +63,11 @@ class admin_model extends Model{
 					$meta['author'] = $info['author'];
 					$meta['date'] = $info['date'];
 					$meta['special'] = $info['special'];
-					$meta['install']=$this->check_install($info['app']);
+					$meta['install']=$this->get_app_status($info['app']);
 					$array[] = $meta;
 				}
 			}
 		}
-		return json_encode($array);
+		return $array;
 	}
 }

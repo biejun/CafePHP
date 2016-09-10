@@ -33,8 +33,6 @@ ob_start( 'ob_gzhandler' );
 
 header('Content-Type: text/html; charset=utf-8');
 
-$timestart = microtime( true );
-
 # 系统核心初始化
 Core::init();
 
@@ -43,5 +41,3 @@ $cache = new Cache(ANYINC . 'cache/data/');
 
 # 初始化 默认首页
 Route::get('admin');
-
-echo microtime( true ) - $timestart ;

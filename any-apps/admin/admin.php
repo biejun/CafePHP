@@ -34,8 +34,8 @@ class admin extends UI{
 		$this->render('setting');
 	}
 	public function application(){
-		$array = model('admin')->check_apps();
-		$this->assign('apps',$array);
+		$array = model('admin')->get_system_apps();
+		$this->assign('apps',json_encode($array));
 		$this->render('application');
 	}
 	public function theme(){
@@ -75,13 +75,13 @@ class admin extends UI{
 				if(!empty($query)){
 					$admin->query($query);
 					$admin->install($app);
-					UIkit::alert('安装成功!');					
+					UIkit::alert('安装成功!');
 				}
 			}else{
 				UIkit::alert('没有找到安装文件!');
 			}
 		}else{
-			UIkit::alert('您已经安装过了!');
+			UIkit::alert('安装失败!');
 		}
 	}
 	public function uninstall(){
@@ -103,19 +103,56 @@ class admin extends UI{
 				UIkit::alert('没有找到卸载文件!');
 			}
 		}else{
-			UIkit::alert('您还没有安装过这个程序!');
+			UIkit::alert('您还没有安装这个程序!');
 		}
+	}
+	public function update(){
+		$app = get_query_var('app_name');
+		$admin = model('admin');
+		if(empty($app)){
+			alert('缺少参数，更新失败!');
+		}
+		if($admin->check_install($app)){
+			$update = ANYAPP . $app.'/update.php';
+			if(file_exists($update)){
+				$query = include($update);
+				if(!empty($query)&&is_array($query))
+					$admin->query($query);
+				unlink($update);
+				UIkit::alert('更新成功!');
+			}else{
+				UIkit::alert('没有找到更新文件!');
+			}
+		}else{
+			UIkit::alert('您还没有安装这个程序!');
+		}		
 	}
 	public function clear_files(){
 		UIkit::alert('清理成功');
 	}
-	public function clear_cache(){
+	public function admin_cache(){
 		global $cache;
-		if($cache->clear_cache()){
-			//UIkit::alert('清理成功!');
-		}else{
-			UIkit::alert('清理失败!');
+		$cache_files = array();
+		$cache_total_size = 0;
+		$files = $cache->get_cache_files();
+		foreach ($files as $key => $file) {
+			$cache_files[$key]['time'] = date("Y-m-d H:i:s",filemtime($file));
+			$filesize = filesize($file);
+			$cache_total_size +=$filesize;
+			$cache_files[$key]['size'] = UIKit::format_size($filesize);
+			$cache_files[$key]['path'] = str_replace(ABSPATH,PATH, $file);
 		}
+		$do = get_query_var('do');
+		if(isset($do)&&$do=='clear_cache'){
+			if($cache->clear_caches()){
+				UIkit::alert('清理成功!',PATH.'admin/admin_cache.html');
+			}else{
+				UIkit::alert('清理失败!');
+			}			
+		}
+		$this->assign('totalSize',UIKit::format_size($cache_total_size));
+		$this->assign('files',json_encode($cache_files));
+		$this->render('cache');
 	}
 	public function post_admin_config(){
 		$data = query_vars(

@@ -10,16 +10,12 @@ return array(
 	'special'=>false,
 	'menu'=>array(
 		array(
-			'title'=>'用户列表',
-			'url'=>'account/admin_user_list.html'
+			'title'=>'全部用户',
+			'url'=>'account/admin_user.html'
 		),
 		array(
-			'title'=>'用户组',
-			'url'=>'account/admin_user_group.html'
-		),
-		array(
-			'title'=>'添加用户',
-			'url'=>'account/admin_add_user.html'
+			'title'=>'用户黑名单',
+			'url'=>'account/admin_user_blacklist.html'
 		)
 	),
 	'route'=>array(

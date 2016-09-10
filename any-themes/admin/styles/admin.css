@@ -3,6 +3,9 @@ figure{margin:1em 40px}
 legend{display:block;width:100%;padding:10px 0;margin-bottom:20px;font-size:16px;line-height:inherit;color:#333;border:0;border-bottom:1px solid #EFEFEF;font-weight: bold;}
 fieldset{padding:0;margin:0;border:0;min-width:0}
 
+a{color: #3E97EB}
+a:hover{color: #3484D0;}
+
 .navbar{position: fixed;background-color: #3E97EB;right: 0;left: 0;height: 45px;color: #fff;z-index: 9;}
 .navbar .logo{width: 15%;float: left;line-height: 45px;padding:0 10px;color: #fff;font-size: 16px;font-weight: normal;}
 .navbar .menu{float: left;}
@@ -15,7 +18,7 @@ fieldset{padding:0;margin:0;border:0;min-width:0}
 .navbar .menu li .child li a:hover{background-color: #EAEDF4;}
 
 .nav{position: fixed;left: 0;top: 45px;width: 15%;height: 100%;background-color: #eaedf4;}
-.nav .menu ul{list-style: none;}
+.nav .menu ul{list-style: none;margin-top: 10px;}
 .nav .menu li{position: relative;padding: 0 10px;}
 .nav .menu li.active:hover,
 .nav .menu li.active{background-color: #D8DCE5;}
@@ -23,6 +26,7 @@ fieldset{padding:0;margin:0;border:0;min-width:0}
 .nav .menu li .menu-item{display: block;font-size: 14px;color: #505254;}
 .nav .menu li .menu-item .menu-name{padding: 8px 0;display: inline-block;margin-left: 5px;}
 .nav .menu li .menu-item i{font-size: 16px;color: #7C808A;}
+.nav .menu li.active .menu-item,.nav .menu li.active .menu-item i{color: #444;}
 
 section{width: 85%;height: 100%;margin-left: 15%;padding-top: 65px;overflow: auto;}
 section .toolbar{height: 39px;border-bottom: 1px solid #ECECEC;margin-left: 20px;margin-right: 20px;}
@@ -31,6 +35,8 @@ section .sub-title{margin-bottom: 15px;}
 section .sub-title ul{list-style: none;padding-top: 8px;}
 section .sub-title ul li{display: inline-block;font-size: 15px;color: #666;}
 section .sub-title ul li span{color: #888;margin-left: 6px;}
+section .sub-title .form-control{background-color: #eaedf4;border:none;-webkit-box-shadow: none!important;-moz-box-shadow: none!important;box-shadow: none!important;}
+section .sub-title .form-control:focus{background-color: #EFF2F9;}
 section .form-item {background-color: #fff;}
 section .form-item .form-addon{width: 33.3333%;float: left;padding: 7px 0;line-height: 20px;min-height: 50px;border-radius: 2px;}
 section .form-item .form-addon span{font-size: 12px;color: #999;display: block;height: 20px;}
@@ -38,8 +44,8 @@ section .form-item .form-addon p{color: #444;}
 section .form-item:after {clear: both;}
 section .form-item:before,section .form-item:after {content: " ";display: table;}
 section .setting{width: 48%}
-section .form-control{background-color: #eaedf4;border:none;-webkit-box-shadow: none!important;-moz-box-shadow: none!important;box-shadow: none!important;}
-section .form-control:focus{background-color: #EFF2F9;}
+section .setting .form-control{border-color: #ddd;}
+section .setting .form-control:focus{border-color: #bbb;}
 
 .table{width: 100%;text-align: center;margin-bottom: 15px;border-top:1px solid #ececec;border-bottom: 1px solid #EFEFEF;}
 .table>tbody>tr>td,.table>tbody>tr>th,
@@ -77,4 +83,4 @@ section .form-control:focus{background-color: #EFF2F9;}
 .theme-item h3{font-weight: 300;font-size: 16px;color: #3E97EB}
 .theme-item p{font-size: 12px;color: #999;line-height: 1.777;}
 .theme-item:before{content: " ";position: absolute;height:1px;bottom: -3px;left: 2px;right: 2px;border-bottom: 1px solid #ededed;}
-.theme-item.active .thumb:before{font-family: "fontello";content: '\e814';position: absolute;top: 0;left: 0;right: 0;bottom:0;color: #fff;font-size: 42px;height: 200px;line-height: 200px;text-align: center;background-color:rgba(0,0,0,.5); }
+.theme-item.active .thumb:before{font-family: "fontello";content: '\e814  已安装';position: absolute;top: 0;left: 0;right: 0;bottom:0;color: #fff;font-size: 14px;height: 200px;line-height: 200px;text-align: center;background-color:rgba(62, 151, 235, 0.88); }

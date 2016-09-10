@@ -10,8 +10,12 @@ return array(
 	'special'=>true,
 	'menu'=>array(
 		array(
-			'title'=>'管理员管理',
-			'url'=>'admin/admin_group_set.html'
+			'title'=>'角色管理',
+			'url'=>'admin/admin_group.html'
+		),
+		array(
+			'title'=>'权限管理',
+			'url'=>'admin/admin_access.html'
 		),
 		array(
 			'title'=>'清理文件',
@@ -19,7 +23,7 @@ return array(
 		),
 		array(
 			'title'=>'清空缓存',
-			'url'=>'admin/clear_cache.html'
+			'url'=>'admin/admin_cache.html'
 		)
 	),
 	'route'=>array(
