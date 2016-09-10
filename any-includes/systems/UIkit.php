@@ -161,7 +161,7 @@ final class UIKit{
 	            if(!is_dir($fullpath)){
 	                unlink($fullpath);
 	            }else{
-	                rm_dir($fullpath);
+	                self::rm_dir($fullpath);
 	            }
 	        }
 	    }

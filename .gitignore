@@ -1,4 +1,4 @@
 node_modules
 .DS_Store
 any-includes/cache/
-any-includes/any-config.php
+any-includes/Config.php

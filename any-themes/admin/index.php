@@ -17,7 +17,7 @@
 			<i class="icon-attention-circled"></i>注意: 您的系统目前处于开发测试环境，正式部署时请将<u>index.php</u>文件中的ANY_BEBUG变量设置为false。
 		</div>
 		<?php } ?>
-		
+
 		<div class="form-item">
 			<div class="form-addon">
 				<span>服务器根域名</span>

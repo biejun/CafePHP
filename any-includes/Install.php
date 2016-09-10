@@ -12,9 +12,17 @@ function user_table($db_prefix){
 				`user_name` varchar(15) NOT NULL DEFAULT '',
 				`user_password` varchar(32) NOT NULL DEFAULT '',
 				`user_login_time` int(11) unsigned NOT NULL DEFAULT '0',
-				`user_group` tinyint(4) unsigned NOT NULL DEFAULT '1',
-			PRIMARY KEY (`user_id`)
-			) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
+				`user_role_id` tinyint(4) unsigned NOT NULL DEFAULT '1',
+			PRIMARY KEY (`user_id`),
+			KEY `user_role_id` (`user_role_id`)
+			) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
+}
+# 写入用户角色表
+function user_role_table($db_prefix){
+	return "CREATE TABLE IF NOT EXISTS `".$db_prefix."user_role` (
+				`user_role_id` tinyint(4) unsigned NOT NULL DEFAULT '1',
+				`user_role_name` varchar(20) NOT NULL DEFAULT ''
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 }
 # 写入配置表
 function config_table($db_prefix){
@@ -47,15 +55,17 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 
 		$query = array();
 		$query[] = user_table($db_prefix);
+		$query[] = user_role_table($db_prefix);
 		$query[] = config_table($db_prefix);
-		$query[] = "INSERT INTO `".$db_prefix."user` VALUES (1,'$user_name','$user_password','$time','3','');";
-		$query[] = "INSERT INTO `".$db_prefix."config` VALUES ('apps','admin'),('theme','simple'),('admin','YToyNjp7aTowO3M6NToidGl0bGUiO2k6MTtzOjg6InN1YnRpdGxlIjtpOjI7czo4OiJrZXl3b3JkcyI7aTozO3M6MTE6ImRlc2NyaXB0aW9uIjtpOjQ7czo4OiJzdGF0Y29kZSI7aTo1O3M6Njoibm90aWNlIjtpOjY7czoyOiJhZCI7aTo3O3M6MzoiaWNwIjtpOjg7czoxMToic210cF9zZXJ2ZXIiO2k6OTtzOjk6InNtdHBfcG9ydCI7aToxMDtzOjk6InNtdHBfdXNlciI7aToxMTtzOjEzOiJzbXRwX3Bhc3N3b3JkIjtpOjEyO3M6MTA6InNtdHBfZW1haWwiO3M6NToidGl0bGUiO3M6MTI6IuermeeCueagh+mimCI7czo4OiJzdWJ0aXRsZSI7czowOiIiO3M6ODoia2V5d29yZHMiO3M6MDoiIjtzOjExOiJkZXNjcmlwdGlvbiI7czowOiIiO3M6ODoic3RhdGNvZGUiO3M6MDoiIjtzOjY6Im5vdGljZSI7czowOiIiO3M6MjoiYWQiO3M6MDoiIjtzOjM6ImljcCI7czowOiIiO3M6MTE6InNtdHBfc2VydmVyIjtzOjE4OiJzbXRwLmV4bWFpbC5xcS5jb20iO3M6OToic210cF9wb3J0IjtzOjI6IjI1IjtzOjk6InNtdHBfdXNlciI7czowOiIiO3M6MTM6InNtdHBfcGFzc3dvcmQiO3M6MDoiIjtzOjEwOiJzbXRwX2VtYWlsIjtzOjA6IiI7fQ==');";
+		$query[] = "INSERT INTO `".$db_prefix."user` VALUES (1,'$user_name','$user_password','$time','3');";
+		$query[] = "INSERT INTO `".$db_prefix."config` VALUES ('apps','admin'),('theme','single'),('admin','YToyNjp7aTowO3M6NToidGl0bGUiO2k6MTtzOjg6InN1YnRpdGxlIjtpOjI7czo4OiJrZXl3b3JkcyI7aTozO3M6MTE6ImRlc2NyaXB0aW9uIjtpOjQ7czo4OiJzdGF0Y29kZSI7aTo1O3M6Njoibm90aWNlIjtpOjY7czoyOiJhZCI7aTo3O3M6MzoiaWNwIjtpOjg7czoxMToic210cF9zZXJ2ZXIiO2k6OTtzOjk6InNtdHBfcG9ydCI7aToxMDtzOjk6InNtdHBfdXNlciI7aToxMTtzOjEzOiJzbXRwX3Bhc3N3b3JkIjtpOjEyO3M6MTA6InNtdHBfZW1haWwiO3M6NToidGl0bGUiO3M6MTI6IuermeeCueagh+mimCI7czo4OiJzdWJ0aXRsZSI7czowOiIiO3M6ODoia2V5d29yZHMiO3M6MDoiIjtzOjExOiJkZXNjcmlwdGlvbiI7czowOiIiO3M6ODoic3RhdGNvZGUiO3M6MDoiIjtzOjY6Im5vdGljZSI7czowOiIiO3M6MjoiYWQiO3M6MDoiIjtzOjM6ImljcCI7czowOiIiO3M6MTE6InNtdHBfc2VydmVyIjtzOjE4OiJzbXRwLmV4bWFpbC5xcS5jb20iO3M6OToic210cF9wb3J0IjtzOjI6IjI1IjtzOjk6InNtdHBfdXNlciI7czowOiIiO3M6MTM6InNtdHBfcGFzc3dvcmQiO3M6MDoiIjtzOjEwOiJzbXRwX2VtYWlsIjtzOjA6IiI7fQ==');";
 
 		foreach($query as $sql){
 			$any_db->query($sql);
 		}
 
 		$config = "<?php\n\n";
+		$config .= "if(!defined('ABSPATH'))exit('Access denied!');\n\n";
 		$config .= "define('DB_HOST','$db_host');\n";
 		$config .= "define('DB_USER','$db_user');\n";
 		$config .= "define('DB_PASSWORD','$db_password');\n";
@@ -64,7 +74,7 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 		$config .= "define('ADMIN','$user_name');\n";
 		$config .= "define('PATH','$path');\n";
 		$config .= "define('VALIDATE','$validate');\n";
-		@file_put_contents(ANYINC . 'any-config.php',$config) or die("请检查any-includes目录权限是否为0777!");
+		@file_put_contents(ANYINC . 'Config.php',$config) or die("请检查any-includes目录权限是否可写，或修改目录权限为0777!");
 		$status = true;
 	}
 }
@@ -162,7 +172,7 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 		<?php if(!$status){?>
 
 		<h1>安装</h1>
-		<div class="alert">您当前的系统环境：<?php echo PHP_OS=='WINNT'?'Windows':PHP_OS;?>&nbsp;/&nbsp;<?php echo version_compare(PHP_VERSION,'5.3.0','<')?'当前PHP版本过低，请更新版本':'PHP ',PHP_VERSION,' 适合安装'; ?></div>
+		<div class="alert">您当前的系统环境：<?php echo PHP_OS=='WINNT'?'Windows':PHP_OS;?>&nbsp;/&nbsp;<?php echo version_compare(PHP_VERSION,'5.3.0','<=')?'当前PHP版本过低，请更新版本':'PHP ',PHP_VERSION,' 适合安装'; ?></div>
 		<form method="post" action="<?=$data['path']?>?do=install" onsubmit="return post_check(this)">
 			<div class="input-group">
 				<label class="input-addon">数据库服务器</label>
@@ -190,11 +200,11 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 			</div>
 			<div class="input-group">
 				<label class="input-addon">密码</label>
-				<input class="input-form" name="user_password" value="" placeholder="密码不能少于6位"/>
+				<input type="password" class="input-form" name="user_password" value="" placeholder="密码不能少于6位"/>
 			</div>
 			<div class="input-group">
 				<label class="input-addon">确认密码</label>
-				<input class="input-form" name="user_password_once" value="" placeholder="再输一次"/>
+				<input type="password" class="input-form" name="user_password_once" value="" placeholder="再输一次"/>
 			</div>
 			<div class="input-group">
 				<label class="input-addon">安全验证</label>
