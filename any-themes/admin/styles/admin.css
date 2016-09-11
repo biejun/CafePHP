@@ -17,15 +17,15 @@ a:hover{color: #3484D0;}
 .navbar .menu li .child li a{color: #3E97EB;}
 .navbar .menu li .child li a:hover{background-color: #EAEDF4;}
 
-.nav{position: fixed;left: 0;top: 45px;width: 90px;height: 100%;background-color: #fff;}
+.nav{position: fixed;left: 0;top: 45px;width: 90px;height: 100%;background-color: #232323;}
 .nav .menu ul{list-style: none;}
 .nav .menu li{position: relative;padding: 0 10px;}
 .nav .menu li:hover,
-.nav .menu li.active{background-color: #eaedf4;}
-.nav .menu li .menu-item{display: block;font-size: 14px;color: #505254;text-align: center;padding: 8px 0;}
+.nav .menu li.active{background-color: #444;}
+.nav .menu li .menu-item{display: block;font-size: 14px;color: #bbb;text-align: center;padding: 8px 0;}
 .nav .menu li .menu-item .menu-name{display: block;}
 .nav .menu li .menu-item i{font-size: 1.5em;color: #7C808A;display: block;margin-bottom: 3px;}
-.nav .menu li.active .menu-item,.nav .menu li.active .menu-item i{color: #444;}
+.nav .menu li.active .menu-item,.nav .menu li.active .menu-item i{color: #fff;}
 
 section{height: 100%;margin:70px 30px 20px 120px;background: #fff;padding: 20px;border-radius: 3px;}
 section .toolbar{height: 39px;border-bottom: 1px solid #ddd;margin-left: 20px;margin-right: 20px;}
