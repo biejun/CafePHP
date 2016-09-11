@@ -52,6 +52,7 @@ abstract class UI{
 	public function render($name,$data=''){
 		$template = $this->theme_root.'/'.$name.'.php';
 		if(file_exists($template)){
+			make_dir(ANYINC . 'cache/template');
 			$compile = ANYINC . 'cache/template/'.md5($this->theme.$name).'.php';
 			$filestat = @stat($compile);
 			$expires = $filestat['mtime'];

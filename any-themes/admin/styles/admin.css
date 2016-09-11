@@ -1,4 +1,4 @@
-html,body{height: 100%;font-size: 14px;overflow: hidden;}
+body{font-size: 14px;background: #eaedf4;}
 figure{margin:1em 40px}
 legend{display:block;width:100%;padding:10px 0;margin-bottom:20px;font-size:16px;line-height:inherit;color:#333;border:0;border-bottom:1px solid #EFEFEF;font-weight: bold;}
 fieldset{padding:0;margin:0;border:0;min-width:0}
@@ -6,8 +6,8 @@ fieldset{padding:0;margin:0;border:0;min-width:0}
 a{color: #3E97EB}
 a:hover{color: #3484D0;}
 
-.navbar{position: fixed;background-color: #3E97EB;right: 0;left: 0;height: 45px;color: #fff;z-index: 9;}
-.navbar .logo{width: 15%;float: left;line-height: 45px;padding:0 10px;color: #fff;font-size: 16px;font-weight: normal;}
+.navbar{position: fixed;background-color: #3E97EB;top:0;right: 0;left: 0;height: 45px;color: #fff;z-index: 9;}
+.navbar .logo{width: 90px;float: left;line-height: 45px;padding:0 10px;color: #fff;font-size: 16px;font-weight: normal;}
 .navbar .menu{float: left;}
 .navbar .menu li{display: inline-block;line-height: 45px;padding: 0 15px;position: relative;}
 .navbar .menu li a{display: block;color: #fff;}
@@ -17,35 +17,34 @@ a:hover{color: #3484D0;}
 .navbar .menu li .child li a{color: #3E97EB;}
 .navbar .menu li .child li a:hover{background-color: #EAEDF4;}
 
-.nav{position: fixed;left: 0;top: 45px;width: 15%;height: 100%;background-color: #eaedf4;}
-.nav .menu ul{list-style: none;margin-top: 10px;}
+.nav{position: fixed;left: 0;top: 45px;width: 90px;height: 100%;background-color: #fff;}
+.nav .menu ul{list-style: none;}
 .nav .menu li{position: relative;padding: 0 10px;}
-.nav .menu li.active:hover,
-.nav .menu li.active{background-color: #D8DCE5;}
-.nav .menu li:hover{background-color: #e0e4ed;}
-.nav .menu li .menu-item{display: block;font-size: 14px;color: #505254;}
-.nav .menu li .menu-item .menu-name{padding: 8px 0;display: inline-block;margin-left: 5px;}
-.nav .menu li .menu-item i{font-size: 16px;color: #7C808A;}
+.nav .menu li:hover,
+.nav .menu li.active{background-color: #eaedf4;}
+.nav .menu li .menu-item{display: block;font-size: 14px;color: #505254;text-align: center;padding: 8px 0;}
+.nav .menu li .menu-item .menu-name{display: block;}
+.nav .menu li .menu-item i{font-size: 1.5em;color: #7C808A;display: block;margin-bottom: 3px;}
 .nav .menu li.active .menu-item,.nav .menu li.active .menu-item i{color: #444;}
 
-section{width: 85%;height: 100%;margin-left: 15%;padding-top: 65px;overflow: auto;}
-section .toolbar{height: 39px;border-bottom: 1px solid #ECECEC;margin-left: 20px;margin-right: 20px;}
-section .toolbar .config-title{font-weight: normal;font-size: 18px;line-height: 39px;color: #555;}
+section{height: 100%;margin:70px 30px 20px 120px;background: #fff;padding: 20px;border-radius: 3px;}
+section .toolbar{height: 39px;border-bottom: 1px solid #ddd;margin-left: 20px;margin-right: 20px;}
+section .toolbar .config-title{font-weight: normal;font-size: 18px;line-height: 39px;color: #333;}
 section .sub-title{margin-bottom: 15px;}
 section .sub-title ul{list-style: none;padding-top: 8px;}
 section .sub-title ul li{display: inline-block;font-size: 15px;color: #666;}
 section .sub-title ul li span{color: #888;margin-left: 6px;}
-section .sub-title .form-control{background-color: #eaedf4;border:none;-webkit-box-shadow: none!important;-moz-box-shadow: none!important;box-shadow: none!important;}
-section .sub-title .form-control:focus{background-color: #EFF2F9;}
+section .form-control{background-color: #eaedf4;border:none;-webkit-box-shadow: none!important;-moz-box-shadow: none!important;box-shadow: none!important;}
+section .form-control:focus{background-color: #EFF2F9;}
+section textarea.form-control{overflow-y: hidden;}
 section .form-item {background-color: #fff;}
 section .form-item .form-addon{width: 33.3333%;float: left;padding: 7px 0;line-height: 20px;min-height: 50px;border-radius: 2px;}
 section .form-item .form-addon span{font-size: 12px;color: #999;display: block;height: 20px;}
 section .form-item .form-addon p{color: #444;}
 section .form-item:after {clear: both;}
 section .form-item:before,section .form-item:after {content: " ";display: table;}
-section .setting{width: 48%}
-section .setting .form-control{border-color: #ddd;}
-section .setting .form-control:focus{border-color: #bbb;}
+section .setting{width: 47%}
+
 
 .table{width: 100%;text-align: center;margin-bottom: 15px;border-top:1px solid #ececec;border-bottom: 1px solid #EFEFEF;}
 .table>tbody>tr>td,.table>tbody>tr>th,

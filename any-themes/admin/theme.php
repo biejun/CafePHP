@@ -12,6 +12,14 @@
 		<h2 class="config-title">主题</h2>
 	</nav>
 	<div class="pd20 cf">
+		<div class="sub-title">
+			<span class="fr">
+				<input type="text" v-model="search" class="form-control fr" placeholder="搜索主题"/>
+			</span>
+			<ul>
+				<li>主题列表<span v-cloak>({{themes.length}})</span></li>
+			</ul>
+		</div>
 		<ul class="theme" v-cloak>
 			<li :class="['theme-item fl',themeCurrent==row.themeName?'active':'']" v-for="row in themes">
 				<a href="javascript:;" @click="changeTheme(row.theme_name)" class="thumb" title="{{row.description}}">

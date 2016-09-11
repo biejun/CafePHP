@@ -1,6 +1,6 @@
 <header class="navbar">
 	<h1 class="logo">
-		网站管理后台
+		管理系统
 	</h1>
 	<ul class="menu">
 		<app-menu :path="path"></app-menu>
