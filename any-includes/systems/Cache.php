@@ -11,7 +11,7 @@ class Cache {
 	private $dir;
 	public function  __construct($dir){
 		$this->dir=$dir;
-        UIKit::mk_dir($dir);
+        make_dir($dir);
 	}
     public function read($key,$minutes=0){
     	$filename=$this->filename($key);

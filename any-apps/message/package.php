@@ -1,0 +1,24 @@
+<?php
+return array(
+	'app'=>'message',
+	'name'=>'信息',
+	'description'=>'站内聊天、通信工具',
+	'version'=>'1.0.0',
+	'author'=>'别小俊',
+	'date'=>'2016.09.12',
+	'icon'=>'icon-mail-alt',
+	'special'=>false,
+	'menu'=>array(
+		array(
+			'title'=>'新信息',
+			'url'=>'account/admin_add_message.html'
+		),
+		array(
+			'title'=>'我的信息',
+			'url'=>'account/admin_my_message.html'
+		)
+	),
+	'route'=>array(
+		'/^message\/([a-z0-9_]+)$/'=>'message/:1'
+	)
+);

@@ -22,7 +22,7 @@ class account extends UI{
 		if( $this->is_login )
 			header( "Location:".PATH );
 
-		set_session('csrf_id',APP_VALIDATE);
+		session('csrf_id',APP_VALIDATE);
 		$this->assign('csrf_id',APP_VALIDATE);
 		$this->render('login');
 	}
@@ -30,7 +30,7 @@ class account extends UI{
 		if( $this->is_login )
 			header( "Location:".PATH );
 
-		set_session('csrf_id',APP_VALIDATE);
+		session('csrf_id',APP_VALIDATE);
 		$this->assign('csrf_id',APP_VALIDATE);
 		$this->render('register');
 	}
@@ -66,7 +66,7 @@ class account extends UI{
 				$user_login_time = APP_TIME;
 				model('account')->update_user_id('user_login_time=$user_login_time',$uid);
 				$token=$uid.','.$user_login_time.','.md5($data['user_name'].$data['user_password']);
-				setcookie("token",UIkit::secure_core($token,'ENCODE'),time()+3600*24*365,PATH);
+				setcookie("token",secure_core($token,'ENCODE'),time()+3600*24*365,PATH);
 				$this->message('success','登录成功!');
 			}else{
 				$this->message('error','您的用户名或密码不正确!');
@@ -110,7 +110,7 @@ class account extends UI{
 			if($uid){
 				$user_login_time = APP_TIME;
 				$token=$uid.','.$user_login_time.','.md5($array['user_name'].$array['user_password']);
-				setcookie("token",UIkit::secure_core($token,'ENCODE'),time()+3600*24*365,PATH);
+				setcookie("token",secure_core($token,'ENCODE'),time()+3600*24*365,PATH);
 				$this->message('success','注册成功!');
 			}else{
 				$this->message('error','注册失败!');

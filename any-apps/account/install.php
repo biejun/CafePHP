@@ -15,7 +15,7 @@ $query[] = "CREATE TABLE IF NOT EXISTS `".DB_PREFIX."user_profile` (
 	`qq_token` varchar(100) NOT NULL DEFAULT '',
 	KEY `user_id` (`user_id`),
 	KEY `qq_token` (`qq_token`)
-	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
 # 用户关注
 $query[]="CREATE TABLE IF NOT EXISTS `".DB_PREFIX."user_follow` (
@@ -23,6 +23,6 @@ $query[]="CREATE TABLE IF NOT EXISTS `".DB_PREFIX."user_follow` (
 	`follow_id` int(11) unsigned NOT NULL DEFAULT '0',
 	`user_id` int(11) unsigned NOT NULL DEFAULT '0',
 	KEY `follow_id` (`follow_id`,`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 return $query;

@@ -1,10 +1,6 @@
 <?php
 if(!defined('ABSPATH'))exit('Access denied!');
 
-# 生成指定长度随机KEY
-function getRandomKey($n = 18) {
-	return substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_~'), 0, $n);
-}
 # 写入用户表
 function user_table($db_prefix){
 	return "CREATE TABLE IF NOT EXISTS `".$db_prefix."user` (
@@ -34,7 +30,7 @@ function config_table($db_prefix){
 }
 
 $data = array();
-$data['key'] = getRandomKey();
+$data['key'] = get_random_key();
 $data['path'] = str_replace('index.php','',$_SERVER['SCRIPT_NAME']);
 $status = false;
 # install
@@ -45,9 +41,9 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 		$db_password = $_POST['db_password'];
 		$db_name = $_POST['db_name'];
 		$db_prefix = $_POST['db_prefix'];
-		$user_name = $_POST['user_name'];
-		$user_password = md5($_POST['user_password']);
 		$validate = $_POST['validate'];
+		$user_name = $_POST['user_name'];
+		$user_password = md5($_POST['user_password'].$validate);
 		$time = time();
 		$path = $data['path'];
 

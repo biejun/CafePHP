@@ -103,6 +103,11 @@ abstract class UI{
 		if( $_SERVER['REQUEST_METHOD']!=='POST' || empty($_SERVER['HTTP_REFERER']))
 		 $this->http_404();
 	}
+	public function http_301($url){
+		header('HTTP/1.1 301 Moved Permanently');
+		Header( "Location:$url");
+		exit;
+	}
 	public function http_404(){
 		header("HTTP/1.1 404 Not Found");
 		header("Status: 404 Not Found");

@@ -16,15 +16,6 @@ define( 'ANYINC',ABSPATH . 'any-includes' . DIRECTORY_SEPARATOR);
 # 生产模式 开启：true 关闭: false
 define( 'ANY_DEBUG', true);
 
-# 设置时区
-date_default_timezone_set('PRC');
-
-# PHP 5.4 以上版本忽略此重置
-if(version_compare(PHP_VERSION,'5.4.0','<')){
-	ini_set( 'magic_quotes_runtime', 0 );
-	ini_set( 'magic_quotes_sybase',  0 );
-}
-
 require_once( ANYINC . 'Core.php' );
 
 session_start();
