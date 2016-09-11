@@ -25,8 +25,10 @@
 				<a href="javascript:;" @click="changeTheme(row.theme_name)" class="thumb" title="{{row.description}}">
 					<img v-bind:src="row.themeThumb"/>
 				</a>
-				<h3 v-text="row.name"></h3>
-				<p><span class="fl" v-text="row.author"></span><span class="fr" v-text="row.date"></span></p>
+				<div class="desc cf">
+					<h3 v-text="row.name"></h3>
+					<p><span class="fl" v-text="row.author"></span><span class="fr" v-text="row.date"></span></p>				
+				</div>
 			</li>
 		</ul>
 	</div>

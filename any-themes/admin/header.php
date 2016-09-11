@@ -1,9 +1,26 @@
 <header class="navbar">
 	<h1 class="logo">
-		管理系统
+		网站管理系统
 	</h1>
 	<ul class="menu">
 		<app-menu :path="path"></app-menu>
+	</ul>
+	<ul class="user">
+		<li>
+			<a href="" class="user-name">
+				123123
+				<strong class="user-role">超级管理员</strong>
+				<i class=" icon-angle-down"></i>
+			</a>
+			<ul class="user-dropdown">
+				<li>
+					<a href="">修改密码</a>
+				</li>
+				<li>
+					<a href="">退出登录</a>
+				</li>
+			</ul>
+		</li>
 	</ul>
 </header>
 <nav class="nav">
