@@ -1,14 +1,14 @@
 <script type="text/x-template" id="userDropdown">
-	<div v-show="show" class="user-dropdown" style="display:none">
+	<div v-show="show" class="user-dropdown" @click.stop style="display:none">
 		<ul class="user-set fr">
 			<li :class="{active:userSetView =='1'}">
-				<a href="javascript:;" @click.stop.prevent="userSetView = '1'">修改密码</a>
+				<a href="javascript:;" @click="userSetView = '1'">修改密码</a>
 			</li>
 			<li :class="{active:userSetView =='2'}">
-				<a href="javascript:;" @click.stop.prevent="userSetView = '2'">上传头像</a>
+				<a href="javascript:;" @click="userSetView = '2'">上传头像</a>
 			</li>
 			<li :class="{active:userSetView =='3'}">
-				<a href="javascript:;" @click.stop.prevent="userSetView = '3'">修改昵称</a>
+				<a href="javascript:;" @click="userSetView = '3'">个人资料</a>
 			</li>
 			<li>
 				<a href="javascript:;">退出登录</a>
@@ -40,18 +40,18 @@
 			</div>
 			<button type="button" class="btn btn-primary">上传</button>		
 		</div>
-		<div v-if="userSetView =='3'" class="user-row fl hide">
+		<div v-if="userSetView =='3'" class="user-row fl">
 			<div class="mb10">
-				<label>旧密码</label>
+				<label>昵称</label>
 				<input class="form-control" />
 			</div>
 			<div class="mb10">
-				<label>新密码</label>
+				<label>邮箱</label>
 				<input class="form-control" />
 			</div>
 			<div class="mb10">
-				<label>确认密码</label>
-				<input class="form-control" />
+				<label>签名</label>
+				<textarea class="form-control" /></textarea>
 			</div>
 			<button type="button" class="btn btn-primary">保存</button>		
 		</div>
