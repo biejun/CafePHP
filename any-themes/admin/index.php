@@ -81,6 +81,7 @@
 <script type="text/javascript">
 	var data = {
 		path : '{$path}',
+		userDropDown:false,
 		active :'1'
 	};
 	//console.log(data);

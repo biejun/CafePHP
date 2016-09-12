@@ -7,19 +7,12 @@
 	</ul>
 	<ul class="user">
 		<li>
-			<a href="" class="user-name">
+			<a href="javascript:;" @click.stop.prevent="userDropDown = !userDropDown" class="user-name">
 				123123
 				<strong class="user-role">超级管理员</strong>
-				<i class=" icon-angle-down"></i>
+				<i :class="[!userDropDown ? 'icon-angle-down' : 'icon-angle-up']"></i>
 			</a>
-			<ul class="user-dropdown">
-				<li>
-					<a href="">修改密码</a>
-				</li>
-				<li>
-					<a href="">退出登录</a>
-				</li>
-			</ul>
+			<user-dropdown :path="path" :show="userDropDown" v-cloak></user-dropdown>
 		</li>
 	</ul>
 </header>

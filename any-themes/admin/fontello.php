@@ -344,6 +344,7 @@ small {
 <script type="text/javascript">
 	var data = {
 		path : '{$path}',
+		userDropDown:false,
 		active :'7'
 	};
 	function toggleCodes(on) {

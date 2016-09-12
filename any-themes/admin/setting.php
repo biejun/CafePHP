@@ -86,6 +86,7 @@
 <script type="text/javascript">
 	var data = {
 		path : '{$path}',
+		userDropDown:false,
 		active :'2'
 	};
 </script>

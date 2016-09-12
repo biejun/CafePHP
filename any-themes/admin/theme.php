@@ -38,6 +38,7 @@
 		path : '{$path}',
 		active :'4',
 		themeCurrent : "{$current}",
+		userDropDown:false,
 		themes : {$themes}
 	};
 </script>

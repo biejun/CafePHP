@@ -15,14 +15,23 @@ a:hover{color: #3484D0;}
 .navbar .menu li .child{position: absolute;top: 45px;left: 0;right: 0;text-align: center;background-color: #fff;border: 1px solid #ddd;border-top:none;box-shadow:0px 2px 4px rgba(0,0,0,.05);}
 .navbar .menu li .child li{display: block;line-height: 32px;padding: 0;}
 .navbar .menu li .child li a{color: #3f87cc;}
-.navbar .menu li .child li a:hover{background-color: #EAEDF4;}
+.navbar .menu li .child li a:hover{background-color: #F6FBFF;}
 .navbar .user{position: absolute;right: 0;top: 0;list-style: none;padding: 0 10px;height: 45px;}
 .navbar .user .user-name{margin-top: 11px;display: block;color:#fff;}
 .navbar .user .user-role{display: inline-block;background: #fff;padding: 2px 4px;color: #3f87cc;margin-left: 3px;border-radius: 3px;}
-.navbar .user .user-dropdown{position: absolute;top: 45px;width:300px;right: 0;list-style: none;background: #fff;border: 1px solid #ddd;display: none;}
+.navbar .user .user-dropdown{position: absolute;top: 45px;width:310px;right: 0;list-style: none;background: #fff;border: 1px solid #ddd;box-shadow: -1px 0 10px rgba(0,0,0,.1);border-right: none;}
 .navbar .user .user-dropdown li{height: 35px;text-align: center;line-height: 35px;}
-.navbar .user .user-dropdown li:hover{background-color: #EAEDF4;}
-.navbar .user:hover .user-dropdown{display: block;}
+.navbar .user .user-dropdown li a{color: #666;}
+.navbar .user .user-dropdown li:hover a,.navbar .user .user-dropdown li.active a{color: #3f87cc;}
+.navbar .user .user-dropdown li:hover,.navbar .user .user-dropdown li.active{background-color: #F6FBFF;}
+.navbar .user .user-dropdown .user-set{width: 100px;}
+.navbar .user .user-dropdown .user-set li{border-bottom: 1px solid #eaeaea;}
+.navbar .user .user-dropdown .user-row{width: 208px;border-right: 1px solid #eee;padding:15px;color: #444;}
+.navbar .user .user-dropdown .user-row label{font-size: 12px;}
+.navbar .user .user-dropdown .user-row .form-control{height: 30px;}
+.navbar .user .user-dropdown .user-row .btn{width: 100%;}
+.navbar .user .user-dropdown .user-row .user-avatar{width: 80px;height: 80px;border-radius: 50%;background-color: #eaedf4;display: inline-block;}
+
 /*左侧导航栏*/
 .nav{position: fixed;left: 0;top: 45px;width: 90px;height: 100%;background-color: #232323;}
 .nav .menu ul{list-style: none;}
@@ -77,8 +86,8 @@ section .setting{width: 47%}
 
 .form-group{margin-bottom:15px}
 .text-muted{color: #999!important;}
-.btn-primary{background-color: #68a8e4;color: #fff;}
-.btn-primary:hover{background-color: #3f87cc;color: #fff;}
+.btn-primary,.btn-primary:focus{background-color: #68a8e4;color: #fff;}
+.btn-primary:hover,.btn-primary:active{background-color: #3f87cc;color: #fff;}
 
 .theme{margin-left: -10px;margin-right: -10px;list-style: none;}
 .theme-item{position: relative;width: 243px;border: 1px solid #eaedf4;margin: 10px;display: block;}
