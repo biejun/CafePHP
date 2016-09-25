@@ -51,7 +51,7 @@ class Core{
 	# 自动加载系统类库
 	private static function autoload($class){
 		if(is_file( ANYSYSTEM . $class . '.php'))
-			include( ANYSYSTEM . $class . '.php');
+			require_once( ANYSYSTEM . $class . '.php');
 	}
 	# 魔法函数的安全过滤
 	private static function magic_safe( &$value){
