@@ -8,14 +8,14 @@ return array(
 	'date'=>'2016.09.12',
 	'icon'=>'icon-mail-alt',
 	'special'=>false,
-	'menu'=>array(
+	'options'=>array(
 		array(
 			'title'=>'新信息',
-			'url'=>'account/admin_add_message.html'
+			'admin'=>'admin_add_message.php'
 		),
 		array(
 			'title'=>'我的信息',
-			'url'=>'account/admin_my_message.html'
+			'admin'=>'admin_my_message.php'
 		)
 	),
 	'route'=>array(

@@ -8,9 +8,10 @@ class admin_api extends Model{
 			$package = ANYAPP .$app.'/package.php';
 			if(file_exists($package)){
 				$menu = include $package;
-				if(isset($menu['menu'])){
+				if(isset($menu['options'])){
 					$item=array();
-					foreach($menu['menu'] as $k => $v){
+					foreach($menu['options'] as $k => $v){
+						$v['url'] = PATH.'admin/options.html?app='.$app.'&admin='.$v['admin'];
 						$item[$k]=$v;
 					}
 					$array[$key]['name']=$menu['name'];

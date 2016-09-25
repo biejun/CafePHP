@@ -9,3 +9,20 @@
 <!--[if lt IE 9]>
 <script src="{$path}any-includes/js/html5shiv.js"></script>
 <![endif]-->
+<script type="text/javascript">
+	function alert_tip(text,time){
+		var time = time || 3000;
+		var tip = document.getElementById('tip');
+		if(!tip){
+			tip = document.createElement('div');
+			tip.id = 'tip';
+			document.body.appendChild(tip);
+		}
+		tip.classList.add('slideIn');
+		tip.innerText = text;
+		setTimeout(function(){
+			tip.classList.remove('slideIn');
+			tip.classList.add('slideOut');
+		},time)
+	}
+</script>

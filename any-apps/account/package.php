@@ -8,14 +8,14 @@ return array(
 	'date'=>'2016.06.23',
 	'icon'=>'icon-user',
 	'special'=>false,
-	'menu'=>array(
+	'options'=>array(
 		array(
 			'title'=>'全部用户',
-			'url'=>'account/admin_user.html'
+			'admin'=>'admin_user.php'
 		),
 		array(
 			'title'=>'用户黑名单',
-			'url'=>'account/admin_user_blacklist.html'
+			'admin'=>'admin_user_blacklist.php'
 		)
 	),
 	'route'=>array(

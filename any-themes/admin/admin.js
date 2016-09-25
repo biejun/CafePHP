@@ -23,7 +23,7 @@ var appMenu = Vue.extend({
 				'</a>'+
 				'<ul class="child" v-if="active==$index" class="animate" transition="fade">'+
 					'<li v-for="row in row.menu">'+
-						'<a v-text="row.title" href="{{path}}{{row.url}}" title="{{row.title}}"></a>'+
+						'<a v-text="row.title" href="{{row.url}}" title="{{row.title}}"></a>'+
 					'</li>'+
 				'</ul>'+
 			'</li>',

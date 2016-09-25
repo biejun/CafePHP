@@ -84,6 +84,7 @@
 		userDropDown:false,
 		active :'1'
 	};
+	alert_tip('haha');
 	//console.log(data);
 </script>
 {import ('footer') }

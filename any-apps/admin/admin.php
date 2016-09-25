@@ -33,6 +33,20 @@ class admin extends UI{
 		$this->assign('setting',$template);
 		$this->render('setting');
 	}
+	public function options(){
+		$data = query_vars(array('app','admin'));
+		$options = array(
+			'title' => '',
+			'template' => '',
+			'vue' => ''
+		);
+		if(isset($data['app'])&&isset($data['admin'])&&!empty($data['admin'])){
+			$file = ANYAPP.$data['app'].'/admin/'.$data['admin'];
+			if(is_file($file)) $options = include $file;
+		}
+		$this->assign('options',$options);
+		$this->render('options');
+	}
 	public function application(){
 		$array = model('admin')->get_system_apps();
 		$this->assign('apps',json_encode($array));
@@ -129,30 +143,6 @@ class admin extends UI{
 	}
 	public function clear_files(){
 		UIkit::alert('清理成功');
-	}
-	public function admin_cache(){
-		global $cache;
-		$cache_files = array();
-		$cache_total_size = 0;
-		$files = $cache->get_cache_files();
-		foreach ($files as $key => $file) {
-			$cache_files[$key]['time'] = date("Y-m-d H:i:s",filemtime($file));
-			$filesize = filesize($file);
-			$cache_total_size +=$filesize;
-			$cache_files[$key]['size'] = UIKit::format_size($filesize);
-			$cache_files[$key]['path'] = str_replace(ABSPATH,PATH, $file);
-		}
-		$do = get_query_var('do');
-		if(isset($do)&&$do=='clear_cache'){
-			if($cache->clear_caches()){
-				UIkit::alert('清理成功!',PATH.'admin/admin_cache.html');
-			}else{
-				UIkit::alert('清理失败!');
-			}			
-		}
-		$this->assign('totalSize',UIKit::format_size($cache_total_size));
-		$this->assign('files',json_encode($cache_files));
-		$this->render('cache');
 	}
 	public function post_admin_config(){
 		$data = query_vars(

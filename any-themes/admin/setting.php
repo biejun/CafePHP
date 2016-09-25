@@ -79,7 +79,9 @@
 			</form>
 		</div>
 		<div class="setting fr">
+		
 			{$setting}
+
 		</div>
 	</div>
 </section>

@@ -79,9 +79,30 @@ function model($app='',$name='class'){
 		throw new Exception('没有找到"'.$app.'"的"'.$file.'"文件');
 	}
 }
+function is_ssl() {
+	if ( isset($_SERVER['HTTPS']) ) {
+		if ( 'on' == strtolower($_SERVER['HTTPS']) )
+			return true;
+		if ( '1' == $_SERVER['HTTPS'] )
+			return true;
+	} elseif ( isset($_SERVER['SERVER_PORT']) && ( '443' == $_SERVER['SERVER_PORT'] ) ) {
+		return true;
+	}
+	return false;
+}
+# 获取当前页面地址
+function get_page_url(){
+	$url = is_ssl() ? "https://" : "http://" .$_SERVER["SERVER_NAME"];
+	if( $_SERVER["SERVER_PORT"] != "80" ) {
+		$url .= ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
+	}else{
+	    $url .= $_SERVER["REQUEST_URI"];
+	}
+	return $url;
+}
 # 创建文件夹
 function make_dir($dir,$mode=0777) {
-    if(!is_dir($dir)) {
+    if( !is_dir($dir) ) {
 		make_dir(dirname($dir));
 		mkdir($dir,$mode);
     }

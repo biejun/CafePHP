@@ -17,5 +17,5 @@ $setting='
 	</fieldset>
 	<button type="submit" class="btn btn-primary">更新设置</button>
 </form>';
+
 return $setting;
-?>

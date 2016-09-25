@@ -8,22 +8,22 @@ return array(
 	'date'=>'2016.06.23',
 	'icon'=>'icon-cube',
 	'special'=>true,
-	'menu'=>array(
+	'options'=>array(
 		array(
 			'title'=>'角色管理',
-			'url'=>'admin/admin_group.html'
+			'admin'=>'group.php'
 		),
 		array(
 			'title'=>'权限管理',
-			'url'=>'admin/admin_access.html'
+			'admin'=>'access.php'
 		),
 		array(
 			'title'=>'清理文件',
-			'url'=>'admin/clear_files.html'
+			'admin'=>'files.php'
 		),
 		array(
 			'title'=>'清空缓存',
-			'url'=>'admin/admin_cache.html'
+			'admin'=>'cache.php'
 		)
 	),
 	'route'=>array(
