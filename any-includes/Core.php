@@ -46,7 +46,7 @@ class Core{
 	private static function error_tip($e){
 		// $e->getLine();
 		// $e->getFile();
-		echo 'Tip: ',$e->getMessage();		
+		echo 'Tip: ',$e->getMessage();
 	}
 	# 自动加载系统类库
 	private static function autoload($class){
