@@ -13,8 +13,6 @@ include(ANYINC.'Functions.php');
 
 class Core{
 
-	private static $classMap = array();
-
 	public static function init(){
 
 		# 设置时区
@@ -52,16 +50,8 @@ class Core{
 	}
 	# 自动加载系统类库
 	private static function autoload($class){
-		if(self::$classMap[$class]){
-			return true;
-		}
-		if(is_file( ANYSYSTEM . $class . '.php')){
+		if(is_file( ANYSYSTEM . $class . '.php'))
 			include( ANYSYSTEM . $class . '.php');
-			self::$classMap[$class] = true;
-			return true;
-		}else{
-			return false;
-		}
 	}
 	# 魔法函数的安全过滤
 	private static function magic_safe( &$value){
