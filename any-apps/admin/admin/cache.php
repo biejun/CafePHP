@@ -1,4 +1,5 @@
 <?php
+if(!defined('ABSPATH'))exit('Access denied!');
 
 global $cache;
 
@@ -28,34 +29,37 @@ if(isset($do)&&$do=='clear_cache'){
 $options = array(
 	'title' => '系统缓存',
 	'template' => '
-		<div class="sub-title">
-			<span class="fr">
-				<a href="'.$path.'&do=clear_cache" class="btn btn-primary">清空全部缓存 ( {{totalSize}} )</a>
-			</span>
-			<ul>
-				<li>缓存文件列表<span v-cloak>({{files.length}})</span></li>
-			</ul>
+		<div id="app" class="panel ml-15 mr-15 options">
+			<header class="panel-heading">
+				<h3>系统缓存</h3>
+			</header>
+			<div class="panel-body search">
+				<span class="fr">
+					<a href="'.$path.'&do=clear_cache" class="btn btn-primary">清空全部缓存 ( {{totalSize}} )</a>
+				</span>
+				<h3 class="title">缓存文件列表<span v-cloak>({{files.length}})</span></h3>
+			</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>缓存文件</th>
+						<th>生成时间</th>
+						<th>大小</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="row in files">
+						<td v-text="row.path"></td>
+						<td v-text="row.time"></td>
+						<td v-text="row.size"></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
-		<table class="table">
-			<thead>
-				<tr>
-					<th>缓存文件</th>
-					<th>时间</th>
-					<th>大小</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="row in files">
-					<td v-text="row.path"></td>
-					<td v-text="row.time"></td>
-					<td v-text="row.size"></td>
-				</tr>
-			</tbody>
-		</table>
 	',
-	'vue' => '
+	'scripts' => '
 		new Vue({
-			el : "#options",
+			el : "#app",
 			data : {
 				files : '.json_encode($cache_files).',
 				totalSize : "'.UIKit::format_size($cache_total_size).'"

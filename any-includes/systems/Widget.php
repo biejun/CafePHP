@@ -1,47 +1,61 @@
 <?php
 if(!defined('ABSPATH'))exit('Access denied!');
 /**
- *	数据模型类
+ *	应用程序组件类
  *
- *	构建数据逻辑与视图分离
  */
-class Model{
+class Widget{
 
-	protected $app;
+	private $app;
 
 	protected $db = null;
 
-	private $cache;
+	public static $_installed = array();
 
-	private $open_cache = false;
+	public $cache;
+
+	public $activate_cache = false;
+
+	public $table = 'config';
 
 	public function __construct($app=''){
-
+		
 		if(method_exists($this, '_initialize'))
 			$this->_initialize();
+
 		$this->app = $app;
 		$this->db = self::db_connect();
-		$this->cache = $this->cache_conf();
+		$this->cache = self::cache_config($this->app,$this->activate_cache);
+		
+		if(empty(self::$_installed)) self::$_installed = $this->get_app_lists();
 	}
 	private static function db_connect(){
 		static $_db = null;
 		if($_db) return $_db;
-		$_db = new DB( DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PREFIX );
+		$_db = DB::factory( DB_HOST, DB_NAME, DB_USER, DB_PASSWORD , DB_PREFIX,DB_LIB);
 		return $_db;
 	}
-	private function cache_conf(){
-		if(empty($this->app)) return false;
+	private static function cache_config($app,$activate_cache = false){
+		if(empty($app)) return false;
 		static $_cache = array();
-		if($this->open_cache){
-			if(isset($_cache[$this->app])) return $_cache[$this->app];
-			$cache_path = ANYAPP . $this->app . '/cache/';
-			$_cache[$this->app] = new Cache($cache_path);
-			return $_cache[$this->app];
+		if($activate_cache){
+			if(isset($_cache[self::$app])) return $_cache[$app];
+			$cache_path = ANYAPP . $app . '/cache/';
+			$_cache[$app] = new Cache($cache_path);
+			return $_cache[$app];
+		}
+	}
+	# 激活已安装应用的插件
+	public function activate_actions(){
+		foreach (self::$_installed as $key => $app) {
+			$plugin = ANYAPP .$app.'/plugin.php';
+			if(file_exists($plugin))
+				include $plugin;
 		}
 	}
 	public function get_app_value($app){
 		if(empty($app)) return false;
-		$value = $this->db->val("config","config_value","config_key='$app'");
+		$value = $this->db->one($this->table,"config_value","config_key='$app'");
 		return (empty($value))?array():$value;
 	}
 	# 获取app安装列表
@@ -79,9 +93,18 @@ class Model{
 		if(empty($data)) return false;
 		if(empty($app)) $app = $this->app;
 		$data=base64_encode(serialize($data));
-		$this->db->update("config",array('config_value'=>$data),"config_key='".$app."'");
+		$this->db->update($this->table,array('config_value'=>$data),"config_key='".$app."'");
 		$cache->delete_cache($this->app.'_config');
 		return true;
+	}
+	public function get_apps_config(){
+		$array = array();
+		foreach (self::$_installed as $app) {
+			$config = $this->get_app_config($app);
+			if(!empty($config))
+				$array = array_merge($array,$config);
+		}
+		return $array;
 	}
 	public function get_theme(){
 		global $cache;
@@ -92,6 +115,7 @@ class Model{
 		}
 		return $theme;
 	}
+	# 插入数据到一个表中，返回新ID
 	public function insert_table($table,$data){
 		$this->db->insert($table,$data);
 		return $this->db->id();

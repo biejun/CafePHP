@@ -57,4 +57,5 @@
 		</div>
 	</div>
 </script>
+<?php admin_footer();?>
 <script type="text/javascript" src="{$theme}admin.js"></script>

@@ -9,15 +9,9 @@ class account extends UI{
 		'admin',
 		'fuck',
 		'123456',
+		'account',
 		'111'
 	);
-	public function index(){
-		$this->render('index');
-	}
-	public function test(){
-		$arr = array('t'=>'bbb');
-		$this->json($arr);
-	}
 	public function login(){
 		if( $this->is_login )
 			header( "Location:".PATH );
@@ -54,17 +48,17 @@ class account extends UI{
 			if(empty($data['user_name'])){
 				$this->message('error','用户名不能为空!');
 			}
-			if(!model('account')->check_user_name($data['user_name'])){
+			if(!widget('admin:user')->check_user_name($data['user_name'])){
 				$this->message('error','用户名不存在!');
 			}
 			if(!isset($data['user_password']{5})){
 				$this->message('error','密码不能少于六位!');
 			}
 			$data['user_password'] = md5($data['user_password'] . VALIDATE);
-			$uid = model('account')->check_login($data['user_name'],$data['user_password']);
+			$uid = widget('admin:user')->check_login($data['user_name'],$data['user_password']);
 			if($uid){
 				$user_login_time = APP_TIME;
-				model('account')->update_user_id('user_login_time=$user_login_time',$uid);
+				widget('admin:user')->update_user_id('user_login_time=$user_login_time',$uid);
 				$token=$uid.','.$user_login_time.','.md5($data['user_name'].$data['user_password']);
 				setcookie("token",secure_core($token,'ENCODE'),time()+3600*24*365,PATH);
 				$this->message('success','登录成功!');
@@ -92,13 +86,13 @@ class account extends UI{
 			if(!preg_match('/^[\x{4e00}-\x{9fa5}_a-zA-Z0-9、。&]+$/u', $data['user_name'])){
 				$this->message('error','用户名不能包含特殊字符!');
 			}
-			if(model('account')->check_user_name($data['user_name'])){
+			if(widget('admin:user')->check_user_name($data['user_name'])){
 				$this->message('error','用户名已被注册!');
 			}
 			if(!isset($data['user_password']{5})){
 				$this->message('error','密码过于简单!');
 			}
-			if(!model('account')->
+			if(!widget('admin:user')->
 				check_user_password($data['user_password'],$data['user_password_repeat'])){
 				$this->message('error','两次输入的密码不一致!');
 			}
@@ -106,7 +100,7 @@ class account extends UI{
 			$array['user_name'] = $data['user_name'];
 			$array['user_password'] = md5($data['user_password'] . VALIDATE);
 
-			$uid = model()->insert_table('user',$array);
+			$uid = widget()->insert_table('user',$array);
 			if($uid){
 				$user_login_time = APP_TIME;
 				$token=$uid.','.$user_login_time.','.md5($array['user_name'].$array['user_password']);
@@ -118,6 +112,16 @@ class account extends UI{
 		}
 	}
 	public function post_admin_config(){
-		
+		$data = query_vars(
+				array(
+					'qq',
+					'qq_appid',
+					'qq_appkey',
+					'user_register_status',
+					'user_name_filter'
+				)
+			);
+		$status = widget('account')->set_app_config($data);
+		UIkit::alert(($status)?'配置成功!':'配置失败!');
 	}
 }

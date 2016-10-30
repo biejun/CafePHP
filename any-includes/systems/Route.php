@@ -2,58 +2,64 @@
 if(!defined('ABSPATH'))exit('Access denied!');
 
 class Route {
-	
+
+	private static $_var = array();
+
+	private static $_instance = null;
+
 	public static function get($app,$act='index'){
-		if(isset($_SERVER['PATH_INFO'])){
+		# 根据PATHINFO获取应用和页面，部分服务器可能没这个变量，暂时支持APACHE
+		if( isset($_SERVER['PATH_INFO'])) {
 			$routes = self::apps_rewrite();
 			$regx = preg_replace('/\.html$/i','',trim($_SERVER['PATH_INFO'],'/'));
 			if(!empty($routes)&&is_array($routes)){
 				foreach ($routes as $route) {
-					if(is_array($route)){
-						foreach ($route as $rule => $path) {
-							self::rewrite_route($rule,$path,$regx);
-						}
-					}
+					array_walk($route,'self::rewrite_route',$regx);
 				}
 			}
 		}
-		$app = isset($_GET['app'])?$_GET['app']:$app;
-		$act = isset($_GET['act'])?$_GET['act']:$act;
-		if($app == $act){
-			if(ANY_DEBUG) throw new \Exception('app 与 act 命名不能相同，防止重复实例化');
-		}else{
-			$page =  ANYAPP . $app.'/'. $app. '.php';
-			if(is_file($page)){
-				require_once($page);
-				if(!isset($run)) $run = new $app($app,$act);
-				if(stripos($act,'_initialize')!==false)
-					$run->http_404();
-				if(stripos($act,'post_')!==false)
-					$run->verify_post();
-				$run->$act();
+		if(empty(self::$_var)){
+			self::$_var['app'] = isset($_GET['app'])?$_GET['app']:$app;
+			self::$_var['act'] = isset($_GET['act'])?$_GET['act']:$act;
+		}
+
+		$app = strtolower(self::$_var['app']);
+		$act = strtolower(self::$_var['act']);
+
+		$app_file = ANYAPP . $app .'/index.php';
+		if(is_file($app_file) && $app!=$act) {
+			require_once($app_file);
+			$ui_theme = ($app == 'admin'||stripos($act,'admin_')!==false) ? 'admin' : widget()->get_theme();
+			if (null === self::$_instance) {
+				if(class_exists($app)) self::$_instance = new $app($ui_theme);
 			}
+			if($app == 'admin'&&!in_array($act, array('login','post_login_access'))||stripos($act,'admin_')!==false)
+				if(!widget('admin:user')->is_admin()) self::$_instance->http_404();
+			if(stripos($act,'_initialize')!==false) self::$_instance->http_404();
+			if(stripos($act,'post_')!==false){
+				if($_SERVER['REQUEST_METHOD']!=='POST' || empty($_SERVER['HTTP_REFERER']))
+					self::$_instance->http_404(); # 检查请求方式或来路，非法则显示404
+			}
+			self::$_instance->$act();
 		}
 	}
 	private static function apps_rewrite(){
-		global $cache;
-		$folder = glob( ANYAPP .'*');
+		$folder = glob( ANYAPP .'*',GLOB_ONLYDIR);
 		$packages = array();
 		$routes = array();
 		foreach ($folder as $name) {
-			if(is_dir($name)){
-				$package = $name.'/package.php';
-				if(file_exists($package)){
-					$route = include $package;
-					$packages[] = $route;
-					if(isset($route['route']))
-						$routes[] = $route['route'];
-				}
+			$package = $name.'/package.php';
+			if(file_exists($package)){
+				$route = include $package;
+				$packages[] = $route;
+				if(isset($route['route']))
+					$routes[] = $route['route'];
 			}
 		}
-		$cache->write('packages',$packages);
+		$GLOBALS['cache']->write('packages',$packages);
 		return $routes;
 	}
-	private static function rewrite_route($rule,$route,$regx){
+	private static function rewrite_route($route,$rule,$regx){
 		if(is_numeric($rule)) $rule = array_shift($route);
 		if(0 === strpos($rule,'/') && preg_match($rule,$regx,$matches)){
 			self::parse_regex($matches,$route,$regx);
@@ -70,31 +76,7 @@ class Route {
 			exit;
 		}else{
 			# 解析路由地址
-			$var = self::parse_url($url);
-			foreach($var as $key=>$val){
-				if(strpos($val,'|')){
-					list($val,$fun) = explode('|',$val);
-					$var[$key] = $fun($val);
-				}
-			}
-			# 解析剩余的URL参数
-			$regx = substr_replace($regx,'',0,strlen($matches[0]));
-			if($regx) {
-				preg_replace_callback('/(\w+)\/([^\/]+)/',
-					function($match) use(&$var) {
-						$var[strtolower($match[1])] = strip_tags($match[2]);
-					}, $regx);
-			}
-			# 解析路由自动传入参数
-			if(is_array($route) && isset($route[1])){
-				if(is_array($route[1])){
-					$params = $route[1];
-				}else{
-					parse_str($route[1],$params);
-				}
-				$var = array_merge($var,$params);
-			}
-			$_GET = array_merge($var,$_GET);
+			self::$_var = self::parse_url($url);
 		}
 	}
 	private static function parse_url($url) {

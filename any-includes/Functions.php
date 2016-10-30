@@ -3,6 +3,58 @@ if( !defined('ABSPATH') ) exit('Access denied!');
 
 # 系统函数扩展
 
+/**
+ *	系统行为扩展
+ *	
+ *	类似于wordpress的功能函数
+ */
+
+$GLOBALS['any_actions'] = array();
+/**
+ *	挂载一个函数到特定的行为中
+ *
+ *	@param string $action 一个已定义的行为钩子，当钩子函数执行时，$function同时执行
+ *	@param function $function 当前需要挂载的函数
+ *	@return 无返回值
+ *
+ **/
+function add_action($action,$function){
+	$guid = to_guid_string($function);
+	if(!isset($GLOBALS['any_actions'][$action][$guid]))
+		$GLOBALS['any_actions'][$action][$guid] = $function;
+}
+/**
+ *	执行某个特定行为钩子的函数
+ *
+ *	@param string $action 一个已定义的行为钩子
+ *	@return 直接调用，无返回值
+ *
+ **/
+function do_action($action){
+	$args = array_slice(func_get_args(), 1);
+	if (isset($GLOBALS['any_actions'][$action]))
+	foreach ($GLOBALS['any_actions'][$action] as $function)
+		if(!is_null($function))
+		call_user_func_array($function,$args);
+}
+/**
+ *	执行某个特定行为钩子的函数
+ *
+ *	@param string $action 一个已定义的行为钩子
+ *	@return mixed 有返回值，返回所有挂载在此类钩子上return的值
+ *
+ **/
+function apply_action($action,$value){
+	$args = func_get_args();
+	if (isset($GLOBALS['any_actions'][$action]))
+	foreach ($GLOBALS['any_actions'][$action] as $function)
+		if(!is_null($function)){
+			$args[1] = $value;
+			$value = call_user_func_array($function,array_slice($args,1));
+		}
+	return $value;
+}
+
 # 取得多个$_GET或$_POST参数的值
 function query_vars( $vars ) {
 	foreach ((array) $vars as $var ) {
@@ -53,30 +105,36 @@ function session( $key , $value = ''){
 	}elseif(is_null($value)){
 		unset($_SESSION[$key]);
 	}else{
-		$_SESSION[$name]  =  $value;
+		$_SESSION[$key] =  $value;
 	}
 }
 # 调用应用程序数据模型
-function model($app='',$name='class'){
-	static $_model = array();
-	if(empty($app)){
-		if(isset($_model['model'])){
-			return $_model['model'];
+function widget($widget=''){
+	static $_widgets = array();
+	if(empty($widget)){
+		if(isset($_widgets['widget'])){
+			return $_widgets['widget'];
 		}else{
-			$_model['model'] = new Model($app);
-			return $_model['model'];
+			$_widgets['widget'] = new Widget();
+			return $_widgets['widget'];
 		}
 	}
-	$attribute = ('class'==$name)?'model':$name;
-	$instance = $app.'_'.$attribute;
-	if(isset($_model[$instance]))
-		return $_model[$instance];
-	if(is_file( ANYAPP .$app.'/'.$app.'.'.$name.'.php')){
-		require( ANYAPP .$app.'/'.$app.'.'.$name.'.php');
-		$_model[$instance] = new $instance($app);
-		return $_model[$instance];
+	$info = array($widget,'widget');
+	$instance = $widget;
+	if(strpos($widget,':')!==false){
+		$instance = str_replace(':', '_', $widget);
+		$info = explode(':', $widget);
+	}
+	$instance .= '_widget';
+	if(isset($_widgets[$instance]))
+		return $_widgets[$instance];
+	$widget_file = ANYAPP .$info[0].'/widgets/'.$info[0].'.'.$info[1].'.php';
+	if(is_file( $widget_file )){
+		require( $widget_file );
+		$_widgets[$instance] = new $instance($info[0]);
+		return $_widgets[$instance];
 	}else{
-		throw new Exception('没有找到"'.$app.'"的"'.$file.'"文件');
+		throw new Exception('没有找到应用"'.$info[0].'"的"'.$info[1].'"组件');
 	}
 }
 function is_ssl() {
@@ -92,7 +150,8 @@ function is_ssl() {
 }
 # 获取当前页面地址
 function get_page_url(){
-	$url = is_ssl() ? "https://" : "http://" .$_SERVER["SERVER_NAME"];
+	$url = is_ssl() ? "https://" : "http://";
+	$url .= $_SERVER["SERVER_NAME"];
 	if( $_SERVER["SERVER_PORT"] != "80" ) {
 		$url .= ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
 	}else{
@@ -128,6 +187,27 @@ function remove_dir($dir){
 	}
 }
 /**
+ * 获取文件后缀名
+ *
+ * @param	string $filename 文件名
+ * @return	string
+ */
+function get_ext($filename){
+	if(!empty($filename)){
+		$explode=explode(".",strtolower($filename));
+		return end($explode);
+	}
+}
+# 是否为图片
+function is_image($filename){
+	$fileext = get_ext($filename);
+	if(in_array($fileext,array('jpg','jpeg','gif','png','bmp'))){
+		return true;
+	}else{
+		return false;
+	}
+}
+/**
  * 移动上传文件
  *
  * @param	string	$from	文件来源
@@ -146,9 +226,15 @@ function upload_move($from, $target= ''){
 	}
 	return false;
 }
-# 字符串加密解密 ENCODE为加密，DECODE为解密 expiry 过期时间
+/** 
+ * 字符串加密解密
+ * @param $string  需要加密的字符串
+ * @param $operation  ENCODE - 加密 DECODE - 解密
+ * @param $key 混淆加密
+ * @param $expiry 过期时间
+ */
 function secure_core($string, $operation = 'DECODE',$key = VALIDATE, $expiry = 0){
-	$key_length = 5;#随机密钥长度 取值 0-32
+	$key_length = 5;#密钥长度 取值 0-32
 	$fixedkey = md5($key);
 	$egiskeys = md5(substr($fixedkey, 16, 16));
 	$runtokey = $key_length ? ($operation == 'DECODE' ? substr($string, 0, $key_length) : substr(md5(microtime(true)), -$key_length)) : '';
@@ -213,10 +299,10 @@ function get_array_shift(array $array){
 }
 /** 
  * 数组分页函数
- * $count   每页多少条数据
- * $page   当前第几页
- * $array   查询出来的所有数组
- * order false - 不变     true - 反序 
+ * @param $count   每页多少条数据
+ * @param $page   当前第几页
+ * @param $array   查询出来的所有数组
+ * @param $order false - 不变     true - 反序 
  */
 function page_array($count,$page,$array,$order=false){
 	$page=(empty($page))?'1':$page;

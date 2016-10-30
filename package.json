@@ -1,41 +1,43 @@
 {
-	"name": "anyjs",
-	"version": "1.0.0",
-	"description": "基于VUE+webpack的前端MVVM响应式单页构建工具",
-	"author": "biexiaojun",
-	"license": "MIT",
-	"main": "./any-themes/single/app.js",
-	"private": true,
-	"scripts": {
-		"dev": "webpack-dev-server --progress --inline --hot --quiet --host=0.0.0.0  --port 3366 --config webpack.dev.js",
-		"build": "webpack --progress --hide-modules --config webpack.build.js"
-	},
-	"dependencies": {
-		"vue": "^1.0.0"
-	},
-	"devDependencies": {
-		"babel-core": "^6.3.17",
-		"babel-loader": "^6.2.0",
-		"babel-plugin-transform-runtime": "^6.3.13",
-		"babel-preset-es2015": "^6.3.13",
-		"babel-preset-stage-2": "^6.0.0",
-		"babel-runtime": "^5.8.34",
+  "name": "DEMO",
+  "version": "1.0.0",
+  "description": "贵州股权金融资产交易业务管理系统",
+  "main": "./src/main.js",
+  "author": "goldenstand",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack-dev-server --progress --inline --hot --quiet --host=0.0.0.0 --port 10086",
+    "build": "set NODE_ENV=production&& webpack --progress --hide-modules"
+  },
+  "private": true,
+  "dependencies": {
+    "vue": "^1.0.13"
+  },
+  "devDependencies": {
+    "babel-core": "^6.3.17",
+    "babel-loader": "^6.2.0",
+    "babel-plugin-transform-runtime": "^6.3.13",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-stage-2": "^6.0.0",
+    "babel-runtime": "^5.8.34",
 
-		"css-loader": "^0.23.0",
-		"url-loader": "^0.5.6",
-		"file-loader": "^0.8.4",
-		"template-html-loader": "0.0.3",
-		"style-loader": "^0.13.0",
+    "css-loader": "^0.23.0",
+    "url-loader": "^0.5.6",
+    "file-loader": "^0.8.4",
+    "template-html-loader": "0.0.3",
+    "style-loader": "^0.13.0",
 
-		"vue-hot-reload-api": "^1.2.2",
-		"vue-html-loader": "^1.0.0",
-		"vue-loader": "^7.2.0",
-		"vue-resource": "^0.6.0",
-		"vue-router": "^0.7.7",
+    "vue-hot-reload-api": "^1.2.2",
+    "vue-html-loader": "^1.0.0",
+    "vue-loader": "^7.2.0",
+    "vue-resource": "^0.6.0",
+    "vue-router": "^0.7.7",
 
-		"webpack": "^1.12.9",
-		"webpack-dev-server": "^1.14.0",
-		"extract-text-webpack-plugin": "^0.8.2",
-		"html-webpack-plugin": "^1.7.0"
-	}
+    //"jquery": "^2.2.3",
+
+    "webpack": "^1.12.9",
+    "webpack-dev-server": "^1.14.0",
+    "extract-text-webpack-plugin": "^0.8.2",
+    "html-webpack-plugin": "^1.7.0"
+  }
 }

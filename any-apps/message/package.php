@@ -9,14 +9,8 @@ return array(
 	'icon'=>'icon-mail-alt',
 	'special'=>false,
 	'options'=>array(
-		array(
-			'title'=>'新信息',
-			'admin'=>'admin_add_message.php'
-		),
-		array(
-			'title'=>'我的信息',
-			'admin'=>'admin_my_message.php'
-		)
+		array('新信息','admin_add_message.php'),
+		array('我的信息','admin_my_message.php')
 	),
 	'route'=>array(
 		'/^message\/([a-z0-9_]+)$/'=>'message/:1'

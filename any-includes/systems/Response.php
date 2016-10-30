@@ -84,7 +84,7 @@ class Response{
 		if (array_key_exists($code, self::$codes)) {
 		    $this->status = $code;
 		}else {
-		    throw new \Exception('Invalid status code.');
+		    throw new Exception('Invalid status code.');
 		}
 		return $this;
 	}

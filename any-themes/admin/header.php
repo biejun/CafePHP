@@ -1,66 +1,59 @@
-<header class="navbar">
-	<h1 class="logo">
-		网站管理系统
-	</h1>
+<nav class="nav">
+	<div class="admin-info">
+		<?php admin_info();?>
+	</div>
+	<div class="title">开始</div>
 	<ul class="menu">
-		<app-menu :path="path"></app-menu>
-	</ul>
-	<ul class="user">
-		<li>
-			<a href="javascript:;" @click.stop.prevent="userDropDown = !userDropDown" class="user-name">
-				123123
-				<strong class="user-role">超级管理员</strong>
-				<i :class="[!userDropDown ? 'icon-angle-down' : 'icon-angle-up']"></i>
+		<li id="menu-item-index" class="menu-item">
+			<a href="{$path}admin/index.html" title="仪表盘">
+				<i class="fr icon-angle-right"></i>
+				<i class="icon-gauge"></i>
+				<span>仪表盘</span>
 			</a>
-			<user-dropdown :path="path" :show="userDropDown" v-cloak></user-dropdown>
+		</li>
+		<li id="menu-item-setting" class="menu-item">
+			<a href="{$path}admin/setting.html">
+				<i class="fr icon-angle-right"></i>
+				<i class="icon-wrench"></i>
+				<span>通用设置</span>
+			</a>
+		</li>
+		<li id="menu-item-application" class="menu-item">
+			<a href="{$path}admin/application.html">
+				<i class="fr icon-angle-right"></i>
+				<i class="icon-plug"></i>
+				<span>应用商店</span>
+			</a>
 		</li>
 	</ul>
-</header>
-<nav class="nav">
-	<div class="menu">
-		<ul>
-			<li v-bind:class="{active : active == 1}">
-				<a class="menu-item" href="{$path}admin/index.html" title="仪表盘">
-					<i class="icon-gauge"></i>
-					<div class="menu-name">仪表盘</div>
-				</a>
-			</li>
-			<li v-bind:class="{active : active == 2}">
-				<a class="menu-item" href="{$path}admin/setting.html">
-					<i class="icon-cog"></i>
-					<div class="menu-name">设置</div>
-				</a>
-			</li>
-			<li v-bind:class="{active : active == 3}">
-				<a class="menu-item" href="{$path}admin/application.html">
-					<i class="icon-plug"></i>
-					<div class="menu-name">应用</div>
-				</a>
-			</li>
-			<li v-bind:class="{active : active == 4}">
-				<a class="menu-item" href="{$path}admin/theme.html">
-					<i class="icon-brush"></i>
-					<div class="menu-name">主题</div>
-				</a>
-			</li>
-			<li v-bind:class="{active : active == 5}">
-				<a class="menu-item" href="{$path}admin/fontello.html">
-					<i class="icon-link"></i>
-					<div class="menu-name">链接</div>
-				</a>
-			</li>
-			<li v-bind:class="{active : active == 6}">
-				<a class="menu-item" href="{$path}admin/fontello.html">
-					<i class="icon-database"></i>
-					<div class="menu-name">数据库</div>
-				</a>
-			</li>
-			<li v-bind:class="{active : active == 7}">
-				<a class="menu-item" href="{$path}admin/fontello.html">
-					<i class="icon-flag"></i>
-					<div class="menu-name">字体图标</div>
-				</a>
-			</li>
-		</ul>
-	</div>
+	<div class="title">应用</div>
+	<ul class="menu">
+		{foreach $menu as $row}
+		<li id="menu-item-{$row.id}" class="menu-item">
+			<a href="javascript:;" title="{$row.name}">
+				<i class="fr icon-angle-right"></i>
+				<i class="{$row.icon}"></i>
+				<span>{$row.name}</span>
+			</a>
+			<ul class="menu-item-child">
+				{foreach $row['menu'] as $menu}
+
+				<li id="menu-item-{$row.id}-child-{$menu.id}">
+					<a href="{$menu.url}&bindmenu=menu-item-{$row.id}-child-{$menu.id}">{$menu.title}</a>
+				</li>
+				{/foreach}
+			</ul>
+		</li>
+		{/foreach}
+	</ul>
 </nav>
+<header class="header">
+	<h1 class="logo fl">
+		<a href="{$path}admin/index.html">
+			网站管理系统
+		</a>
+	</h1>
+    <button type="button" onclick="toggleMenu();" class="menu-btn">
+		<i class="icon-menu"></i>
+    </button>
+</header>

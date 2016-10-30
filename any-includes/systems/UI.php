@@ -1,40 +1,38 @@
 <?php
 if(!defined('ABSPATH'))exit('Access denied!');
 /**
- *	视图类
+ * 视图处理类
  *
- *	基于RESTful API规范构建
+ * @package UI
+ * @version 1.0.0
  */
 abstract class UI{
 
-	protected $vars = array();
-
-	public $theme;
-
-	private $config;
-
-	private $theme_root;
+	private $theme_root = '';
 
 	private $theme_url;
+
+	public $theme = '';
+
+	public $config = array();
+
+	protected $vars = array();
 	
-	public function __construct($app,$act){
+	public function __construct($theme = ''){
+
 		# 网站配置数据
-		$this->config = model()->get_app_config('admin');
-		if($app == 'admin' || stripos($act,'admin_')!==false){
-			//if(!$this->is_admin) $this->http_404();
-			$this->theme = 'admin';
-		}else{
-			$this->theme = model()->get_theme();
+		$this->config = widget()->get_apps_config();
+
+		if(!empty($theme)){
+
+			$this->theme = $theme;
+			$this->theme_root = ANYTHEME . $this->theme;
+			$this->theme_url = PATH.'any-themes/'.$this->theme.'/';
+			
+			$this->assign('path',PATH);
+			$this->assign('theme',$this->theme_url);
+			$this->assign('config',$this->config);
 		}
-		# 调用应用中的自定义函数
-		if(is_file( ANYAPP .$app . '/function.php')){
-			include( ANYAPP .$app . '/function.php');
-		}
-		$this->theme_root = ANYTHEME . $this->theme;
-		$this->theme_url = PATH.'any-themes/'.$this->theme.'/';
-		$this->assign('path',PATH);
-		$this->assign('theme',$this->theme_url);
-		$this->assign('config',$this->config);
 		if(method_exists($this, '_initialize'))
 			$this->_initialize();
 	}
@@ -61,25 +59,30 @@ abstract class UI{
 				$this->vars = array_merge($this->vars,$data);
 			}
 			extract($this->vars);
+
 			if ($filestat['mtime'] <= $expires){
 				if (file_exists($compile)){
 					ob_start();
 					include $compile;
 					$template = ob_get_contents();
 					ob_end_clean();
-					if(empty($template))$expires=0;
+					if(empty($template)) $expires=0;
 					echo $template;
 				}else{
 					$expires=0;
 				}
 			}elseif ($filestat['mtime'] > $expires){
 				$template = file_get_contents($template);
+				if(strpos($template,"\xEF\xBB\xBF")!==false)
+					$template = str_replace("\xEF\xBB\xBF",'',$template); # 干掉微软的BOM头
 				$pattern = array('#\{(\$[a-z0-9_]+)\}#i',
 								'#\{(\$[a-z0-9_]+)\.([a-z0-9_]+)\}#i',
 								'#\{if\s+(.+?)\}#',
 								'#\{elseif\s+(.+?)\}#',
 								'#\{else\}#',
 								'#\{\/if\}#',
+								'#\{foreach\s+(\S+)\s+as\s+(\S+)\}#',
+								'#\{\/foreach\}#',
 								'#\{import\s*\(\s*(.+)\s*\)\s*\}#i');
 				$replace = array('<?php echo $1 ;?>',
 								'<?php echo $1[\'$2\'] ;?>',
@@ -87,11 +90,13 @@ abstract class UI{
 								'<?php elseif(\\1) : ?>',
 								'<?php else : ?>',
 								'<?php endif; ?>',
+								'<?php if(is_array(\\1)) foreach(\\1 as \\2) : ?>',
+								'<?php endforeach; ?>',
 								'<?php $this->render($1);?> ');
 				$template = trim(str_replace('<?php exit?>','',$template));
 				$template = preg_replace($pattern,$replace,$template);
 				if (file_put_contents($compile, $template , LOCK_EX) === false)
-					throw new \Exception('模板编译出现问题，请检查文件是否可写');
+					throw new Exception('模板编译出现问题，请检查文件是否可写');
 				ob_start();
 				include $compile;
 				$template = ob_get_contents();
@@ -99,10 +104,6 @@ abstract class UI{
 				echo $template;
 			}
 		}
-	}
-	public function verify_post(){
-		if( $_SERVER['REQUEST_METHOD']!=='POST' || empty($_SERVER['HTTP_REFERER']))
-		 $this->http_404();
 	}
 	public function http_301($url){
 		header('HTTP/1.1 301 Moved Permanently');
@@ -118,7 +119,7 @@ abstract class UI{
 	public function message($status,$message='',$data=array(),$charset='utf-8'){
 		header('Content-Type: application/json;charset='.$charset);
 		if($status == 'error'){
-			die('{"status":"error","message":"$message"}');
+			die('{"status":"error","message":"'.$message.'"}');
 		}else{
 			echo json_encode(array('status'=>'success','message'=>$message,'data'=>$data));
 		}
@@ -152,5 +153,5 @@ abstract class UI{
 		return isset($this->vars[$name]);
 	}
 	# 初始化回调
-	public function _initialize(){}
+	public function _initialize(){}	
 }

@@ -1,30 +1,18 @@
 <?php
 return array(
 	'app'=>'admin',
-	'name'=>'系统',
-	'description'=>'网站信息配置，系统清理等',
+	'name'=>'系统管理',
+	'description'=>'网站信息配置，应用安装与卸载，权限控制等',
 	'version'=>'1.0.0',
 	'author'=>'别小俊',
 	'date'=>'2016.06.23',
-	'icon'=>'icon-cube',
+	'icon'=>'icon-th',
 	'special'=>true,
 	'options'=>array(
-		array(
-			'title'=>'角色管理',
-			'admin'=>'group.php'
-		),
-		array(
-			'title'=>'权限管理',
-			'admin'=>'access.php'
-		),
-		array(
-			'title'=>'清理文件',
-			'admin'=>'files.php'
-		),
-		array(
-			'title'=>'清空缓存',
-			'admin'=>'cache.php'
-		)
+		array('数据库备份','backup.php'),
+		array('清理临时文件','files.php'),
+		array('清空缓存','cache.php'),
+		array('字体图标','fontello.php')
 	),
 	'route'=>array(
 		'/^admin\/([a-z0-9_]+)$/'=>'admin/:1'

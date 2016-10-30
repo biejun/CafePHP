@@ -1,6 +1,6 @@
 <?php
 /**
- *	AnyPHP
+ *	ANYPHP
  *
  *	@version 1.00
  *	@copyright www.anyjs.org
@@ -15,20 +15,10 @@ define( 'ANYINC',ABSPATH . 'any-includes' . DIRECTORY_SEPARATOR);
 
 # 生产模式 开启：true 关闭: false
 define( 'ANY_DEBUG', true);
+error_reporting( ANY_DEBUG ? E_ALL : 0);
+ini_set('display_errors', ANY_DEBUG ? 'On' : 'Off' );
 
-require_once( ANYINC . 'Core.php' );
-
-session_start();
-
-ob_start( 'ob_gzhandler' );
-
-header('Content-Type: text/html; charset=utf-8');
-
-# 系统核心初始化
-Core::init();
-
-# 全局数据缓存变量
-$cache = new Cache(ANYINC . 'cache/data/');
+require ANYINC . 'Core.php';
 
 # 初始化 默认首页
 Route::get('admin');

@@ -8,7 +8,7 @@ $query[] = "CREATE TABLE IF NOT EXISTS `".DB_PREFIX."user_profile` (
 	`user_id` int(11) unsigned NOT NULL DEFAULT '0',
 	`user_nickname` varchar(12) NOT NULL DEFAULT '',
 	`user_email` varchar(30) NOT NULL DEFAULT '',
-	`user_avatar` varchar(225) NOT NULL DEFAULT '',
+	`user_avatar` varchar(255) NOT NULL DEFAULT '',
 	`user_sign` varchar(100) NOT NULL DEFAULT '',
 	`user_sex` varchar(2) NOT NULL DEFAULT '',
 	`user_city` varchar(10) NOT NULL DEFAULT '火星',
