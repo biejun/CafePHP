@@ -1,7 +1,7 @@
 {
   "name": "DEMO",
   "version": "1.0.0",
-  "description": "贵州股权金融资产交易业务管理系统",
+  "description": "快速构建前端页面",
   "main": "./src/main.js",
   "author": "goldenstand",
   "license": "MIT",
@@ -33,7 +33,7 @@
     "vue-resource": "^0.6.0",
     "vue-router": "^0.7.7",
 
-    //"jquery": "^2.2.3",
+    "jquery": "^2.2.3",
 
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0",
