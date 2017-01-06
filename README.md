@@ -13,7 +13,7 @@
 
 ANYPHP并不是一套框架，而是一套快速构建项目的解决方案。利用php语言灵活自由的特性，在做数据请求和处理的过程中，发挥超酷的作用。当然这套方案也不仅仅局限于php中，将来还有可能会在NodeJS、GOlang中发挥作用，创造出如ANYNODE、ANYGO等等一系列程序，为前端开发人员提供快速学习，敏捷开发的解决方案。
 
-在这里，我们推荐您使用VueJS来构建前端架构，因为它是一个进步的js框架，吸收了angularJS和ReactJs优秀的特性，当然代码同样也非常优雅，在做数据视图绑定上，性能要比PHP快一倍，这也是为什么ANYPHP没有加入页面模板标签功能的原因，通过学习时间上的对比，学习vue要比学习react更快，更容易上手。ANYPHP中默认集合了1.0版本的VueJS和Webpack的配置文件，您只需在当前程序目录下（Win: 按住Shift+鼠标右键打开命令行工具,MacOS: 打开终端，将anyphp程序文件夹拖拽到dock终端图标上）输入命令 npm install即可完成的依赖安装（需要预先安装NodeJs才能执行npm命令），如果不懂如何构建，您可以上vuejs.org查看官方的教程或通过下面的教程来学习如何构建一个Vue的项目。
+在这里，我们推荐您使用VueJS来构建前端架构，因为它是一个进步的js框架，吸收了angularJS和ReactJs优秀的特性，当然代码同样也非常优雅，在做数据视图绑定上，性能要比PHP快一倍，这也是为什么ANYPHP没有加入页面模板标签功能的原因，通过学习时间上的对比，学习vue要比学习react更快，更容易上手。ANYPHP中默认集合了1.0版本的VueJS和Webpack的配置文件，您只需在当前程序目录下（Win: 按住Shift+鼠标右键打开命令行工具,MacOS: 打开终端，将anyphp程序文件夹拖拽到dock终端图标上）输入命令`npm install`即可完成的依赖安装（需要预先安装NodeJs才能执行npm命令），如果不懂如何构建，您可以上vuejs.org查看官方的教程或通过下面的教程来学习如何构建一个Vue的项目。
 
 ## 教程
 
@@ -40,9 +40,8 @@ return array(
 
 #### 创建路由
 
-上一步我们创建了一个名为"demo"的应用，下面，我们继续来完善这个应用，给它添加路由，让它支持浏览器访问。    
+在anyphp中，有一个很努力的小哥叫Route，它提供了`get`、`post`、`put`、`delete`、`patch`、`any`六种超能力，能够分别为我们处理不同种类的请求，将坏的充满恶意的请求拒之门外。下面我们就来详细说说Route的具体用法，在说之前，我们需要为上面创建的应用添加一个名为"route.php"的文件，来保存所有的路由规则。
 
-首先，我们新建一个名为"route.php"的文件，然后在这个文件中添加多种路由规则。    
 
 基本 GET 路由：   
 
@@ -94,3 +93,29 @@ Route::get('/page/:id/:sort?',function($ui,$id,$sort){
 	echo $sort; // null
 });
 ````  
+
+#### 数据模型
+
+在anyphp中，还有一位老司机，名字叫Widget，他有一个静态方法叫get，它专门是负责开车，为所有应用组件互相调用提供方便。
+
+每个应用的组件都有一个专门的文件夹来管理，我们给这个文件夹起名叫"widgets"，应用中所有的组件都有一个"家长"，我们给它命名为"DemoWidget.php",命名规则为每个单词的首字母必须大写。
+
+这位"家长"主要的任务，就是构建数据模型。
+
+````php
+class DemoWidget extends Widget{
+
+	public function getDemoData(){
+		return $this->db('...');
+	}
+}
+````
+
+在 demo/route.php中使用
+
+````php
+Route::get('/',function($ui){
+	// 老司机带带我
+	$data = Widget::get('demo')->getDemoData();
+});
+````
