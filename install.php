@@ -1,5 +1,22 @@
 <?php
-if(!defined('ABSPATH'))exit('Access denied!');
+
+// 系统目录
+
+define( 'ABSPATH' , dirname(__FILE__).DIRECTORY_SEPARATOR );
+
+define( 'ANYAPP' , ABSPATH . 'any-apps' . DIRECTORY_SEPARATOR );
+
+define( 'ANYTHEME' , ABSPATH . 'any-themes' . DIRECTORY_SEPARATOR );
+
+define( 'ANYINC' , ABSPATH . 'any-includes' . DIRECTORY_SEPARATOR );
+
+// 系统变量
+
+define( 'IS_ANY' , true );
+
+include ANYINC . 'Core.php';
+
+$core = new Core();
 
 # 写入用户表
 function user_table($db_prefix){
@@ -7,6 +24,7 @@ function user_table($db_prefix){
 				`user_id` int(11) NOT NULL AUTO_INCREMENT,
 				`user_name` varchar(15) NOT NULL DEFAULT '',
 				`user_password` varchar(32) NOT NULL DEFAULT '',
+				`user_reigster_time` int(11) unsigned NOT NULL DEFAULT '0',
 				`user_login_time` int(11) unsigned NOT NULL DEFAULT '0',
 				`user_group` tinyint(4) unsigned NOT NULL DEFAULT '1',
 			PRIMARY KEY (`user_id`)
@@ -21,61 +39,111 @@ function config_table($db_prefix){
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 }
 
+
 $data = array();
+
 $data['key'] = get_random_key();
-$data['path'] = str_replace('index.php','',$_SERVER['SCRIPT_NAME']);
+
+$data['path'] = str_replace('install.php','',$_SERVER['SCRIPT_NAME']);
+
 $status = false;
-# install
+
 if(isset($_GET['do'])&&$_GET['do']=='install'){
+
 	if($_POST){
-		$db_lib = $_POST['db_lib'];
-		$db_host = $_POST['db_host'];
-		$db_user = $_POST['db_user'];
-		$db_password = $_POST['db_password'];
-		$db_name = $_POST['db_name'];
-		$db_prefix = $_POST['db_prefix'];
-		$validate = $_POST['validate'];
-		$user_name = $_POST['user_name'];
-		$user_password = md5($_POST['user_password'].$validate);
-		$time = time();
-		$path = $data['path'];
 
-		$any_db = DB::factory( $db_host, $db_name, $db_user, $db_password, $db_prefix ,$db_lib,true);
+		$array = [];
 
+		$array['debug']				= ($_POST['debug']==1) ? true : false;
+	
+		$array['db']['driver']		= $_POST['driver']; // mysql | mysqli | pdo
+	
+		$array['db']['host'] 		= $_POST['db_host'];
+	
+		$array['db']['name'] 		= $_POST['db_name'];
+	
+		$array['db']['user'] 		= $_POST['db_user'];
+	
+		$array['db']['password']	= $_POST['db_password'];
+	
+		$array['db']['prefix']		= $_POST['db_prefix'];
+
+		$array['validate']			= $_POST['validate'];
+
+		$array['path']				= $data['path'];
+
+		$array['admin']				= $_POST['user_name'];
+
+		$array['theme']				= 'cafe';
+
+		$user_name = $array['admin'];
+
+		$db_prefix = $array['db']['prefix'];
+		
+		$user_password = md5($_POST['user_password'].$array['validate']);
+		
+		$register_time = time();
+
+		$any_db = DataBase::factory( $array['db'],true );
+
+		
 		$query = array();
+		
 		$query[] = user_table($db_prefix);
+		
 		$query[] = config_table($db_prefix);
-		$query[] = "INSERT INTO `".$db_prefix."user` VALUES (1,'$user_name','$user_password','$time','3');";
-		$query[] = "INSERT INTO `".$db_prefix."config` VALUES ('apps','admin'),('theme','single'),('admin','YToyNjp7aTowO3M6NToidGl0bGUiO2k6MTtzOjg6InN1YnRpdGxlIjtpOjI7czo4OiJrZXl3b3JkcyI7aTozO3M6MTE6ImRlc2NyaXB0aW9uIjtpOjQ7czo4OiJzdGF0Y29kZSI7aTo1O3M6Njoibm90aWNlIjtpOjY7czoyOiJhZCI7aTo3O3M6MzoiaWNwIjtpOjg7czoxMToic210cF9zZXJ2ZXIiO2k6OTtzOjk6InNtdHBfcG9ydCI7aToxMDtzOjk6InNtdHBfdXNlciI7aToxMTtzOjEzOiJzbXRwX3Bhc3N3b3JkIjtpOjEyO3M6MTA6InNtdHBfZW1haWwiO3M6NToidGl0bGUiO3M6MTI6IuermeeCueagh+mimCI7czo4OiJzdWJ0aXRsZSI7czowOiIiO3M6ODoia2V5d29yZHMiO3M6MDoiIjtzOjExOiJkZXNjcmlwdGlvbiI7czowOiIiO3M6ODoic3RhdGNvZGUiO3M6MDoiIjtzOjY6Im5vdGljZSI7czowOiIiO3M6MjoiYWQiO3M6MDoiIjtzOjM6ImljcCI7czowOiIiO3M6MTE6InNtdHBfc2VydmVyIjtzOjE4OiJzbXRwLmV4bWFpbC5xcS5jb20iO3M6OToic210cF9wb3J0IjtzOjI6IjI1IjtzOjk6InNtdHBfdXNlciI7czowOiIiO3M6MTM6InNtdHBfcGFzc3dvcmQiO3M6MDoiIjtzOjEwOiJzbXRwX2VtYWlsIjtzOjA6IiI7fQ==');";
+		
+		$query[] = "INSERT INTO `".$db_prefix."user` VALUES (1,'$user_name','$user_password','$register_time',0,'3');";
+		
+		$query[] = "INSERT INTO `".$db_prefix."config` VALUES ('apps','admin'),('theme','cafe'),('admin','YToyNjp7aTowO3M6NToidGl0bGUiO2k6MTtzOjg6InN1YnRpdGxlIjtpOjI7czo4OiJrZXl3b3JkcyI7aTozO3M6MTE6ImRlc2NyaXB0aW9uIjtpOjQ7czo4OiJzdGF0Y29kZSI7aTo1O3M6Njoibm90aWNlIjtpOjY7czoyOiJhZCI7aTo3O3M6MzoiaWNwIjtpOjg7czoxMToic210cF9zZXJ2ZXIiO2k6OTtzOjk6InNtdHBfcG9ydCI7aToxMDtzOjk6InNtdHBfdXNlciI7aToxMTtzOjEzOiJzbXRwX3Bhc3N3b3JkIjtpOjEyO3M6MTA6InNtdHBfZW1haWwiO3M6NToidGl0bGUiO3M6MTI6IuermeeCueagh+mimCI7czo4OiJzdWJ0aXRsZSI7czowOiIiO3M6ODoia2V5d29yZHMiO3M6MDoiIjtzOjExOiJkZXNjcmlwdGlvbiI7czowOiIiO3M6ODoic3RhdGNvZGUiO3M6MDoiIjtzOjY6Im5vdGljZSI7czowOiIiO3M6MjoiYWQiO3M6MDoiIjtzOjM6ImljcCI7czowOiIiO3M6MTE6InNtdHBfc2VydmVyIjtzOjE4OiJzbXRwLmV4bWFpbC5xcS5jb20iO3M6OToic210cF9wb3J0IjtzOjI6IjI1IjtzOjk6InNtdHBfdXNlciI7czowOiIiO3M6MTM6InNtdHBfcGFzc3dvcmQiO3M6MDoiIjtzOjEwOiJzbXRwX2VtYWlsIjtzOjA6IiI7fQ==');";
 
 		foreach($query as $sql){
+			
 			$any_db->query($sql);
 		}
 
-		$config = "<?php\n\n";
-		$config .= "if(!defined('ABSPATH'))exit('Access denied!');\n\n";
-		$config .= "define('DB_HOST','$db_host');\n";
-		$config .= "define('DB_USER','$db_user');\n";
-		$config .= "define('DB_PASSWORD','$db_password');\n";
-		$config .= "define('DB_NAME','$db_name');\n";
-		$config .= "define('DB_PREFIX','$db_prefix');\n";
-		$config .= "define('DB_LIB','$db_lib');\n";
-		$config .= "define('ADMIN','$user_name');\n";
-		$config .= "define('PATH','$path');\n";
-		$config .= "define('VALIDATE','$validate');\n";
-		@file_put_contents(ANYINC . 'Config.php',$config) or die("请检查any-includes目录权限是否可写，或修改目录权限为0777!");
-		// Rewrite 文件
+		$config = "<?php\nif(!defined('IS_ANY'))exit('Access denied!');\n";
+
+		$config .= "define('VALIDATE','".$array['validate']."');\n\n";
+
+		$config .= "define('PATH','".$array['path']."');\n\n";
+
+		$config .= "return ".var_export($array,true).";";
+
+		file_put_contents(ANYINC.'Config.php',$config,LOCK_EX) or die("请检查any-includes目录权限是否可写，或修改目录权限为0777!");
+
+		// Apache Rewrite 文件
+		
 		$file = fopen('.htaccess', 'wb');
+		
 		$content = '
-		<IfModule mod_rewrite.c>
-		Options +FollowSymlinks
-		RewriteEngine On
-		RewriteBase ' . $data['path'] . '
-		RewriteCond %{REQUEST_FILENAME} !-d
-		RewriteCond %{REQUEST_FILENAME} !-f
-		RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
-		</IfModule>';
+<IfModule mod_rewrite.c>
+Options +FollowSymlinks
+RewriteEngine On
+RewriteBase ' . $data['path'] . '
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+</IfModule>';
+		
 		fwrite($file, $content);
+
+		// Nginx Rewrite 文件
+
+		$file = fopen('anyphp.conf', 'wb');
+		
+		$content = '
+location '.$data['path'].' {
+	if (-f $request_filename/index.php){
+	    rewrite (.*) $1/index.php;
+	}
+	if (!-f $request_filename){
+	    rewrite (.*) /index.php;
+	}
+}';
+		
+		fwrite($file, $content);
+		
 		$status = true;
 	}
 }
@@ -96,12 +164,9 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 		body{
 			margin: 100px auto 40px;
 			padding: 30px 20px;
-			font-family: Helvetica Neue,Hiragino Sans GB,"Microsoft Yahei",sans-serif;
+			font-family: "Microsoft Yahei",sans-serif;
 			max-width: 700px;
 			background-color: #fff
-		}
-		img{
-			border:none;
 		}
 		h1{
 			font-size: 21px;
@@ -124,7 +189,7 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 			padding: 20px;
 		}
 		.input-group:hover{
-			background-color: #F5F5F5;
+			background-color: #F0F0F0;
 		}
 		.input-form,.input-addon{
 			display: block;
@@ -167,9 +232,10 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 			line-height: 35px;
 			text-align: center;
 			border:1px solid #3E97EB;
-			border-radius: 20px;
-			margin: 10px auto;
+			border-radius: 3px;
+			margin: auto;
 			display: block;
+			margin-top: 20px;
 			font-size: 14px;
 			color: #3E97EB;
 			background-color: #fff;
@@ -183,13 +249,19 @@ if(isset($_GET['do'])&&$_GET['do']=='install'){
 	</head>
 	<body>
 		<?php if(!$status){?>
-
 		<h1>安装</h1>
-		<div class="alert">您当前的系统环境：<?php echo PHP_OS=='WINNT'?'Windows':PHP_OS;?>&nbsp;/&nbsp;<?php echo version_compare(PHP_VERSION,'5.3.0','<=')?'当前PHP版本过低，请更新版本':'PHP ',PHP_VERSION,' 适合安装'; ?></div>
-		<form method="post" action="<?=$data['path']?>?do=install" onsubmit="return post_check(this)">
+		<div class="alert">您当前的系统环境：<?php echo PHP_OS=='WINNT'?'Windows':PHP_OS;?>&nbsp;/&nbsp;<?php echo version_compare(PHP_VERSION,'5.4.0','<=')?'当前PHP版本过低，请更新版本':'PHP ',PHP_VERSION,' 适合安装'; ?></div>
+		<form method="post" action="<?php echo $_SERVER['SCRIPT_NAME'];?>?do=install" onsubmit="return post_check(this)">
+			<div class="input-group">
+				<label class="input-addon">调试模式</label>
+				<select name="debug" class="select">
+					<option value="1">开启</option>
+					<option value="0">关闭</option>
+				</select>
+			</div>
 			<div class="input-group">
 				<label class="input-addon">数据库类型</label>
-				<select name="db_lib" class="select">
+				<select name="driver" class="select">
 					<option value="mysqli">Mysqli 原生扩展版（推荐）</option>
 					<option value="mysql">Mysql 原生</option>
 				</select>

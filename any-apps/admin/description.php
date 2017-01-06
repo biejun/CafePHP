@@ -9,12 +9,9 @@ return array(
 	'icon'=>'icon-th',
 	'special'=>true,
 	'options'=>array(
-		array('数据库备份','backup.php'),
-		array('清理临时文件','files.php'),
-		array('清空缓存','cache.php'),
-		array('字体图标','fontello.php')
-	),
-	'route'=>array(
-		'/^admin\/([a-z0-9_]+)$/'=>'admin/:1'
+		array('数据库备份','backup'),
+		array('清理临时文件','files'),
+		array('清空缓存','caches'),
+		array('字体图标','fontello'),
 	)
 );

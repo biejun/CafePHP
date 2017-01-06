@@ -1,99 +1,123 @@
 <?php
-if(!defined('ABSPATH'))exit('Access denied!');
+if( !defined('IS_ANY') ) exit('Access denied!');
 
-class Route {
+abstract class Route{
 
-	private static $_var = array();
+	protected static $allRoutes = array();
 
-	private static $_instance = null;
+	public static function get( $uri, $action ){
 
-	public static function get($app,$act='index'){
-		# 根据PATHINFO获取应用和页面，部分服务器可能没这个变量，暂时支持APACHE
-		if( isset($_SERVER['PATH_INFO'])) {
-			$routes = self::apps_rewrite();
-			$regx = preg_replace('/\.html$/i','',trim($_SERVER['PATH_INFO'],'/'));
-			if(!empty($routes)&&is_array($routes)){
-				foreach ($routes as $route) {
-					array_walk($route,'self::rewrite_route',$regx);
-				}
-			}
-		}
-		if(empty(self::$_var)){
-			self::$_var['app'] = isset($_GET['app'])?$_GET['app']:$app;
-			self::$_var['act'] = isset($_GET['act'])?$_GET['act']:$act;
-		}
-
-		$app = strtolower(self::$_var['app']);
-		$act = strtolower(self::$_var['act']);
-
-		$app_file = ANYAPP . $app .'/index.php';
-		if(is_file($app_file) && $app!=$act) {
-			require_once($app_file);
-			$ui_theme = ($app == 'admin'||stripos($act,'admin_')!==false) ? 'admin' : widget()->get_theme();
-			if (null === self::$_instance) {
-				if(class_exists($app)) self::$_instance = new $app($ui_theme);
-			}
-			if($app == 'admin'&&!in_array($act, array('login','post_login_access'))||stripos($act,'admin_')!==false)
-				if(!widget('admin:user')->is_admin()) self::$_instance->http_404();
-			if(stripos($act,'_initialize')!==false) self::$_instance->http_404();
-			if(stripos($act,'post_')!==false){
-				if($_SERVER['REQUEST_METHOD']!=='POST' || empty($_SERVER['HTTP_REFERER']))
-					self::$_instance->http_404(); # 检查请求方式或来路，非法则显示404
-			}
-			self::$_instance->$act();
-		}
+		return self::addRoute(['GET', 'HEAD'], $uri, $action);
 	}
-	private static function apps_rewrite(){
-		$folder = glob( ANYAPP .'*',GLOB_ONLYDIR);
-		$packages = array();
-		$routes = array();
-		foreach ($folder as $name) {
-			$package = $name.'/package.php';
-			if(file_exists($package)){
-				$route = include $package;
-				$packages[] = $route;
-				if(isset($route['route']))
-					$routes[] = $route['route'];
+
+	public static function post( $uri, $action ){
+
+		return self::addRoute(['POST'], $uri, $action);
+	}
+
+	public static function put( $uri, $action ){
+
+		return self::addRoute(['PUT'], $uri, $action);
+	}
+
+	public static function patch( $uri, $action ){
+
+		return self::addRoute(['PATCH'], $uri, $action);
+	}
+
+	public static function delete( $uri, $action ){
+
+		return self::addRoute(['DELETE'], $uri, $action);
+	}
+
+	public static function any( $uri, $action ){
+
+		$verbs = array('GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE');
+
+		return self::addRoute($verbs, $uri, $action);
+	}
+
+	protected static function addRoute( array $methods, $uri, $action ){
+
+		if ( in_array( 'GET',$methods ) && !in_array( 'HEAD',$methods ) ) $methods[] = 'HEAD';
+
+		$router = new Router( $methods, $uri, $action );
+
+		self::$allRoutes[] = $router;
+
+		return $router;
+
+	}
+
+	public static function dispatch( $apps ){
+
+		$uri = str_replace( array('<','>','"',"'",'%3C','%3E','%22','%27','%3c','%3e') ,'',$_SERVER['REQUEST_URI'] );
+
+		if(PATH !== '/' ) $uri = str_replace( PATH , '/' , $uri );
+
+		$uri = preg_replace('/\.html$/i','',$uri);
+
+		$var = [];
+
+		if ( false !== strpos($uri,'?') ){
+
+			$info = parse_url($uri);
+
+			if( isset( $info['path'] ) ) $uri = $info['path'];
+
+			if( isset( $info['query'] ) ) parse_str($info['query'],$var);
+
+		}
+
+		$method = $_SERVER['REQUEST_METHOD'];
+
+		foreach ($apps as $app) {
+			
+			$file = ANYAPP. $app . DIRECTORY_SEPARATOR .'route.php';
+
+			if ( is_file( $file ) ) {
+
+				include $file;
 			}
 		}
-		$GLOBALS['cache']->write('packages',$packages);
-		return $routes;
-	}
-	private static function rewrite_route($route,$rule,$regx){
-		if(is_numeric($rule)) $rule = array_shift($route);
-		if(0 === strpos($rule,'/') && preg_match($rule,$regx,$matches)){
-			self::parse_regex($matches,$route,$regx);
-		}
-	}
-	private static function parse_regex($matches,$route,$regx) {
-		$url = is_array($route)?$route[0]:$route;
-		$url = preg_replace_callback('/:(\d+)/',
-					function($match) use($matches) {
-						return $matches[$match[1]];
-					}, $url);
-		if(0 === strpos($url,'/') || 0 === strpos($url,'http')){
-			header("Location: $url", true, (is_array($route) && isset($route[1]))?$route[1]:301);
+
+		$route = self::_matchRoute( $uri, $method );
+
+		if( $route ){
+
+			if( is_callable( $route->action ) ) {
+
+				if(!empty($var)) $route->ui->props = $var;
+
+				call_user_func_array( $route->action,array( $route->ui , $route->params) );
+
+			}else{
+
+				throw new Exception("路由第二个参数必须为一个回调函数");
+			}
+
+		}else{
+			
+			header('HTTP/1.1 404 Not Found');
+			
+			header("status: 404 Not Found");
+			
 			exit;
-		}else{
-			# 解析路由地址
-			self::$_var = self::parse_url($url);
 		}
 	}
-	private static function parse_url($url) {
-		$var = array();
-		if(false !== strpos($url,'?')) { # [应用/页面] 包含?后面的参数与值
-			$info = parse_url($url);
-			$path = explode('/',$info['path']);
-			parse_str($info['query'],$var);
-		}elseif(strpos($url,'/')){ # [应用/页面] 
-			$path = explode('/',$url);
-		}else{
-			parse_str($url,$var); # 解析参数
+
+	// 路由匹配
+	private static function _matchRoute( $uri, $method ){
+
+		foreach(self::$allRoutes as $route){
+
+			if($route->match($uri, $method)){
+
+				return $route;
+			}
 		}
-		if(isset($path)) {
-			$var['act'] = array_pop($path);
-			$var['app'] = array_pop($path);
-		}
-		return $var;
+
+		return false;
 	}
+
 }

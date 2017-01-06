@@ -1,59 +1,84 @@
-<nav class="nav">
-	<div class="admin-info">
-		<?php admin_info();?>
-	</div>
-	<div class="title">开始</div>
-	<ul class="menu">
-		<li id="menu-item-index" class="menu-item">
-			<a href="{$path}admin/index.html" title="仪表盘">
-				<i class="fr icon-angle-right"></i>
-				<i class="icon-gauge"></i>
-				<span>仪表盘</span>
-			</a>
-		</li>
-		<li id="menu-item-setting" class="menu-item">
-			<a href="{$path}admin/setting.html">
-				<i class="fr icon-angle-right"></i>
-				<i class="icon-wrench"></i>
-				<span>通用设置</span>
-			</a>
-		</li>
-		<li id="menu-item-application" class="menu-item">
-			<a href="{$path}admin/application.html">
-				<i class="fr icon-angle-right"></i>
-				<i class="icon-plug"></i>
-				<span>应用商店</span>
-			</a>
-		</li>
-	</ul>
-	<div class="title">应用</div>
-	<ul class="menu">
-		{foreach $menu as $row}
-		<li id="menu-item-{$row.id}" class="menu-item">
-			<a href="javascript:;" title="{$row.name}">
-				<i class="fr icon-angle-right"></i>
-				<i class="{$row.icon}"></i>
-				<span>{$row.name}</span>
-			</a>
-			<ul class="menu-item-child">
-				{foreach $row['menu'] as $menu}
+<?php if( !defined('IS_ANY') ) exit('Access denied!'); ?>
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="robots" content="noindex, nofollow">
+	<meta name="renderer" content="webkit">
+	<title><?php echo $ui->title; ?> - <?php echo $ui->config['title'];?></title>
+	<script type="text/javascript" src="<?php echo $ui->static;?>js/vue.min.js"></script>
+	<script type="text/javascript" src="<?php echo $ui->static;?>js/vue-resource.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="<?php echo $ui->static;?>css/common.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $ui->root;?>style/admin.css" />
+	<?php Action::on('admin:header'); ?>
 
-				<li id="menu-item-{$row.id}-child-{$menu.id}">
-					<a href="{$menu.url}&bindmenu=menu-item-{$row.id}-child-{$menu.id}">{$menu.title}</a>
-				</li>
-				{/foreach}
-			</ul>
-		</li>
-		{/foreach}
-	</ul>
-</nav>
-<header class="header">
-	<h1 class="logo fl">
-		<a href="{$path}admin/index.html">
-			网站管理系统
-		</a>
-	</h1>
-    <button type="button" onclick="toggleMenu();" class="menu-btn">
-		<i class="icon-menu"></i>
-    </button>
-</header>
+	<!--[if lt IE 9]>
+	<script src="<?php echo $ui->static;?>js/html5shiv.js"></script>
+	<![endif]-->
+	<script type="text/javascript">
+		Vue.http.options.emulateJSON = true;
+		
+		function alertMsg(text,time){
+			var time = time || 3000;
+			var tip = document.getElementById('tip');
+			if(!tip){
+				tip = document.createElement('div');
+				tip.id = 'tip';
+				document.body.appendChild(tip);
+			}
+			tip.classList.add('slideIn');
+			tip.innerText = text;
+			setTimeout(function(){
+				tip.classList.remove('slideIn');
+				tip.classList.add('slideOut');
+			},time)
+		}
+	</script>
+	<style type="text/css">
+		.modal-mask {
+			position: fixed;
+			z-index: 9998;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(231, 243, 254, .5);
+			display: table;
+			transition: opacity .3s ease;
+		}
+		.modal-wrapper {
+			display: table-cell;
+			vertical-align: middle;
+		}
+		.modal-container {
+			position: relative;
+			width: 500px;
+			margin: 0px auto;
+			padding: 20px;
+			background-color: #fff;
+			border-radius: 5px;
+			box-shadow: 0 5px 15px rgba(202, 227, 244, .6);
+			transition: all .3s ease;
+		}
+		.modal-container .modal-close{
+			position: absolute;
+			right: 18px;
+			top: 15px;
+			background:transparent;
+			border:none;
+			font-size: 21px;
+			font-weight: 700;
+			color: rgba(0,0,0,.2);
+		}
+		.modal-enter, .modal-leave {
+			opacity: 0;
+		}
+		.modal-enter .modal-container,
+		.modal-leave .modal-container {
+			-webkit-transform: scale(1.2);
+			transform: scale(1.2);
+		}
+	</style>
+</head>
+<body data-bind="<?php echo $bindmenu; ?>">

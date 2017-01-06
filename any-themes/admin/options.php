@@ -1,22 +1,13 @@
-<?php exit?>
-<!doctype html>
-<html>
-<head>
-<title>{$options.title} - {$config.title}</title>
-{import ('static') }
-</head>
-<body data-bind="{$options.id}">
-<section class="content-page">
-	{import ('header') }
+<?php $ui->render('header');?>
+
+<section id="container" class="content-page">
+	
+	<?php $ui->render('nav');?>
 	<section class="page">
 		<div class="mt-20">
-			{$options.template}
+			<?php include $file;?>
 		</div>
 	</section>
 </section>
-<script type="text/javascript">
-	{$options.scripts}
-</script>
-{import ('footer') }
-</body>
-</html>
+
+<?php $ui->render('footer');?>

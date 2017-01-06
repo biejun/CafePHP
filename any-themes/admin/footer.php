@@ -1,61 +1,87 @@
-<script type="text/x-template" id="userDropdown">
-	<div v-show="show" class="user-dropdown" @click.stop style="display:none">
-		<ul class="user-set fr">
-			<li :class="{active:userSetView =='1'}">
-				<a href="javascript:;" @click="userSetView = '1'">修改密码</a>
-			</li>
-			<li :class="{active:userSetView =='2'}">
-				<a href="javascript:;" @click="userSetView = '2'">上传头像</a>
-			</li>
-			<li :class="{active:userSetView =='3'}">
-				<a href="javascript:;" @click="userSetView = '3'">个人资料</a>
-			</li>
-			<li>
-				<a href="javascript:;">退出登录</a>
-			</li>
-		</ul>
-		<div v-if="userSetView =='1'" class="user-row fl">
-			<div class="mb10">
-				<label>旧密码</label>
-				<input class="form-control" />
+<script type="text/javascript" src="<?php echo $ui->root;?>admin.js"></script>
+<script type="text/x-template" id="modal">
+	<div class="modal-mask" v-show="show" transition="modal">
+		<div class="modal-wrapper">
+			<div class="modal-container" v-bind:style="style">
+				<button type="button" class="modal-close" @click="show = false"><span aria-hidden="true">×</span></button>
+			 	<slot></slot>
 			</div>
-			<div class="mb10">
-				<label>新密码</label>
-				<input class="form-control" />
-			</div>
-			<div class="mb10">
-				<label>确认密码</label>
-				<input class="form-control" />
-			</div>
-			<button type="button" class="btn btn-primary">保存</button>		
-		</div>
-		<div v-if="userSetView =='2'" class="user-row fl">
-			<div class="mb10 text-center">
-				<label>点击头像上传照片</label>
-			</div>
-			<div class="mb15 text-center">
-				<div class="user-avatar">
-					<!--<img src="{$path}">-->
-				</div>
-			</div>
-			<button type="button" class="btn btn-primary">上传</button>		
-		</div>
-		<div v-if="userSetView =='3'" class="user-row fl">
-			<div class="mb10">
-				<label>昵称</label>
-				<input class="form-control" />
-			</div>
-			<div class="mb10">
-				<label>邮箱</label>
-				<input class="form-control" />
-			</div>
-			<div class="mb10">
-				<label>签名</label>
-				<textarea class="form-control" /></textarea>
-			</div>
-			<button type="button" class="btn btn-primary">保存</button>		
 		</div>
 	</div>
 </script>
-<?php admin_footer();?>
-<script type="text/javascript" src="{$theme}admin.js"></script>
+
+<modal :show.sync="showChangePassword" :style="{width:'320px'}">
+	<div class="form">
+		<fieldset>
+			<legend>修改密码</legend>
+			<p v-text="errorMsg" style="font-size:12px;color:red;"></p>
+			<div class="mb-10">
+				<label>旧密码</label>
+				<input type="password" v-model="old_password" class="form-control" />
+			</div>
+			<div class="mb-10">
+				<label>新密码</label>
+				<input type="password" v-model="new_password" class="form-control" />
+			</div>
+			<div class="mb-10">
+				<label>确认密码</label>
+				<input type="password" v-model="new_password_once" class="form-control" />
+			</div>
+			<button type="button" @click="changePassword" class="btn btn-primary">保存</button>
+		</fieldset>
+	</div>
+</modal>
+
+<script type="text/javascript">
+
+	var modal = Vue.extend({
+		props : ['show','style'],
+		template:'#modal'
+	});
+
+	var app = new Vue({
+		data:{
+			path : '<?php echo $ui->path?>',
+			showChangePassword : false,
+			old_password : '',
+			new_password : '',
+			new_password_once : '',
+			errorMsg : ''
+		},
+		el : 'body',
+		components:{
+			modal : modal
+		},
+		methods:{
+			changePassword : function(){
+
+				if(this.old_password.length>=6 && this.new_password.length >=6 && this.new_password_once.length>=6){
+					var data = {
+						old_password : this.old_password,
+						new_password : this.new_password,
+						new_password_once : this.new_password_once
+					};
+					this.$http.post(this.path+'admin/change-password',data).then(function(response){
+						var data = response.data;
+						//console.log(response)
+						if(data.status=='success'){
+							window.location.href = this.path+'admin/logout';
+						}else{
+							this.errorMsg = data.message;
+						}
+					});
+				}else{
+					this.errorMsg = '密码不能少于6位!';
+				}
+			}
+		}
+	});
+</script>
+<?php Action::on('admin:footer');?>
+<script type="text/javascript">
+	new Vue({
+		el : '#container'
+	})
+</script>
+</body>
+</html>

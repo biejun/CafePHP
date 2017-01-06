@@ -1,81 +1,168 @@
 <?php
-if( !defined('ABSPATH') ) exit('Access denied!');
+if( !defined('IS_ANY') ) exit('Access denied!');
+
 /**
- *	系统核心
- *
+ *	核心代码
+ *	
+ *	构建系统层代码耦合
  */
 
-# 定义常量
-define( 'ANYSYSTEM' , ANYINC .'systems'. DIRECTORY_SEPARATOR);
-define( 'ANYWIDGET' , ANYINC .'widgets'. DIRECTORY_SEPARATOR);
-define( 'VERSION' , 'V 1.2.0 161023');
-define( 'APP_TIME' , $_SERVER['REQUEST_TIME']);
-define( 'APP_VALIDATE' , md5(uniqid(rand(),TRUE)));
+class Core{
 
-# 检测PHP环境
-if(version_compare(PHP_VERSION,'5.3.0','<'))  die('PHP_VERSION > 5.3.0 !');
+	public static $parameter = [];
 
-@ob_start("ob_gzhandler");
+	public static $apps = [];
 
-session_start();
+	private static $_widget;
 
-include( ANYINC . 'Functions.php' );
+	public static $cache;
 
-# 设置时区
-if(version_compare(PHP_VERSION,'5.1.0','>')){
-	date_default_timezone_set('PRC');
-}
-# PHP 5.4 以上版本忽略此重置
-if(version_compare(PHP_VERSION,'5.4.0','<')){
-	ini_set( 'magic_quotes_runtime', 0 );
-	ini_set( 'magic_quotes_sybase',  0 );
-}
-# 错误捕获
-function exception_handle($e){
-	// $e->getLine();
-	// $e->getFile();
-	echo 'Tip: ',$e->getMessage();
-}
-# 自动加载系统类库
-function autoload($class){
-	if(is_file( ANYSYSTEM . $class . '.php')){
-		require_once( ANYSYSTEM . $class . '.php');
-	}elseif(is_file( ANYWIDGET . $class . '.php')){
-		require_once( ANYWIDGET . $class . '.php');
+	public function __construct(){
+
+		header( "Content-type: text/html; charset=utf-8" );
+
+		session_start();
+
+		set_exception_handler( array( 'Core','exceptionHandle' ) );
+
+		spl_autoload_register( array( 'Core', 'autoload' ) );
+
+		date_default_timezone_set( 'PRC' );
+
+		include_once ANYINC . 'Functions.php';
+
+	}
+
+	# 系统运行初始化
+	public function init(){
+
+		self::$parameter = include ANYINC.'Config.php';
+
+		ini_set( 'display_errors', self::$parameter['debug'] ? 'On' : 'Off' );
+
+		error_reporting( self::$parameter['debug'] ? E_ALL : 0 );
+
+		self::$_widget = Widget::factory();
+
+		self::$apps = self::getApps();
+
+		# 全局数据缓存变量
+		
+		self::$cache = new Cache( ANYINC . 'cache/data/');
+
+		self::_activateActions();
+
+		return $this;
+	}
+
+	# 让应用小哥跑起来
+	public function run(){
+
+		Action::on( 'index:begin' );
+
+		Route::dispatch( self::$apps );
+
+		Action::on( 'index:end' );
+	
+	}
+
+	/**
+	 *	获取所有应用程序
+	 *
+	 *	@return array
+	 */
+	public static function getApps(){
+
+		$apps_dir = glob( ANYAPP . '*' , GLOB_ONLYDIR );
+
+		$apps = array_map( function( $dir_name ){
+
+			return str_replace( ANYAPP,'',$dir_name );
+
+		},$apps_dir );
+
+		return $apps;
+
+	}
+	/**
+	 *	文件自动加载
+	 *
+	 *	这里只引用系统层和第三方库文件，因为项目不大，用不着那些复杂的命名空间
+	 *	只为简单快速开发而生。
+	 *
+	 *	@return array
+	 */
+	public static function autoload( $class ){
+
+		$sys_file = ['Cache','DataBase','Action','UI','UIKit','Widget','Route','Router','Response'];
+
+		$lib_dir = ANYINC . 'libraries' . DIRECTORY_SEPARATOR;
+
+		$sys_dir = ANYINC . 'systems' . DIRECTORY_SEPARATOR;
+
+		if( in_array( $class, $sys_file ) ){
+
+			require_once $sys_dir.$class.'.php';
+
+		}else{
+
+			if( is_file( $lib_dir.$class.'.php' ) ){
+
+				require_once $lib_dir.$class.'.php';
+			
+			}elseif ( is_file( $sys_dir.$class.'.php' ) ) {
+
+				require_once $sys_dir.$class.'.php';
+			
+			}
+		
+		}
+
+	}
+	# 系统异常捕获
+	public static function exceptionHandle( Exception $exception ){
+
+		if( self::$parameter['debug'] ) self::_error( $exception );
+
+	}
+	private static function _error( $exception ){
+
+		// 发送404信息
+
+		header('HTTP/1.1 404 Not Found');
+
+		header('Status:404 Not Found');
+
+		if( is_object($exception) ){
+
+			$line = $exception->getLine();
+
+			$file = $exception->getFile();
+
+			$message = $exception->getMessage();
+
+			$content = $line.$file.$message;
+
+			echo $content;
+		}
+
+	}
+	# 激活所有已安装应用的默认动作
+	private static function _activateActions(){
+
+		$installed_apps = self::$_widget->appsInstalled();
+
+		foreach ( $installed_apps as $key => $app ) {
+		
+			$action = ANYAPP .$app.DIRECTORY_SEPARATOR.'action.php';
+		
+			if(file_exists( $action )){
+				
+				require_once $action;
+			
+			}
+		
+		}
+	
 	}
 }
-# 递归去掉反斜线
-function stripslashesDeep( &$value){
-	$value = stripslashes($value);
-}
-
-header('Content-Type: text/html; charset=utf-8');
-
-if (function_exists('spl_autoload_register')) {
-	spl_autoload_register('autoload');
-}else{
-	function __autoLoad($class){
-		autoload($class);
-	}
-}
-
-set_exception_handler('exception_handle');
-
-if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()){
-	array_walk_recursive( $_GET ,'stripslashesDeep');
-	array_walk_recursive( $_POST ,'stripslashesDeep');
-	array_walk_recursive( $_COOKIE ,'stripslashesDeep');
-}
-
-# 执行安装
-if(!file_exists( ANYINC .'Config.php' ))
-	exit(include( ANYINC . 'Install.php' ));
-
-# 加载配置文件
-require( ANYINC . 'Config.php' );
-
-# 全局数据缓存变量
-$cache = new Cache( ANYINC . 'cache/data/');
-
-# 激活动作
-widget()->activate_actions();

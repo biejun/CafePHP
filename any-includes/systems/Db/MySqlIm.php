@@ -95,10 +95,25 @@ class MySqlIm{
 		return $this->query($sql);
 	}
 	# 查询多条数据
-	public function rows($table,$field,$where=''){
+	public function rows($table,$field,$where='',$order=''){
 		$temp=false;
 		$sql = "SELECT $field FROM `".$this->db_prefix."$table`";
 		if(!empty($where)) $sql.=" WHERE $where";
+		if(!empty($order)) $sql.=" ORDER BY $order";
+		$result=$this->query($sql);
+		if($result){
+			$array = array();
+			while ($row = $result->fetch_assoc()){
+				$array[] = $row;
+			}
+			$temp=$array;
+			$this->flush($result);
+		}
+		return $temp;
+    }
+	# 解析一条数据库语句，返回多条数据
+	public function fetch($sql){
+		$temp=false;
 		$result=$this->query($sql);
 		if($result){
 			$array = array();

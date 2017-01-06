@@ -24,12 +24,12 @@ if($handle=opendir($backup_dir)){
 
 if(isset($do)){
 	if($do=='backup'){
-		$content=widget('admin')->export();
+		$content=Widget::get('admin')->export();
 		$date=date('Ymd');
 		$filename=md5($date.mt_rand(0,99999));
 		$filename=$date."_".substr($filename,0,10).".sql";
 		file_put_contents($backup_dir.$filename,$content);
-		UIKit::alert('创建数据备份['.$filename.']');
+		$ui->alert('创建数据备份['.$filename.']');
 	}elseif($do=='backup_restore'){
 		if(isset($_GET['filename'])){
 			$filename=trim($_GET['filename']);
@@ -39,59 +39,54 @@ if(isset($do)){
 				$line=explode(";\n",$content);
 				widget('admin')->query($line);
 			}
-			UIKit::alert('恢复数据备份['.$filename.']');
+			$ui->alert('恢复数据备份['.$filename.']');
 		}
 	}elseif($do=='backup_delete'){
 		if(isset($_GET['filename'])){
 			$filename=trim($_GET['filename']);
 			@unlink($backup_dir.$filename);
-			UIKit::alert('删除数据备份['.$filename.']');
+			$ui->alert('删除数据备份['.$filename.']');
 		}
 	}
 }
+?>
 
-$options = array(
-	'title' => '数据库备份与恢复',
-	'template' => '
-		<div id="app" class="panel ml-15 mr-15 options">
-			<header class="panel-heading">
-				<h3>数据库备份/恢复</h3>
-			</header>
-			<div class="panel-body search">
-				<span class="fr">
-					<a href="'.$path.'&do=backup" class="btn btn-primary">新增备份</a>
-				</span>
-				<h3 class="title">备份文件在'.str_replace(ABSPATH,PATH, $backup_dir).'目录下，备份前请先确定文件目录属性是否为(0777)可写状态</h3>
-			</div>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>文件名</th>
-						<th>生成时间</th>
-						<th>操作</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="row in files">
-						<td v-text="row.filename"></td>
-						<td v-text="row.lasttime"></td>
-						<td>
-							<a v-bind:href="row.restore">恢复</a>
-							<a v-bind:href="row.delete">删除</a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	',
-	'scripts' => '
-		new Vue({
-			el : "#app",
-			data : {
-				files : '.json_encode($array).'
-			}
-		});
-	'
-);
+<div id="app" class="panel ml-15 mr-15 options">
+	<header class="panel-heading">
+		<h3>数据库备份/恢复</h3>
+	</header>
+	<div class="panel-body search">
+		<span class="fr">
+			<a href="<?php echo $path;?>&do=backup" class="btn btn-primary">新增备份</a>
+		</span>
+		<h3 class="title">备份文件在<?php echo str_replace(ABSPATH,PATH, $backup_dir);?>目录下，备份前请先确定文件目录属性是否为(0777)可写状态</h3>
+	</div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>文件名</th>
+				<th>生成时间</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr v-for="row in files" v-cloak>
+				<td v-text="row.filename"></td>
+				<td v-text="row.lasttime"></td>
+				<td>
+					<a v-bind:href="row.restore">恢复</a>
+					<a v-bind:href="row.delete">删除</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 
-return $options;
+<script type="text/javascript">
+	new Vue({
+		el : "#app",
+		data : {
+			files : <?php echo json_encode($array); ?>
+		}
+	});
+</script>

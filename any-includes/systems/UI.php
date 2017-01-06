@@ -1,157 +1,164 @@
 <?php
-if(!defined('ABSPATH'))exit('Access denied!');
+if( !defined('IS_ANY') ) exit('Access denied!');
 /**
- * 视图处理类
- *
- * @package UI
- * @version 1.0.0
+ *	视图处理类
+ *	
+ *	处理页面渲染
  */
-abstract class UI{
 
-	private $theme_root = '';
+class UI{
 
-	private $theme_url;
+	public $theme = NULL;
 
-	public $theme = '';
+	protected $title;
 
-	public $config = array();
+	protected $path;
 
-	protected $vars = array();
+	public $uri;
+
+	public $root;
+
+	public $static;
+
+	public $props = [];
+
+	public $config = [];
+
+	protected $vars = [];
+
+	public function __construct( $config , $uri ){
+
+		$this->config = array_merge($config,Widget::get('admin')->getAppConfig());
+
+		$this->path = $config['path'];
+
+		$this->uri = $uri;
+
+		$this->static = $this->path .'any-includes/statics/';
+
+	}
+
+	public function setTitle( $title ){
+
+		$this->title = $title;
+
+		return $this;
+	}
+
+	public function render( $page ){
+
+		if(NULL === $this->theme ) $this->theme = $this->config['theme'];
+
+		$this->root = $this->path.'any-themes/'.$this->theme.'/';
+
+		$templateFile = ANYTHEME.$this->theme.DIRECTORY_SEPARATOR.$page.'.php';
+
+		$content = $this->fetch( $templateFile );
+
+		header('X-Powered-By:ANYPHP');
+
+		echo $content;
 	
-	public function __construct($theme = ''){
-
-		# 网站配置数据
-		$this->config = widget()->get_apps_config();
-
-		if(!empty($theme)){
-
-			$this->theme = $theme;
-			$this->theme_root = ANYTHEME . $this->theme;
-			$this->theme_url = PATH.'any-themes/'.$this->theme.'/';
-			
-			$this->assign('path',PATH);
-			$this->assign('theme',$this->theme_url);
-			$this->assign('config',$this->config);
-		}
-		if(method_exists($this, '_initialize'))
-			$this->_initialize();
 	}
-	public function assign($key,$value=''){
-		if(is_array($key)||is_object($key)){
-			foreach ($key as $k => $v) {
-				if(!empty($k))
-					$this->vars[$k] = $v;
-			}
+
+	/**
+	 * 模板变量赋值
+	 *
+	 * @param mixed $name
+	 * @param mixed $value
+	 */
+	public function assign( $name , $value='' ){
+
+		if(is_array($name)) {
+		
+			$this->vars = array_merge($this->vars,$name);
+		
+		}else {
+		
+			$this->vars[$name] = $value;
+		}
+	}
+
+	private function fetch( $templateFile ){
+
+		if( file_exists( $templateFile ) ){
+
+			ob_start();
+
+			ob_implicit_flush(0);
+
+			$ui = $this;
+
+			extract( $this->vars , EXTR_OVERWRITE );
+
+			include $templateFile;
+
+			$content = ob_get_clean();
+
+			return $content;
+
 		}else{
-			if(!empty($key))
-				$this->vars[$key] = $value;
-		}
-	}
-	public function render($name,$data=''){
-		$template = $this->theme_root.'/'.$name.'.php';
-		if(file_exists($template)){
-			make_dir(ANYINC . 'cache/template');
-			$compile = ANYINC . 'cache/template/'.md5($this->theme.$name).'.php';
-			$filestat = @stat($compile);
-			$expires = $filestat['mtime'];
-			$filestat = stat($template);
-			if(is_array($data)){
-				$this->vars = array_merge($this->vars,$data);
-			}
-			extract($this->vars);
 
-			if ($filestat['mtime'] <= $expires){
-				if (file_exists($compile)){
-					ob_start();
-					include $compile;
-					$template = ob_get_contents();
-					ob_end_clean();
-					if(empty($template)) $expires=0;
-					echo $template;
-				}else{
-					$expires=0;
-				}
-			}elseif ($filestat['mtime'] > $expires){
-				$template = file_get_contents($template);
-				if(strpos($template,"\xEF\xBB\xBF")!==false)
-					$template = str_replace("\xEF\xBB\xBF",'',$template); # 干掉微软的BOM头
-				$pattern = array('#\{(\$[a-z0-9_]+)\}#i',
-								'#\{(\$[a-z0-9_]+)\.([a-z0-9_]+)\}#i',
-								'#\{if\s+(.+?)\}#',
-								'#\{elseif\s+(.+?)\}#',
-								'#\{else\}#',
-								'#\{\/if\}#',
-								'#\{foreach\s+(\S+)\s+as\s+(\S+)\}#',
-								'#\{\/foreach\}#',
-								'#\{import\s*\(\s*(.+)\s*\)\s*\}#i');
-				$replace = array('<?php echo $1 ;?>',
-								'<?php echo $1[\'$2\'] ;?>',
-								'<?php if (\\1) : ?>',
-								'<?php elseif(\\1) : ?>',
-								'<?php else : ?>',
-								'<?php endif; ?>',
-								'<?php if(is_array(\\1)) foreach(\\1 as \\2) : ?>',
-								'<?php endforeach; ?>',
-								'<?php $this->render($1);?> ');
-				$template = trim(str_replace('<?php exit?>','',$template));
-				$template = preg_replace($pattern,$replace,$template);
-				if (file_put_contents($compile, $template , LOCK_EX) === false)
-					throw new Exception('模板编译出现问题，请检查文件是否可写');
-				ob_start();
-				include $compile;
-				$template = ob_get_contents();
-				ob_end_clean();
-				echo $template;
-			}
+			throw new Exception('没有找到['.$templateFile.']文件!');
 		}
-	}
-	public function http_301($url){
-		header('HTTP/1.1 301 Moved Permanently');
-		Header( "Location:$url");
-		exit;
-	}
-	public function http_404(){
-		header("HTTP/1.1 404 Not Found");
-		header("Status: 404 Not Found");
-		$this->render('404');
-		exit;
 	}
 	public function message($status,$message='',$data=array(),$charset='utf-8'){
+		
 		header('Content-Type: application/json;charset='.$charset);
+		
 		if($status == 'error'){
+		
 			die('{"status":"error","message":"'.$message.'"}');
+		
 		}else{
+		
 			echo json_encode(array('status'=>'success','message'=>$message,'data'=>$data));
 		}
 	}
 	public function json($data,$code=200,$charset='utf-8'){
+		
 		$res = new Response();
+		
 		$res->status($code)
 			->header('Content-Type', 'application/json; charset='.$charset)
 			->write(json_encode($data))
 			->send();
 	}
 	public function jsonp($data,$param='jsonp',$code=200,$charset='utf-8'){
+		
 		$callback = get_query_var($param);
+		
 		$res = new Response();
+		
 		$res->status($code)
 			->header('Content-Type', 'application/json; charset='.$charset)
 			->write($callback.'('.json_encode($data).')')
 			->send();
 	}
-	public function __set($name, $value){
-		$this->vars[$name] = $value;
+	# 网页提示框，支持跳转
+	public function alert($text,$url=''){
+		
+		echo"<script type='text/javascript'>";
+		
+		echo"alert('$text');";
+		
+		if($url!=''){
+		
+			echo"location.href='$url';";
+		}else{
+			echo"history.back();";
+		}
+		
+		echo"</script>";
+		
+		exit;
 	}
-	public function __get($name){
-		return $this->vars[$name];
+	public function http404(){
+		
+		header('HTTP/1.1 404 Not Found');
+		
+		header("status: 404 Not Found");
+
+		exit;
 	}
-	public function __call($method,$args){
-		$this->http_404();
-	}
-	# 检测模板变量是否设置
-	public function __isset($name){
-		return isset($this->vars[$name]);
-	}
-	# 初始化回调
-	public function _initialize(){}	
 }

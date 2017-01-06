@@ -1,25 +1,20 @@
-<?php exit?>
-<!doctype html>
-<html>
-<head>
-<title>应用中心 - {$config.title}</title>
-{import ('static') }
-</head>
-<body data-bind="menu-item-application">
+<?php $ui->render('header');?>
 
-<section class="content-page">
-	{import ('header') }
+<section id="container" class="content-page">
+
+	<?php $ui->render('nav');?>
+
 	<section class="page">
 		<div class="mt-20">
 			<div id="app" class="panel ml-15 mr-15 options">
 				<header class="panel-heading">
-					<h3><i class="icon-plug"></i> 应用商店</h3>
+					<h3><i class="icon-plug"></i> 应用中心</h3>
 				</header>
 				<div class="panel-body search">
 					<span class="fr">
 						<input type="text" v-model="search" class="form-control fr" placeholder="搜索应用"/>
 					</span>
-					<h3 class="title">应用列表<span v-cloak>({{apps.length}})</span></h3>
+					<h3 class="title">应用列表 ( <span v-cloak v-text="apps.length"></span> )</h3>
 				</div>
 				<table class="table">
 					<thead>
@@ -39,7 +34,8 @@
 							<td v-text="row.author"></td>
 							<td v-if="row.special" class="text-center text-muted">系统应用</td>
 							<td v-else class="text-center">
-								<a href="{{row.install.path}}&hash={$app_hash}" v-text="row.install.status"></a>
+								<a href="javascript:;" v-if="row.install.status=='安装'" @click="runInstall(row.app);" v-text="row.install.status"></a>
+								<a href="javascript:;" v-else="row.install.status=='卸载'" v-text="row.install.status" @click="runUninstall(row.app);"></a>
 							</td>
 						</tr>
 					</tbody>
@@ -48,21 +44,45 @@
 		</div>
 	</section>
 </section>
+
 <script type="text/javascript">
 	new Vue({
 		el : '#app',
 		data : {
-			path : '{$path}',
+			path : '<?php echo $ui->path;?>',
 			search:'',
 			apps : []
 		},
 		created:function(){
-			this.$http.get(this.path+'admin/get_admin_application_store').then(function(response){
+			this.$http.get(this.path+'admin/application-store').then(function(response){
 				this.apps = response.data;
 			}.bind(this));
+		},
+		methods:{
+			runInstall:function(app_name,index){
+				this.$http.post(this.path+'admin/application-install',{app_name:app_name}).then(function(response){
+					var data = response.data;
+					if (data.status=='error') {
+						alertMsg(data.message);
+					}else{
+						alert(data.message);
+						window.location.reload();
+					}
+				});
+			},
+			runUninstall:function(app_name,index){
+				this.$http.post(this.path+'admin/application-uninstall',{app_name:app_name}).then(function(response){
+					var data = response.data;
+					if (data.status=='error') {
+						alertMsg(data.message);
+					}else{
+						alert(data.message);
+						window.location.reload();
+					}
+				});				
+			}
 		}
 	});
 </script>
-{import ('footer') }
-</body>
-</html>
+
+<?php $ui->render('footer');?>

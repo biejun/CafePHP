@@ -1,23 +1,12 @@
 <?php
-if(!defined('ABSPATH'))exit('Access denied!');
+if(!defined('IS_ANY'))exit('Access denied!');
 /**
  *	UI界面可视化工具类
  *
  *	这里包含的方法都是将数据处理成友好的形式输出到页面上
  */
 final class UIKit{
-	# 网页提示框，支持跳转
-	public static function alert($text,$url=''){
-		echo"<script type='text/javascript'>";
-		echo"alert('$text');";
-		if($url!=''){
-			echo"location.href='$url';";
-		}else{
-			echo"history.back();";
-		}
-		echo"</script>";
-		exit;
-	}
+
 	# 格式化时间
 	public static function formatTime($time){
 		$dur=$_SERVER['REQUEST_TIME']-$time;
@@ -29,7 +18,7 @@ final class UIKit{
 		return date('Y-m-d H:i',$time);
 	}
 	# 格式化大小
-	public static function format_size($filesize){
+	public static function formatSize($filesize){
 		$unit = array(' B', ' KB', ' MB', ' GB', ' TB');
 	    for ($f = 0; $filesize >= 1024 && $f < 4; $f++){
 	        $filesize /= 1024; 
