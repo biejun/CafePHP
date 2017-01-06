@@ -96,7 +96,7 @@ Route::get('/page/:id/:sort?',function($ui,$id,$sort){
 
 #### 数据模型
 
-在anyphp中，还有一位老司机，名字叫Widget，他有一个静态方法叫get，它专门是负责开车，为所有应用组件互相调用提供方便。
+在anyphp中，还有一位老司机，名字叫Widget，它有一个静态方法叫get，专门负责开车，为所有应用组件互相调用提供方便。
 
 每个应用的组件都有一个专门的文件夹来管理，我们给这个文件夹起名叫"widgets"，应用中所有的组件都有一个"家长"，我们给它命名为"DemoWidget.php",命名规则为每个单词的首字母必须大写。
 
@@ -118,4 +118,21 @@ Route::get('/',function($ui){
 	// 老司机带带我
 	$data = Widget::get('demo')->getDemoData();
 });
+````
+
+当然，根据不同的需要，还可以给这个家庭添加多个成员，创建不同分类的文件：
+
+````php
+class DemoApiWidget extends Widget{
+
+	public function getDemoApiData(){
+		return $this->db('...');
+	}
+}
+````
+创建一个名"DemoApiWidget.php"的文件，专门处理应用API接口的数据调用。
+
+搭乘老司机专车的方法：
+````php
+Widget::get('demo@api')->getDemoApiData(); // 在家长demo的后面跟上一个@符号，就能带上它的家庭成员api了，就是这么so easy
 ````
