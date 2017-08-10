@@ -8,10 +8,11 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="renderer" content="webkit">
 	<meta name="force-rendering" content="webkit">
-	
+
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/grid.css" />
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/fonts.css"/>
+	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/table.css"/>
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>views/admin/styles/admin.css" />
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/common.css" />
 	<link rel="icon" href="<?=$this->path;?>favicon.ico" type="image/x-icon"/>

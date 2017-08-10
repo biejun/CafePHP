@@ -258,3 +258,24 @@ button.ribbon-button>i{
 .settings .s-button:hover{
 	background: #4384d8;
 }
+
+.table{
+	background-color: #fff;
+}
+
+.table>.thead>.tr>.th,
+.table>.tbody>.tr>.td{
+	font-size: .9rem;
+}
+
+.table .table-btn-group{
+	display: inline-block;
+}
+
+.table .table-btn-group > button{
+	background-color: #fff;
+	border: none;
+	cursor: pointer;
+	color: #3f8cef;
+	height: 1.5rem;
+}

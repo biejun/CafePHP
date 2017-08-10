@@ -3,7 +3,6 @@
 namespace Coffee\Foundation;
 
 use Coffee\DataBase\DB;
-use Coffee\Foundation\App;
 use Coffee\Cache\Cache;
 
 class Widget
@@ -16,7 +15,7 @@ class Widget
 
 	public function __construct($app = '')
 	{
-		
+
 		$this->app = $app;
 
 		$this->db = $this->_initDB();

@@ -53,7 +53,10 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
+		$data = widget('admin@api')->getBackupFiles();
+
 		$res->view->assign('subtitle','数据库备份');
+		$res->view->assign('data',$data);
 		$res->view->show('backup');
 	});
 
@@ -113,10 +116,36 @@ $route->group('/admin',function($route){
 
 		if(widget('admin@user')->checkPassword($username,$password)){
 			widget('admin@user')->updateLoginTime($username);
+			// 从会话中删除已验证过得CSRF令牌
 			__unsetsession('__admin_login_csrf__');
 			$res->json('登录成功',true);
 		}else{
 			$res->json('密码错误',false);
+		}
+	});
+
+	$route->post('/post/backup/:action',function($req,$res){
+
+		$action = $req->get('action');
+
+		if('export' === $action){ // 导出
+			if(widget('admin@api')->exportSQL()){
+				echo 'success';
+			}else{
+				echo 'failed';
+			}
+		}else if('restore' === $action){ // 还原
+			$file = trim($req->post('file'));
+
+			if(widget('admin@api')->restoreSQL($file))){
+
+			}
+		}else if('delete' === $action){ // 删除
+			$file = trim($req->post('file'));
+
+			if(widget('admin@api')->deleteSQL($file)){
+
+			}
 		}
 	});
 
