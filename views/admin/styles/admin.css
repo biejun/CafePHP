@@ -1,0 +1,260 @@
+html,body{
+	height: 100%;
+	background: #f2f2f2;
+}
+
+body{
+	position: relative;
+}
+
+.container{
+	margin: 0 auto;
+	max-width: 1100px;
+	padding: 0 15px;
+}
+
+.header{
+	background: #fff;
+	min-width: 1024px;
+	max-height: 44px;
+	padding:0 15px;
+	z-index: 999;
+	-webkit-animation:slideIn .5s both;
+	animation:slideIn .5s both;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+}
+
+.nav{
+	list-style: none;
+	margin: 0;
+	height: 44px;
+}
+.nav > li{
+	position: relative;
+	float: left;
+	height: 44px;
+}
+
+.nav > li > a{
+	display: inline-block;
+	padding: 0 15px;
+	height: 44px;
+	color: #444;
+	font-size: 14px;
+	line-height: 3.14286;
+	font-weight: 400;
+	text-decoration: none;
+}
+
+.nav > li:hover.hasChild{
+	background: rgba(63, 140, 239, .9);
+}
+
+.nav > li.active > a,
+.nav > li:hover > a{
+	color: #3f8cef;
+}
+
+.nav > li:hover.hasChild > a,
+.nav > li > ul > li:hover >a{
+	color: rgba(255,255,255,.6);
+}
+
+.nav > li > ul{
+	position: absolute;
+	list-style: none;
+	display: none;
+	width: 120px;
+	z-index: 99;
+	box-shadow: 1px 4px 3px rgba(0,0,0,.2);
+}
+.nav > li > ul > li{
+	background: rgba(63, 140, 239, .9);
+	height: 40px;
+	line-height: 40px;
+}
+.nav > li > ul > li > a{
+	padding:0 15px;
+	color: #fff;
+	display: block;
+	font-weight: 400;
+	text-decoration: none;
+	font-size: 14px;
+}
+
+.nav > li:hover > ul{
+	display: block;
+}
+
+.page-main{
+	padding: 30px 0;
+}
+
+.page-main h2{
+	font-size:18px;
+	color: #323232;
+	line-height: 1.5;
+	font-weight: normal;
+}
+
+.main-panel{
+	margin-bottom: 25px;
+	border-bottom: 1px solid #d6d6d6;
+}
+
+.right-ribbons{
+	float: right;
+}
+
+button.ribbon-button{
+	display: inline-block;
+	color: #3f8cef;
+	border: none;
+	background-color: transparent;
+	cursor: pointer;
+	font-size: 14px;
+	height: 25px;
+	vertical-align: -5px;
+}
+
+button.ribbon-button>i{
+	font-size: 16px;
+}
+
+.dashboard{
+	color: #888;
+	padding: 30px 0;
+}
+
+.item-wrap{
+	margin: 0 -10px;
+}
+
+.item-wrap .item-box{
+	padding: 0 10px;
+}
+
+.item-wrap .item-header{
+	font-size: 15px;
+	color: #323232;
+}
+
+.item-wrap .item-header > h3{
+	font-size: 15px;
+	color: #808080;
+	font-weight: normal;
+	margin:0;
+	margin-bottom: 10px;
+}
+
+.item-wrap .item-body{
+	background-color: #fff;
+	border: 1px solid rgba(0,0,0,.1);
+	min-height: 350px;
+}
+
+.item-wrap .item-body .item-list{
+	list-style: none;
+	margin:0;
+	padding: 0;
+	font-size: 14px;
+}
+
+.item-wrap .item-body .item-list > li{
+	padding: 10px;
+	position: relative;
+	padding-left: 35px;
+	border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+.item-wrap .item-body .item-list > li > .flag{
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	color: #bbb;
+}
+
+.item-wrap .item-body .item-list > li > .text{
+	font-size: 13px;
+	color: #848484;
+	display: block;
+}
+
+.item-wrap .item-body .item-list > li > .text > time{
+	display: block;
+	color: #999;
+}
+
+.item-wrap .item-footer{
+	text-align: center;
+	padding: 10px 0;
+}
+
+@keyframes slideIn {
+	from {
+		-webkit-transform: translate3d(0, -44px, 0);
+		transform: translate3d(0, -44px, 0);
+		visibility: visible;
+	}
+	to {
+		-webkit-transform: translate3d(0, 0, 0);
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+.settings{
+	font-size: 13px;
+}
+.settings > .s-table{
+	width: 100%;
+}
+.settings > .s-table .item-name{
+	color: #999;
+}
+.settings > .s-table th,
+.settings > .s-table td{
+	padding: 5px 10px;
+}
+.settings > .s-table .s-input{
+    vertical-align: middle;
+    width: 300px;
+    height: 22px;
+    line-height: 22px;
+    display: inline-block;
+    padding: 0 4px;
+    height: 24px;
+    line-height: 24px9;
+    font-size: 13px;
+    border: 1px solid #bbb;
+    border-bottom-color: #d8d8d8;
+    border-right-color: #d8d8d8;
+    outline: 0;
+    box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    overflow: hidden;
+    resize:none;
+}
+.settings > .s-table textarea.s-input{
+	height: auto;
+}
+.settings > .s-table .s-input:hover {
+    box-shadow: inset 1px 1px 1px 0 #d8d8d8;
+    -webkit-box-shadow: inset 1px 1px 1px 0 #d8d8d8;
+    -moz-box-shadow: inset 1px 1px 1px 0 #d8d8d8;
+    -o-box-shadow: inset 1px 1px 1px 0 #d8d8d8;
+}
+
+.settings .s-button{
+	background: #3f8cef;
+	color: #fff;
+	display: inline-block;
+	height: 28px;
+	line-height: 28px;
+	padding: 0 13px;
+	cursor: pointer;
+	border: none;
+}
+.settings .s-button:hover{
+	background: #4384d8;
+}

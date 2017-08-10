@@ -1,139 +1,81 @@
 <?php
+/**
+ * Install Project!
+ *
+ * @code biejun <biejun@anyjs.org>
+ * @date 2017-07-16
+ */
 
-// 系统目录
+if(version_compare(PHP_VERSION, '5.4.0', '<')) {
 
-define( 'ABSPATH' , dirname(__FILE__).DIRECTORY_SEPARATOR );
-
-define( 'ANYAPP' , ABSPATH . 'any-apps' . DIRECTORY_SEPARATOR );
-
-define( 'ANYTHEME' , ABSPATH . 'any-themes' . DIRECTORY_SEPARATOR );
-
-define( 'ANYINC' , ABSPATH . 'any-includes' . DIRECTORY_SEPARATOR );
-
-// 系统变量
-
-define( 'IS_ANY' , true );
-
-include ANYINC . 'Core.php';
-
-$core = new Core();
-
-# 写入用户表
-function user_table($db_prefix){
-	return "CREATE TABLE IF NOT EXISTS `".$db_prefix."user` (
-				`user_id` int(11) NOT NULL AUTO_INCREMENT,
-				`user_name` varchar(15) NOT NULL DEFAULT '',
-				`user_password` varchar(32) NOT NULL DEFAULT '',
-				`user_reigster_time` int(11) unsigned NOT NULL DEFAULT '0',
-				`user_login_time` int(11) unsigned NOT NULL DEFAULT '0',
-				`user_group` tinyint(4) unsigned NOT NULL DEFAULT '1',
-			PRIMARY KEY (`user_id`)
-			) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
-}
-# 写入配置表
-function config_table($db_prefix){
-	return "CREATE TABLE IF NOT EXISTS `".$db_prefix."config` (
-				`config_key` varchar(12) NOT NULL DEFAULT '',
-				`config_value` text NOT NULL,
-			UNIQUE KEY `config_key` (`config_key`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+	die('The PHP version must be greater than 5.4.0!');
 }
 
+require __DIR__ .'/coffee/Bootstrap.php';
 
-$data = array();
+use Coffee\Http\Request;
+use Coffee\Http\Response;
+use Coffee\Database\DB;
+use Coffee\Support\Str;
 
-$data['key'] = get_random_key();
+header( "Content-type: text/html; charset=utf-8" );
 
-$data['path'] = str_replace('install.php','',$_SERVER['SCRIPT_NAME']);
+function returnMsg($code){
+	// 后端校验
+	switch ($code) {
+		case '1000':
+			$msg = '数据库用户或密码不能为空!';
+			break;
+		case '1001':
+			$msg = '数据库创建失败!';
+			break;
+		case '1002':
+			$msg = '请检查config目录属性权限是否为0777可写';
+			break;
+		case '1003':
+			$msg = '缺少系统默认sql文件!';
+			break;
+		case '1004':
+			$msg = '两次输入的密码不一致!';
+			break;
+		case '1005':
+			$msg = '密码不能少于6位!';
+			break;
+		case '1006':
+			$msg = '用户名或密码不能为空!';
+			break;
+		case '2000':
+			$msg = '数据库表写入成功!';
+			break;
+		default:
+			$msg = '无效的错误码';
+			break;
+	}
+	return $msg;
+}
 
-$status = false;
+function rewrite($path){
 
-if(isset($_GET['do'])&&$_GET['do']=='install'){
+	// Apache Rewrite 文件
+	$file = fopen('.htaccess', 'wb');
 
-	if($_POST){
-
-		$array = [];
-
-		$array['debug']				= ($_POST['debug']==1) ? true : false;
-	
-		$array['db']['driver']		= $_POST['driver']; // mysql | mysqli | pdo
-	
-		$array['db']['host'] 		= $_POST['db_host'];
-	
-		$array['db']['name'] 		= $_POST['db_name'];
-	
-		$array['db']['user'] 		= $_POST['db_user'];
-	
-		$array['db']['password']	= $_POST['db_password'];
-	
-		$array['db']['prefix']		= $_POST['db_prefix'];
-
-		$array['validate']			= $_POST['validate'];
-
-		$array['path']				= $data['path'];
-
-		$array['admin']				= $_POST['user_name'];
-
-		$array['theme']				= 'cafe';
-
-		$user_name = $array['admin'];
-
-		$db_prefix = $array['db']['prefix'];
-		
-		$user_password = md5($_POST['user_password'].$array['validate']);
-		
-		$register_time = time();
-
-		$any_db = DataBase::factory( $array['db'],true );
-
-		
-		$query = array();
-		
-		$query[] = user_table($db_prefix);
-		
-		$query[] = config_table($db_prefix);
-		
-		$query[] = "INSERT INTO `".$db_prefix."user` VALUES (1,'$user_name','$user_password','$register_time',0,'3');";
-		
-		$query[] = "INSERT INTO `".$db_prefix."config` VALUES ('apps','admin'),('theme','cafe'),('admin','YToyNjp7aTowO3M6NToidGl0bGUiO2k6MTtzOjg6InN1YnRpdGxlIjtpOjI7czo4OiJrZXl3b3JkcyI7aTozO3M6MTE6ImRlc2NyaXB0aW9uIjtpOjQ7czo4OiJzdGF0Y29kZSI7aTo1O3M6Njoibm90aWNlIjtpOjY7czoyOiJhZCI7aTo3O3M6MzoiaWNwIjtpOjg7czoxMToic210cF9zZXJ2ZXIiO2k6OTtzOjk6InNtdHBfcG9ydCI7aToxMDtzOjk6InNtdHBfdXNlciI7aToxMTtzOjEzOiJzbXRwX3Bhc3N3b3JkIjtpOjEyO3M6MTA6InNtdHBfZW1haWwiO3M6NToidGl0bGUiO3M6MTI6IuermeeCueagh+mimCI7czo4OiJzdWJ0aXRsZSI7czowOiIiO3M6ODoia2V5d29yZHMiO3M6MDoiIjtzOjExOiJkZXNjcmlwdGlvbiI7czowOiIiO3M6ODoic3RhdGNvZGUiO3M6MDoiIjtzOjY6Im5vdGljZSI7czowOiIiO3M6MjoiYWQiO3M6MDoiIjtzOjM6ImljcCI7czowOiIiO3M6MTE6InNtdHBfc2VydmVyIjtzOjE4OiJzbXRwLmV4bWFpbC5xcS5jb20iO3M6OToic210cF9wb3J0IjtzOjI6IjI1IjtzOjk6InNtdHBfdXNlciI7czowOiIiO3M6MTM6InNtdHBfcGFzc3dvcmQiO3M6MDoiIjtzOjEwOiJzbXRwX2VtYWlsIjtzOjA6IiI7fQ==');";
-
-		foreach($query as $sql){
-			
-			$any_db->query($sql);
-		}
-
-		$config = "<?php\nif(!defined('IS_ANY'))exit('Access denied!');\n";
-
-		$config .= "define('VALIDATE','".$array['validate']."');\n\n";
-
-		$config .= "define('PATH','".$array['path']."');\n\n";
-
-		$config .= "return ".var_export($array,true).";";
-
-		file_put_contents(ANYINC.'Config.php',$config,LOCK_EX) or die("请检查any-includes目录权限是否可写，或修改目录权限为0777!");
-
-		// Apache Rewrite 文件
-		
-		$file = fopen('.htaccess', 'wb');
-		
-		$content = '
+	$content = '
 <IfModule mod_rewrite.c>
-Options +FollowSymlinks
-RewriteEngine On
-RewriteBase ' . $data['path'] . '
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+	Options +FollowSymlinks
+	RewriteEngine On
+	RewriteBase ' . $path . '
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
 </IfModule>';
-		
-		fwrite($file, $content);
 
-		// Nginx Rewrite 文件
+	fwrite($file, $content);
 
-		$file = fopen('anyphp.conf', 'wb');
-		
-		$content = '
-location '.$data['path'].' {
+	// Nginx Rewrite 文件
+	$file = fopen('nginx.conf', 'wb');
+
+	$content = '
+location '.$path.' {
 	if (-f $request_filename/index.php){
 	    rewrite (.*) $1/index.php;
 	}
@@ -141,209 +83,426 @@ location '.$data['path'].' {
 	    rewrite (.*) /index.php;
 	}
 }';
-		
-		fwrite($file, $content);
-		
-		$status = true;
+
+	fwrite($file, $content);
+}
+
+$req = new Request();
+
+$res = new Response();
+
+$step = $req->get('step',1);
+
+if( 1 == $step ){
+
+	if($req->isPost()){
+
+		extract($req->post());
+
+		if(!empty($host) && !empty($user) && !empty($password) && !empty($name)){
+
+			$array = array();
+
+			$array['database']['driver'] = $driver;
+			$array['database']['host'] = $host;
+			$array['database']['name'] = $name;
+			$array['database']['user'] = $user;
+			$array['database']['password'] = $password;
+			$array['database']['port'] = null;
+			$array['database']['prefix'] = $prefix;
+			$array['database']['charset'] = 'utf8';
+			$array['database']['create'] =  (bool) $create;
+			$array['cache']['location'] = 'cache/datastore';
+
+			$file = "<?php\n return ".var_export($array,true).";";
+
+			if(!file_put_contents('config/database.php',$file,LOCK_EX)){
+				$res->redirect('?step=1&code=1001');
+			}
+			$res->redirect('?step=2');
+		}else{
+			$res->redirect('?step=1&code=1000');
+		}
+
+	}
+}else if( 2 == $step ){
+
+	$salt = Str::quickRandom(18);
+
+	if($req->isPost()){
+
+		extract($req->post());
+
+		if(!empty($username) && !empty($password) && !empty($password_once)){
+
+			if(strlen($password)<6){
+				$res->redirect('?step=2&code=1005');
+			}
+
+			if($password !== $password_once){
+				$res->redirect('?step=2&code=1004');
+			}
+
+			$sql = file_get_contents('install/mysql.sql');
+
+			if($sql){
+
+				$db = (new DB( conf('database') ))->connect( conf('database','create') );
+
+				$sql = str_replace('any_',conf('database','prefix'), $sql);
+				$sql = str_replace('%charset%',conf('database','charset'), $sql);
+				$sql = explode(';', $sql);
+
+				foreach ($sql as $query) {
+					$query = trim($query);
+					if ($query) {
+						$db->query($query);
+					}
+				}
+
+				$db->insert('users',[
+					'name' => trim($username),
+					'created' => $_SERVER['REQUEST_TIME'],
+					'password'=> password_hash($password,PASSWORD_BCRYPT),
+					'group'=> $group
+				]);
+
+				rewrite( $path );
+
+				$array = array();
+
+				$array['system']['timezone'] = 'PRC';
+				$array['system']['charset'] = 'utf-8';
+				$array['system']['debug'] = true;
+				$array['system']['path'] = $path;
+				$array['system']['salt'] = $salt;
+
+				$file = "<?php\n return ".var_export($array,true).";";
+
+				if(!file_put_contents('config/system.php',$file,LOCK_EX)){
+					$res->redirect('?step=1&code=1001');
+				}
+
+				$installFile = md5(Str::quickRandom(10)) . '.php';
+
+				if( rename( 'install.php', $installFile) ){
+					# 若要重新安装，将文件重命名为install.php即可
+					$res->redirect($installFile.'?step=2&code=2000&status=success');
+				}
+
+			}else{
+				$res->redirect('?step=2&code=1003');
+			}
+		}else{
+			$res->redirect('?step=2&code=1006');
+		}
 	}
 }
-?>
-<!doctype html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>安装 - ANYPHP</title>
-		<style type="text/css">
-		*{
-			margin: 0;
-			padding: 0;
+?><!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head lang="zh-CN">
+	<meta charset="<?php echo conf('system','charset'); ?>" />
+	<title>快速安装</title>
+	<link rel="stylesheet" type="text/css" href="assets/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="assets/css/common.css" />
+	<style>
+		html,body{
+			background: #f2f2f2;
 		}
-		html{
-			background-color: #eee;
-		}
-		body{
-			margin: 100px auto 40px;
-			padding: 30px 20px;
-			font-family: "Microsoft Yahei",sans-serif;
-			max-width: 700px;
-			background-color: #fff
-		}
-		h1{
-			font-size: 21px;
-			font-weight: normal;
-			padding-bottom: 10px;
-			border-bottom: 1px solid #ededed;
-			color: #333;
-			margin-bottom: 15px;
-		}
-		.alert{
-			color: #31708f;
-			padding: 10px 15px;
-			background-color: #d9edf7;
-			border:1px solid #bce8f1;
-			margin-bottom: 10px;
-		}
-		.input-group{
-			margin-left: -20px;
-			margin-right: -20px;
+
+		.container{
+			width: 500px;
+			margin: 60px auto;
+			background: #fff;
 			padding: 20px;
 		}
-		.input-group:hover{
-			background-color: #F0F0F0;
-		}
-		.input-form,.input-addon{
-			display: block;
-		}
-		.select{
-			display:inline-block;
-			padding:6px 12px;
-			font-size:14px;
-			color:#555;
-			background-color:#fff;
-			background-image:none;
-			border:1px solid #ccc;
-			border-radius:4px;
-			*display: inline;
-			*zoom: 1;
-		}
-		.input-form{
-			width: 100%;
-			padding: 10px;
-			font-size: 14px;
-			border:1px solid #ddd;
-			box-shadow:inset 0 1px 1px rgba(0,0,0,.075);
-			transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-			-webkit-box-sizing: border-box;
-			-moz-box-sizing: border-box;
-			box-sizing: border-box;
-		}
-		.input-form:focus{
-			outline: 0;
-			border:1px solid #ddd;
-			border-left: 3px solid #3E97EB;
-		}
-		.input-addon{
-			margin-bottom: 5px;
-			color: #666;
-		}
-		.submit{
-			width: 150px;
-			height: 35px;
-			line-height: 35px;
-			text-align: center;
-			border:1px solid #3E97EB;
-			border-radius: 3px;
-			margin: auto;
-			display: block;
-			margin-top: 20px;
-			font-size: 14px;
-			color: #3E97EB;
-			background-color: #fff;
-			cursor: pointer;
-		}
-		.submit:hover{
-			background-color: #3E97EB;
-			color: white;
-		}
-		</style>
-	</head>
-	<body>
-		<?php if(!$status){?>
-		<h1>安装</h1>
-		<div class="alert">您当前的系统环境：<?php echo PHP_OS=='WINNT'?'Windows':PHP_OS;?>&nbsp;/&nbsp;<?php echo version_compare(PHP_VERSION,'5.4.0','<=')?'当前PHP版本过低，请更新版本':'PHP ',PHP_VERSION,' 适合安装'; ?></div>
-		<form method="post" action="<?php echo $_SERVER['SCRIPT_NAME'];?>?do=install" onsubmit="return post_check(this)">
-			<div class="input-group">
-				<label class="input-addon">调试模式</label>
-				<select name="debug" class="select">
-					<option value="1">开启</option>
-					<option value="0">关闭</option>
-				</select>
-			</div>
-			<div class="input-group">
-				<label class="input-addon">数据库类型</label>
-				<select name="driver" class="select">
-					<option value="mysqli">Mysqli 原生扩展版（推荐）</option>
-					<option value="mysql">Mysql 原生</option>
-				</select>
-			</div>
-			<div class="input-group">
-				<label class="input-addon">数据库服务器</label>
-				<input class="input-form" name="db_host" value="localhost"/>
-			</div>
-			<div class="input-group">
-				<label class="input-addon">数据库用户</label>
-				<input class="input-form" name="db_user" value="root"/>
-			</div>
-			<div class="input-group">
-				<label class="input-addon">数据库密码</label>
-				<input class="input-form" name="db_password" value="root"/>
-			</div>
-			<div class="input-group">
-				<label class="input-addon">数据库名</label>
-				<input class="input-form" name="db_name" value="any_php" placeholder="需要存放表的库名"/>
-			</div>
-			<div class="input-group">
-				<label class="input-addon">数据库表前缀</label>
-				<input class="input-form" name="db_prefix" value="any_" placeholder="用于规范表命名"/>
-			</div>
-			<div class="input-group">
-				<label class="input-addon">管理员</label>
-				<input class="input-form" name="user_name" value="" placeholder="仅限英文数字及下划线"/>
-			</div>
-			<div class="input-group">
-				<label class="input-addon">密码</label>
-				<input type="password" class="input-form" name="user_password" value="" placeholder="密码不能少于6位"/>
-			</div>
-			<div class="input-group">
-				<label class="input-addon">确认密码</label>
-				<input type="password" class="input-form" name="user_password_once" value="" placeholder="再输一次"/>
-			</div>
-			<div class="input-group">
-				<label class="input-addon">安全验证</label>
-				<input class="input-form" name="validate" value="<?=$data['key']?>" placeholder="用于系统信息加密，请勿为空"/>
-			</div>
-			<button type="submit" class="submit">确定安装</button>
-		</form>
-		<script type="text/javascript">
-		function post_check(form){
-			if(form.user_name.value==''){
-				alert('管理员不能为空!');
-				form.user_name.focus();
-				return false;
-			}
-			if(form.user_password.value.length<6){
-				alert('管理员密码不能少于6位!');
-				form.user_password.focus();
-				return false;
-			}
-			if(form.user_password.value!==form.user_password_once.value){
-				alert('两次输入的密码不一致!');
-				form.user_password.focus();
-				return false;
-			}
-			return true
-		}
-		</script>
-		<?php }else{?>
-		
-		<h1>安装成功!</h1>
-		祝您使用愉快!&nbsp;系统将在<span id="num">5</span>秒后自动刷新页面
-		<script type="text/javascript">
-		function auto_redirect(sec){
-			var num = document.getElementById('num');
-			num.innerText = sec;
-			sec--;
-			if(sec>0){
-				setTimeout(function(){
-					auto_redirect(sec);
-				},1000);
-			}else{
-				location.href = '<?=$data["path"]?>';
-			}
-		}
-		auto_redirect(5);
-		</script>
-		<?php }?>
 
-	</body>
+		h3{
+			margin: 0;
+			font-size: 16px;
+			font-weight: bold;
+			margin-bottom: 15px;
+		}
+
+		.form-addons{
+			margin-bottom: 20px;
+		}
+
+		.form-addons > label{
+			font-weight: bold;
+			display: block;
+			font-size: 12px;
+			height: 20px;
+			color: #555;
+		}
+
+		.form-addons > .form-input{
+			padding: 5px 10px;
+			border: 1px solid #e3e3e3;
+			width: 100%;
+			border-radius: 2px;
+			font-size: 14px;
+			line-height: 14px;
+		}
+
+		.form-submit{
+			padding: 6px 12px;
+			cursor: pointer;
+			font-size: 12px;
+			color: #fff;
+			background-color: #4395ff;
+			border:1px solid #2481fe;
+			border-radius: 2px;
+		}
+		.form-submit:hover{
+			background-color: #4890ef;
+		}
+
+		.message-box{
+			padding:10px 15px;
+			font-size: 12px;
+			margin-bottom: 15px;
+			font-weight: bold;
+			border-radius: 2px;
+			display: none;
+		}
+
+		.message-box.success{
+			background-color: #d9ebff;
+			color:#366aa4;
+			display: block;
+		}
+
+		.message-box.success a{
+			color: #25507f;
+			margin-left: 5px;
+		}
+
+		.message-box.error{
+			background-color: #ffd9d9;
+			color:#c94b4b;
+			display: block;
+		}
+
+		.back{
+			font-size: 12px;
+			text-decoration: none;
+			color: #999;
+			margin-left: 3px;
+		}
+
+		.back:hover{
+			color: #2481fe;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+
+	<?php if(1 == $step) : ?>
+
+		<h3>数据库配置</h3>
+		<div id="messageBox" class="message-box<?php if($req->get('code')):?> error<?php endif;?>">
+			<?php if($req->get('code')):?>
+				<?php echo returnMsg($req->get('code')); ?>
+			<?php endif;?>
+		</div>
+		<form method="post" action="?step=1" onsubmit="return validate_form(this)">
+			<div class="form-addons">
+				<label for="">数据库驱动</label>
+				<select class="form-input" name="driver" value="<?php echo conf('database','driver');?>">
+					<option value="mysqli">MySQLi</option>
+				</select>
+			</div>
+			<div class="form-addons">
+				<label for="">数据库服务器</label>
+				<input type="text" class="form-input" name="host" value="<?php echo conf('database','host');?>" onchange="input_trim(this);">
+			</div>
+			<div class="form-addons">
+				<label for="">数据库服务器</label>
+				<input type="text" class="form-input" name="host" value="<?php echo conf('database','host');?>" onchange="input_trim(this);">
+			</div>
+			<div class="form-addons">
+				<label for="">数据库名称</label>
+				<input type="text" class="form-input" name="name" value="<?php echo conf('database','name');?>" onchange="input_trim(this);">
+			</div>
+			<div class="form-addons">
+				<label for="">数据库用户名</label>
+				<input type="text" class="form-input" name="user" value="<?php echo conf('database','user');?>" onchange="input_trim(this);">
+			</div>
+			<div class="form-addons">
+				<label for="">数据库密码</label>
+				<input type="password" class="form-input" name="password" value="<?php echo conf('database','password');?>" onchange="input_trim(this);">
+			</div>
+			<div class="form-addons">
+				<label for="">数据库表前缀</label>
+				<input type="text" class="form-input" name="prefix" value="<?php echo conf('database','prefix');?>" onchange="input_trim(this);">
+			</div>
+			<div class="form-addons">
+				<label for="">是否自动创建数据库</label>
+				<input type="checkbox" name="create" value="1" checked="checked">
+			</div>
+			<button type="submit" class="form-submit">下一步</button>
+		</form>
+
+		<script type="text/javascript">
+		/*
+		 * 验证表单
+		 */
+		function validate_form(o){
+
+			var messageBox = document.getElementById('messageBox');
+
+			var host = o.host.value,
+				name = o.name.value,
+				user = o.user.value,
+				password = o.password.value,
+				prefix = o.prefix.value;
+
+			messageBox.className = 'message-box';
+
+			if(name === ''){
+				messageBox.innerText = '请填写数据库名称';
+				messageBox.classList.add('error');
+				o.name.focus();
+				return false;
+			}
+
+			if(user === ''){
+				messageBox.innerText = '请填写数据库用户名';
+				messageBox.classList.add('error');
+				o.user.focus();
+				return false;
+			}
+
+			if(password === ''){
+				messageBox.innerText = '请填写数据库密码';
+				messageBox.classList.add('error');
+				o.password.focus();
+				return false;
+			}
+
+			return true;
+		}
+
+		</script>
+
+	<?php elseif (2 == $step) : ?>
+
+		<?php if($req->get('status')):?>
+
+		<h3>安装成功</h3>
+		<div id="messageBox" class="message-box success">
+			<p>生成系统配置文件...成功</p>
+			<p>生成伪静态文件...成功</p>
+			<p>写入数据库表...成功</p>
+			<p>写入管理员权限...成功</p>
+			<p>安装完成，系统将在<span id="num"></span>秒后自动<a href="<?php echo conf('system','path');?>">返回首页</a></p>
+		</div>
+
+		<script>
+			function auto_redirect(sec){
+				var num = document.getElementById('num');
+				num.innerText = sec;
+				if(--sec>0){
+					setTimeout(function(){
+						auto_redirect(sec);
+					},1000);
+				}else{
+					location.href = "<?php echo conf('system','path');?>";
+				}
+			}
+			auto_redirect(5);
+		</script>
+
+		<?php else : ?>
+
+		<h3>站点配置</h3>
+		<div id="messageBox" class="message-box<?php if($req->get('code')):?> error<?php endif;?>">
+			<?php if($req->get('code')):?><?php echo returnMsg($req->get('code')); ?><?php endif;?>
+		</div>
+		<form method="post" action="?step=2" onsubmit="return validate_form(this)">
+			<div class="form-addons">
+				<label for="">用户名</label>
+				<input type="text" class="form-input" name="username" onchange="input_trim(this);">
+			</div>
+			<div class="form-addons">
+				<label for="">密码</label>
+				<input type="password" class="form-input" name="password" onchange="input_trim(this);">
+			</div>
+			<div class="form-addons">
+				<label for="">确认密码</label>
+				<input type="password" class="form-input" name="password_once" onchange="input_trim(this);">
+			</div>
+			<div class="form-addons">
+				<label for="">用户组</label>
+				<select name="group" class="form-input">
+					<option value="1">普通用户</option>
+					<option value="2">会员用户</option>
+					<option value="3" selected>管理组</option>
+				</select>
+			</div>
+			<div class="form-addons">
+				<label for="">站点目录</label>
+				<input type="text" class="form-input" name="path" value="<?php echo str_replace('install.php','',$_SERVER['SCRIPT_NAME']);?>" onchange="input_trim(this);">
+			</div>
+			<div class="form-addons">
+				<label for="">站点密钥</label>
+				<input type="text" class="form-input" name="salt" value="<?php echo $salt;?>" onchange="input_trim(this);">
+			</div>
+			<button type="submit" class="form-submit">安装</button>
+			<a href="?step=1" class="back">上一步</a>
+		</form>
+
+		<script type="text/javascript">
+		/*
+		 * 验证表单
+		 */
+		function validate_form(o){
+
+			var messageBox = document.getElementById('messageBox');
+
+			var username = o.username.value,
+				password = o.password.value,
+				password_once = o.password_once.value,
+				usergroup = o.usergroup.value;
+
+			messageBox.className = 'message-box';
+
+			if(username === ''){
+				messageBox.innerText = '用户名不能为空';
+				messageBox.classList.add('error');
+				o.username.focus();
+				return false;
+			}
+
+			if(password === '' || password.length < 6){
+				messageBox.innerText = (password.length < 6) ? '密码不能少于6位' :'密码不能为空';
+				messageBox.classList.add('error');
+				o.password.focus();
+				return false;
+			}
+
+			if(password !== password_once){
+				messageBox.innerText = '两次输入的密码不一致';
+				messageBox.classList.add('error');
+				o.password_once.focus();
+				return false;
+			}
+
+			return true;
+		}
+
+		</script>
+
+		<?php endif; ?>
+
+	<?php endif; ?>
+	</div>
+	<script type="text/javascript">
+	function input_trim(o){
+		o.value = o.value.trim();
+	}
+	</script>
+</body>
 </html>
