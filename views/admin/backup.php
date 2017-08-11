@@ -7,7 +7,7 @@
 		<div class="main-panel">
 			<div class="right-ribbons">
 				<form action="<?php echo $this->path;?>admin/post/backup/export" method="post">
-					<button type="submit" class="ribbon-button" role="button"><i class="icon icon-plus-circled"></i>创建备份</button>
+					<button type="submit" class="ribbon-button" role="button"><i class="icon icon-plus-circled"></i>备份数据库</button>
 				</form>
 			</div>
 			<h2><?php echo $subtitle;?></h2>

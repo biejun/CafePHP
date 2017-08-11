@@ -47,6 +47,10 @@ body{
 	text-decoration: none;
 }
 
+.nav > li > a > i{
+	margin-left: -3px;
+}
+
 .nav > li:hover.hasChild{
 	background: rgba(63, 140, 239, .9);
 }
@@ -121,7 +125,7 @@ button.ribbon-button{
 button.ribbon-button>i{
 	font-size: 14px;
 	vertical-align: middle;
-	margin-right: 5px;
+	margin-right: 3px;
 }
 
 .dashboard{
@@ -262,13 +266,10 @@ button.ribbon-button>i{
 	background: #4384d8;
 }
 
-.table{
-	background-color: #fff;
-}
-
 .table>.thead>.tr>.th,
 .table>.tbody>.tr>.td{
-	font-size: .9rem;
+	font-size: .8rem;
+	background-color: #fff;
 }
 
 .table>.tbody>.tr>.td{
@@ -280,11 +281,11 @@ button.ribbon-button>i{
 }
 
 .table .table-btn-group > button{
-	background-color: #fff;
+	background-color: transparent;
 	border: none;
 	cursor: pointer;
 	color: #3f8cef;
-	height: 1.5rem;
+	height: 1.2rem;
 }
 
 .notify{

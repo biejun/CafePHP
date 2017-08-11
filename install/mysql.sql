@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `any_configs` (
 
 INSERT INTO `any_configs` (`name`, `alias`,`value`,`type`,`group`) VALUES
 ('title','站点标题','甜蜜时刻','text',1)
-,('subtitle','副标题','快速优雅的构建网络应用','text',1)
+,('subtitle','副标题','优雅快速的构建网络应用','text',1)
 ,('description','站点关键字','grace','text',1)
 ,('keywords','站点描述','','bigtext',1)
 ,('icp','备案号','','text',1)

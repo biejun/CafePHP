@@ -6,6 +6,6 @@
     'charset' => 'utf-8',
     'debug' => true,
     'path' => '/',
-    'salt' => 'Zz0aoLnR47ftoyFsla',
+    'salt' => 'yZjFNxSUYMhoVXu6Q0',
   ),
 );

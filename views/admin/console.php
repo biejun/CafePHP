@@ -41,6 +41,17 @@
 							<h3>操作日志<i class="icon icon-angle-down"></i></h3>
 						</header>
 						<div class="item-body">
+							<?php foreach ($operateLogs as $row) :?>
+							<ul class="item-list">
+								<li>
+									<span class="flag"><i class="icon-asterisk"></i></span>
+									<span class="text">
+										<strong class="mr-5"><?php echo $row['name'];?></strong><?php echo $row['text'];?>。
+										<time class="time mt-5"><?php echo $row['time'];?></time>
+									</span>
+								</li>
+							</ul>
+							<?php endforeach;?>
 						</div>
 					</div>
 				</div>

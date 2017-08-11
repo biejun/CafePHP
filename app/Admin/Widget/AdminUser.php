@@ -72,6 +72,24 @@ namespace App\Admin\Widget
 			$this->setLoginLog($username, $time);
 		}
 
+		public function updatePassword($oldPassword,$newPassword)
+		{
+			$adminToken = __getcookie('__admin_token__');
+			$username = __session('__admin_name__');
+
+			if($this->checkPassword($username,$oldPassword)){
+
+				$newPassword = $this->db->escape($newPassword);
+
+				$this->db->update($this->table,[
+					'password' => password_hash($newPassword,PASSWORD_BCRYPT)
+				],"`token` = '$adminToken' and `group` = '3'");
+
+				return true;
+			}
+			return false;
+		}
+
 		public function setLoginLog($username, $time)
 		{
 

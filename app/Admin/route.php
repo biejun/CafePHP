@@ -7,9 +7,11 @@ $route->group('/admin',function($route){
 		$req->action->on('admin:permission',$req,$res);
 
 		$loggedLogs = widget('admin@user')->getloggedLogs();
+		$operateLogs = widget('admin@operate')->getOperate();
 
 		$res->view->assign('subtitle','控制台');
 		$res->view->assign('loggedLogs',$loggedLogs);
+		$res->view->assign('operateLogs',$operateLogs);
 		$res->view->show('console');
 	});
 
@@ -91,8 +93,8 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
-		$res->view->assign('subtitle','');
-		$res->view->show('files');
+		$res->view->assign('subtitle','个人资料');
+		$res->view->show('profile');
 	});
 
 	$route->get('/account/operation',function($req,$res){
@@ -121,6 +123,16 @@ $route->group('/admin',function($route){
 			$res->json('请求参数错误',false);
 		}
 
+		if(empty($username)){
+
+			$res->json('用户名不能为空!',false);
+		}
+
+		if(!isset($password{5})){
+		
+			$res->json('密码不能少于六位!',false);
+		}
+
 		if(!widget('admin@user')->checkUserName($username)){
 			$res->json('您没有权限登录!',false);
 		}
@@ -144,6 +156,7 @@ $route->group('/admin',function($route){
 		if('export' === $action){ // 导出
 
 			if(widget('admin@api')->exportSQL()){
+				widget('admin@operate')->setOperate("备份了数据库");
 				$req->action->on('admin:notify','success','导出成功!');
 			}else{
 				$req->action->on('admin:notify','error','导出失败!');
@@ -153,6 +166,7 @@ $route->group('/admin',function($route){
 			$file = trim($req->post('file'));
 
 			if(widget('admin@api')->restoreSQL($file)){
+				widget('admin@operate')->setOperate("还原了{$file}数据库备份文件");
 				$req->action->on('admin:notify','success','还原成功!');
 			}else{
 				$req->action->on('admin:notify','error','还原失败!');
@@ -162,6 +176,7 @@ $route->group('/admin',function($route){
 			$file = trim($req->post('file'));
 
 			if(widget('admin@api')->deleteBackup($file)){
+				widget('admin@operate')->setOperate("删除了{$file}数据库备份文件");
 				$req->action->on('admin:notify','success','删除成功!');
 			}else{
 				$req->action->on('admin:notify','error','删除失败!');
@@ -178,6 +193,7 @@ $route->group('/admin',function($route){
 		$data = $req->post();
 
 		if(widget('admin@config')->updateSiteConfigs($data)){
+			widget('admin@operate')->setOperate('更新了站点设置');
 			$req->action->on('admin:notify','success','保存成功!');
 		}
 
@@ -230,6 +246,40 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
+		$oldPassword = trim($req->post('oldPassword'));
+		$newPassword = trim($req->post('newPassword'));
+		$newPasswordOnce = trim($req->post('newPasswordOnce'));
+
+		if(empty($oldPassword)){
+			$req->action->on('admin:notify','error','旧密码不能为空!');
+			$res->goBack();
+		}
+		if(empty($newPassword)){
+			$req->action->on('admin:notify','error','新密码不能为空!');
+			$res->goBack();
+		}
+		if(empty($newPasswordOnce)){
+			$req->action->on('admin:notify','error','请确认密码!');
+			$res->goBack();
+		}
+		if($oldPassword === $newPassword){
+			$req->action->on('admin:notify','error','请设置一个新的密码!');
+			$res->goBack();
+		}
+
+		if($newPassword != $newPasswordOnce){
+			$req->action->on('admin:notify','error','两次输入的新密码不一致!');
+			$res->goBack();
+		}
+
+		if(widget('admin@user')->updatePassword($oldPassword,$newPassword)){
+			widget('admin@operate')->setOperate('修改了账户密码');
+			$req->action->on('admin:notify','error','设置成功!');
+			$res->goBack();
+		}else{
+			$req->action->on('admin:notify','error','旧密码不正确!');
+			$res->goBack();		
+		}
 	});
 
 });
