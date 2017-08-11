@@ -124,12 +124,10 @@ $route->group('/admin',function($route){
 		}
 
 		if(empty($username)){
-
 			$res->json('用户名不能为空!',false);
 		}
 
 		if(!isset($password{5})){
-		
 			$res->json('密码不能少于六位!',false);
 		}
 

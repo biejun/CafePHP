@@ -4,14 +4,13 @@
 .font-icon{
 	color: #555;
 	padding:3px 5px;
-	border-radius: 5px;
+	border-radius: 3px;
 	font-size: 14px;
 }
 .font-icon:hover{
 	color: #333;
 	background: #fff;
 	padding-left: 10px;
-	cursor: pointer;
 }
 .the-icon {
 	font-family: "fontello";
@@ -37,6 +36,9 @@
 <section class="page-main" role="main">
 	<div class="container" id="icons">
 		<div class="main-panel">
+			<div class="right-ribbons">
+				<input type="text" class="search-input" placeholder="搜索图标..." data-bind="value:search,valueUpdate:'keyup'" />
+			</div>
 			<h2>字体图标</h2>
 		</div>
 		<div class="row" data-bind="foreach:icons">
@@ -54,7 +56,20 @@
 	(function(a,c){
 		var viewModel = function(){
 			this.iconPrefix = '';
-			this.icons = ko.observableArray();
+			this.data = ko.observableArray();
+			this.search = ko.observable('');
+			this.icons = ko.computed(function() {
+				var searchText = this.search().trim();
+				return this.data().filter(function(row){
+					if(searchText === ''){
+						return row;
+					}else{
+						if(row.css.indexOf(searchText) >= 0){
+							return row;
+						}
+					}
+				});
+			}, this);
 		}
 		var vm = new viewModel();
 		ko.applyBindings(vm,document.getElementById('icons'));
@@ -65,13 +80,11 @@
 					if(!res) return false;
 					var data = a.jsonParse(res);
 					vm.iconPrefix = data.css_prefix_text;
-					vm.icons(data.glyphs);
-				}
-				,function failed(){
-
+					vm.data(data.glyphs);
 				}
 			);
 		},1000);
+
 	})(ajax,_CONFIG_);
 </script>
 

@@ -52,15 +52,36 @@
 								</li>
 							</ul>
 							<?php endforeach;?>
+							<footer class="item-footer">
+								<button class="ribbon-button">清理日志</button>
+							</footer>
 						</div>
 					</div>
 				</div>
-				<div class="width-3-1">
+				<div id="plan" class="width-3-1">
 					<div class="item-box">
 						<header class="item-header">
 							<h3>待办事项<i class="icon icon-angle-down"></i></h3>
 						</header>
 						<div class="item-body">
+							<div data-bind="visible:showTextarea,css:{'plan-textarea':true}" style="display:none">
+								<textarea data-bind="value:planning" class="planning" rows="4" placeholder="任务内容"></textarea>
+								<div class="plan-priority" data-bind="click:changePriority">
+									<span class="priority" data-bind="text:priority"></span>
+									优先级
+									<div class="options-box" data-bind="visible:optionsBox" style="display:none">
+										<ul>
+											<li>ddd</li>
+											<li>ddd</li>
+										</ul>
+									</div>
+								</div>
+								<button type="button" class="plan-btn plan-submit">创建</button>
+								<button type="button" class="plan-btn plan-cancel" data-bind="click:function(){showTextarea(false)}">取消</button>
+							</div>
+							<footer class="item-footer" data-bind="visible:!showTextarea()">
+								<button class="ribbon-button" data-bind="click:function(){showTextarea(true)},text:'新建任务'"></button>
+							</footer>
 						</div>
 					</div>
 				</div>
@@ -70,5 +91,25 @@
 </section>
 
 <?php $this->show('scripts');?>
+
+<script type="text/javascript">
+(function(c){
+	var Plan = function(text,){
+
+	}
+	var viewModel = function(){
+		this.showTextarea = ko.observable(true);
+		this.planning = ko.observable('');
+		this.plans = ko.observableArray();
+		this.priority = ko.observable('普通');
+		this.optionsBox = ko.observable(false);
+		this.changePriority = function(){
+			this.optionsBox(true);
+		}.bind(this);
+	}
+
+	ko.applyBindings(new viewModel,document.getElementById('plan'));
+})(_CONFIG_);
+</script>
 
 <?php $this->show('end');?>
