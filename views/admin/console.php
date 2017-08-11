@@ -18,7 +18,7 @@
 							<h3>登录日志<i class="icon icon-angle-down"></i></h3>
 						</header>
 						<div class="item-body">
-							<?php foreach ($login_logs as $row) :?>
+							<?php foreach ($loggedLogs as $row) :?>
 							<ul class="item-list">
 								<li>
 									<span class="flag"><i class="icon-asterisk"></i></span>

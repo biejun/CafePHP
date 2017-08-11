@@ -30,3 +30,10 @@
 		</li>
 	</ul>
 </header>
+
+<div id="notify" class="notify" data-bind="css:{'show':notifyToShow}">
+	<div data-bind="attr:{'class':'notify-box ' + type()}">
+		<div data-bind="text:msg"></div>
+		<button type="button" class="close" data-bind="text:'&times;',click:function(){notifyToShow(false)}"></button>
+	</div>
+</div>

@@ -6,10 +6,10 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
-		$loginLogs = widget('admin@user')->getLoginLogs();
+		$loggedLogs = widget('admin@user')->getloggedLogs();
 
 		$res->view->assign('subtitle','控制台');
-		$res->view->assign('login_logs',$loginLogs);
+		$res->view->assign('loggedLogs',$loggedLogs);
 		$res->view->show('console');
 	});
 
@@ -64,7 +64,16 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
+		$data = widget('admin@api')->getCacheFiles();
+
+		$totalSize = formatSize(array_sum(array_column($data,'size')));
+
+		$buttonText = '清空缓存';
+
 		$res->view->assign('subtitle','缓存文件');
+		$res->view->assign('data',$data);
+		$res->view->assign('totalSize',$totalSize);
+		$res->view->assign('buttonText',$buttonText);
 		$res->view->show('files');
 	});
 
@@ -130,22 +139,36 @@ $route->group('/admin',function($route){
 
 		if('export' === $action){ // 导出
 			if(widget('admin@api')->exportSQL()){
-				echo 'success';
+				__setcookie('__admin_notify_type__','success');
+				__setcookie('__admin_notify_msg__','导出成功!');
 			}else{
-				echo 'failed';
+				__setcookie('__admin_notify_type__','error');
+				__setcookie('__admin_notify_msg__','导出失败!');
 			}
+			$res->redirect('/admin/console/backup');
 		}else if('restore' === $action){ // 还原
+
 			$file = trim($req->post('file'));
 
-			if(widget('admin@api')->restoreSQL($file))){
-
+			if(widget('admin@api')->restoreSQL($file)){
+				__setcookie('__admin_notify_type__','success');
+				__setcookie('__admin_notify_msg__','还原成功!');
+			}else{
+				__setcookie('__admin_notify_type__','error');
+				__setcookie('__admin_notify_msg__','还原失败!');
 			}
+			$res->redirect('/admin/console/backup');
 		}else if('delete' === $action){ // 删除
+
 			$file = trim($req->post('file'));
-
-			if(widget('admin@api')->deleteSQL($file)){
-
+			if(widget('admin@api')->deleteBackup($file)){
+				__setcookie('__admin_notify_type__','success');
+				__setcookie('__admin_notify_msg__','删除成功!');
+			}else{
+				__setcookie('__admin_notify_type__','error');
+				__setcookie('__admin_notify_msg__','删除失败!');
 			}
+			$res->redirect('/admin/console/backup');
 		}
 	});
 
@@ -155,7 +178,10 @@ $route->group('/admin',function($route){
 
 		$data = $req->post();
 
-		widget('admin@config')->updateSiteConfigs($data);
+		if(widget('admin@config')->updateSiteConfigs($data)){
+			__setcookie('__admin_notify_type__','success');
+			__setcookie('__admin_notify_msg__','保存成功!');
+		}
 
 		$res->redirect('/admin/settings');
 	});

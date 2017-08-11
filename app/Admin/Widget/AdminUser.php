@@ -75,16 +75,20 @@ namespace App\Admin\Widget
 		public function setLoginLog($username, $time)
 		{
 
-			$data = $this->getLoginLogs();
+			$data = $this->getloggedLogs();
 
 			$data[] = ['name'=>$username,'time'=>$time,'city'=> getCity()];
 
-			$this->cache->set('admin:login:log',$data);
+			$this->cache->set('admin:loggedLogs',$data);
 		}
 
-		public function getLoginLogs()
+		public function getloggedLogs()
 		{
-			return array_reverse(array_slice($this->cache->get('admin:login:log'), 0, 10));
+			$data = $this->cache->get('admin:loggedLogs');
+			if( !empty($data) ){
+				return array_reverse(array_slice($data, 0, 10));
+			}
+			return array();
 		}
 	}
 }

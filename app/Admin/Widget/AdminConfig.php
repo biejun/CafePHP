@@ -14,6 +14,8 @@ namespace App\Admin\Widget
 				$this->db->update($this->table,$value," `name` = '$key' and `group` = '1'");
 			}
 			$this->cache->delete('site:configs');
+
+			return true;
 		}
 
 	}

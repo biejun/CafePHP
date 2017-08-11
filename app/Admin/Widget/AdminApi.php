@@ -29,6 +29,28 @@ namespace App\Admin\Widget
 			return $dir;
 		}
 
+		public function getCacheFiles()
+		{
+			$cacheFolder = conf('cache','location');
+			// 读取文件夹
+			$array = array();
+			if($handle=opendir($cacheFolder)){
+				$no=1;
+				while(false!==($file=readdir($handle))){
+					if ($file != '.'&&$file != '..'){
+						$array[$no]['no']=$no;
+						$array[$no]['file']=$file;
+						$array[$no]['size']=filesize($cacheFolder.'/'.$file);
+						$array[$no]['formatSize']=formatSize($array[$no]['size']);
+						$array[$no]['created']=date('Y-m-d H:i:s',filemtime($cacheFolder.'/'.$file));
+						$no++;
+					}
+				}
+				closedir($handle);
+			}
+			return $array;
+		}
+
 		// 获取数据库备份文件
 		public function getBackupFiles()
 		{
@@ -68,7 +90,7 @@ namespace App\Admin\Widget
 			if(empty($file)) return false;
 
 			$dir = $this->checkBackupFolder();
-			$filename = $dir .'/'. $filename;
+			$filename = $dir .'/'. $file;
 
 			if(file_exists($filename)){
 
@@ -78,22 +100,19 @@ namespace App\Admin\Widget
 
 				return true;
 			}
-			return false
+			return false;
 		}
 
 		// 删除指定数据库备份文件
-		public function deleteSQL($file)
+		public function deleteBackup($file)
 		{
 			if(empty($file)) return false;
 
 			$dir = $this->checkBackupFolder();
-			$filename = $dir .'/'. $filename;
+			$filename = $dir .'/'. $file.'dd';
 
 			if(file_exists($filename)){
-
-				unlink($filename);
-
-				return true;
+				return unlink($filename);
 			}
 			return false;
 		}
