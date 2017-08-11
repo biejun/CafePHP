@@ -40,9 +40,10 @@ namespace App\Admin\Widget
 					if ($file != '.'&&$file != '..'){
 						$array[$no]['no']=$no;
 						$array[$no]['file']=$file;
-						$array[$no]['size']=filesize($cacheFolder.'/'.$file);
+						$array[$no]['filePath']=$cacheFolder.'/'.$file;
+						$array[$no]['size']=filesize($array[$no]['filePath']);
 						$array[$no]['formatSize']=formatSize($array[$no]['size']);
-						$array[$no]['created']=date('Y-m-d H:i:s',filemtime($cacheFolder.'/'.$file));
+						$array[$no]['created']=date('Y-m-d H:i:s',filemtime($array[$no]['filePath']));
 						$no++;
 					}
 				}

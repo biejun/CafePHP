@@ -309,6 +309,7 @@ button.ribbon-button>i{
 	color: #fff;
 	min-height: 20px;
 	border-radius: 2px;
+	padding-right: 30px;
 }
 
 .notify .notify-box.success{

@@ -2,9 +2,6 @@
 
 // route:before 为预定义的路由中间件
 $action->add('route:before',function($req,$res){
-
-	$res->view->assign('keywords','');
-	$res->view->assign('description','');
 	$res->view->setTheme('admin');
 });
 
@@ -21,6 +18,7 @@ $action->add('admin:permission',function($req,$res){
 
 	if( widget('admin@user')->isAdmin() ){
 		$res->view->assign('admin_name',__session('__admin_name__'));
+		$res->view->assign('suffixVersion',date('ymdHi'));
 	}else{
 		$res->redirect(conf('system','path'));
 	}

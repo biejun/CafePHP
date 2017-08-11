@@ -11,10 +11,10 @@
 
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/grid.css" />
-	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/fonts.css"/>
-	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/table.css"/>
-	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>views/admin/styles/admin.css" />
-	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/common.css" />
+	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/fonts.css?v=<?php echo $suffixVersion;?>"/>
+	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/table.css?v=<?php echo $suffixVersion;?>"/>
+	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>views/admin/styles/admin.css?v=<?php echo $suffixVersion;?>" />
+	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/common.css?v=<?php echo $suffixVersion;?>" />
 	<link rel="icon" href="<?=$this->path;?>favicon.ico" type="image/x-icon"/>
 
 <?php $this->show('assets');?>
