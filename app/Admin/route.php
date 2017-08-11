@@ -82,6 +82,8 @@ $route->group('/admin',function($route){
 		$res->view->assign('subtitle','临时文件');
 		$res->view->assign('buttonText','清空临时文件');
 		$res->view->assign('type','temp');
+		$res->view->assign('data',array());
+		$res->view->assign('totalSize',0);
 		$res->view->show('files');
 	});
 
@@ -142,33 +144,27 @@ $route->group('/admin',function($route){
 		if('export' === $action){ // 导出
 
 			if(widget('admin@api')->exportSQL()){
-				__setcookie('__admin_notify_type__','success');
-				__setcookie('__admin_notify_msg__','导出成功!');
+				$req->action->on('admin:notify','success','导出成功!');
 			}else{
-				__setcookie('__admin_notify_type__','error');
-				__setcookie('__admin_notify_msg__','导出失败!');
+				$req->action->on('admin:notify','error','导出失败!');
 			}
 		}else if('restore' === $action){ // 还原
 
 			$file = trim($req->post('file'));
 
 			if(widget('admin@api')->restoreSQL($file)){
-				__setcookie('__admin_notify_type__','success');
-				__setcookie('__admin_notify_msg__','还原成功!');
+				$req->action->on('admin:notify','success','还原成功!');
 			}else{
-				__setcookie('__admin_notify_type__','error');
-				__setcookie('__admin_notify_msg__','还原失败!');
+				$req->action->on('admin:notify','error','还原失败!');
 			}
 		}else if('delete' === $action){ // 删除
 
 			$file = trim($req->post('file'));
 
 			if(widget('admin@api')->deleteBackup($file)){
-				__setcookie('__admin_notify_type__','success');
-				__setcookie('__admin_notify_msg__','删除成功!');
+				$req->action->on('admin:notify','success','删除成功!');
 			}else{
-				__setcookie('__admin_notify_type__','error');
-				__setcookie('__admin_notify_msg__','删除失败!');
+				$req->action->on('admin:notify','error','删除失败!');
 			}
 		}
 
@@ -182,8 +178,7 @@ $route->group('/admin',function($route){
 		$data = $req->post();
 
 		if(widget('admin@config')->updateSiteConfigs($data)){
-			__setcookie('__admin_notify_type__','success');
-			__setcookie('__admin_notify_msg__','保存成功!');
+			$req->action->on('admin:notify','success','保存成功!');
 		}
 
 		$res->goBack();
@@ -201,6 +196,13 @@ $route->group('/admin',function($route){
 
 		$type = $req->post('type');
 
+		if(widget('admin@api')->cleanFiles($type)){
+			$req->action->on('admin:notify','success','清空成功!');
+		}else{
+			$req->action->on('admin:notify','error','清空失败!');
+		}
+
+		$res->goBack();
 	});
 
 	$route->post('/delete/file',function($req,$res){
@@ -212,19 +214,22 @@ $route->group('/admin',function($route){
 		if(file_exists($filePath)){
 
 			if(unlink($filePath)){
-				__setcookie('__admin_notify_type__','success');
-				__setcookie('__admin_notify_msg__','删除成功!');
+				$req->action->on('admin:notify','success','删除成功!');
 			}else{
-				__setcookie('__admin_notify_type__','error');
-				__setcookie('__admin_notify_msg__','删除失败!');
+				$req->action->on('admin:notify','error','删除失败!');
 			}
 		}else{
 
-			__setcookie('__admin_notify_type__','error');
-			__setcookie('__admin_notify_msg__','删除失败，请确定文件是否存在!');
+			$req->action->on('admin:notify','error','删除失败，请确定文件是否存在!');
 		}
 
 		$res->goBack();
+	});
+
+	$route->post('/update/password',function($req,$res){
+
+		$req->action->on('admin:permission',$req,$res);
+
 	});
 
 });

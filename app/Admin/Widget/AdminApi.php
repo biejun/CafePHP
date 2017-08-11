@@ -110,10 +110,22 @@ namespace App\Admin\Widget
 			if(empty($file)) return false;
 
 			$dir = $this->checkBackupFolder();
-			$filename = $dir .'/'. $file.'dd';
+			$filename = $dir .'/'. $file;
 
 			if(file_exists($filename)){
 				return unlink($filename);
+			}
+			return false;
+		}
+
+		// 清空缓存或临时文件
+		public function cleanFiles($type)
+		{
+			if(in_array($type, ['cache','temp'])){
+				if('cache' == $type){
+					$this->cache->flush();
+				}
+				return true;
 			}
 			return false;
 		}

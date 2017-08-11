@@ -14,6 +14,7 @@ $action->add('route:failed',function($req,$res){
 	$res->view->setTheme('admin')->show('404');
 });
 
+// 验证管理员权限
 $action->add('admin:permission',function($req,$res){
 
 	if( widget('admin@user')->isAdmin() ){
@@ -22,4 +23,11 @@ $action->add('admin:permission',function($req,$res){
 	}else{
 		$res->redirect(conf('system','path'));
 	}
+});
+
+// 定义一个消息提醒的动作
+$action->add('admin:notify',function($success,$msg){
+
+	__setcookie('__admin_notify_type__',$success);
+	__setcookie('__admin_notify_msg__',$msg);
 });
