@@ -5,6 +5,11 @@ html,body{
 
 body{
 	position: relative;
+	color: #333;
+}
+
+button:focus{
+	outline: 2px solid #8fb9fe;
 }
 
 .container{
@@ -246,7 +251,7 @@ input.search-input:hover{
 }
 .settings > .s-table th,
 .settings > .s-table td{
-	padding: 5px 10px;
+	padding: 8px 10px;
 }
 .settings > .s-table .s-input{
     vertical-align: middle;
@@ -430,7 +435,65 @@ input.search-input:hover{
 	box-shadow: 0 2px 20px rgba(0,0,0,0.1)
 }
 
+.plan-textarea .plan-priority > .options-box > ul{
+	list-style: none;
+	padding: 0;
+	margin:0;
+}
+
+.level-1{
+	border-color: #A6A6A6!important;
+	color: #A6A6A6!important;
+}
+
+.level-2{
+	border-color: #FFAF38!important;
+	color: #FFAF38!important;
+}
+
+.level-3{
+	border-color: #FF4F3E!important;
+	color: #FF4F3E!important;
+}
+
 .plan-textarea .plan-priority > .options-box li{
-	height: 25px;
-	line-height: 25px;
+	position: relative;
+	height: 35px;
+	line-height: 35px;
+	padding: 0 10px;
+}
+
+.plan-textarea .plan-priority > .options-box li:hover{
+	background-color: #f6f6f6;
+}
+
+.plan-textarea .plan-priority > .options-box li.current:after{
+	position: absolute;
+	content: "✔";
+	right: 10px;
+	color: #d6d6d6;
+}
+
+.tab-nav{
+	list-style: none;
+	font-size: 14px;
+}
+.tab-nav > li{
+	margin-bottom: 5px;
+}
+.tab-nav > li > a{
+	text-decoration: none;
+	display: block;
+	padding: 8px 12px;
+	color: #555;
+}
+.tab-nav > li > a.current{
+	background-color: #e6e6e6;
+	font-weight: bold;
+}
+
+.tab-body{
+	border-left: 1px solid #e6e6e6;
+	min-height: 400px;
+	padding: 15px;
 }

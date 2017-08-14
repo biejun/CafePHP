@@ -10,7 +10,6 @@ $action->add('route:after',function($req,$res){
 });
 
 $action->add('route:failed',function($req,$res){
-
 	$res->view->setTheme('admin')->show('404');
 });
 

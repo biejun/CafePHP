@@ -19,7 +19,7 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
-		$res->view->assign('data',widget('admin@api')->getSiteConfig());
+		$res->view->assign('data',widget('admin@config')->getSiteConfig());
 		$res->view->assign('subtitle','设置');
 		$res->view->show('settings');
 	});
@@ -55,7 +55,7 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
-		$data = widget('admin@api')->getBackupFiles();
+		$data = widget('admin@console')->getBackupFiles();
 
 		$res->view->assign('subtitle','数据库备份');
 		$res->view->assign('data',$data);
@@ -66,7 +66,7 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
-		$data = widget('admin@api')->getCacheFiles();
+		$data = widget('admin@console')->getCacheFiles();
 		$totalSize = formatSize(array_sum(array_column($data,'size')));
 
 		$res->view->assign('subtitle','缓存文件');
@@ -93,7 +93,10 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
+		$do = $req->get('do');
+
 		$res->view->assign('subtitle','个人资料');
+		$res->view->assign('do',$do);
 		$res->view->show('profile');
 	});
 
@@ -102,7 +105,7 @@ $route->group('/admin',function($route){
 		$req->action->on('admin:permission',$req,$res);
 
 		$res->view->assign('subtitle','');
-		$res->view->show('files');
+		$res->view->show('operation');
 	});
 
 	$route->get('/account/add',function($req,$res){
@@ -153,7 +156,7 @@ $route->group('/admin',function($route){
 
 		if('export' === $action){ // 导出
 
-			if(widget('admin@api')->exportSQL()){
+			if(widget('admin@console')->exportSQL()){
 				widget('admin@operate')->setOperate("备份了数据库");
 				$req->action->on('admin:notify','success','导出成功!');
 			}else{
@@ -163,7 +166,7 @@ $route->group('/admin',function($route){
 
 			$file = trim($req->post('file'));
 
-			if(widget('admin@api')->restoreSQL($file)){
+			if(widget('admin@console')->restoreSQL($file)){
 				widget('admin@operate')->setOperate("还原了{$file}数据库备份文件");
 				$req->action->on('admin:notify','success','还原成功!');
 			}else{
@@ -173,7 +176,7 @@ $route->group('/admin',function($route){
 
 			$file = trim($req->post('file'));
 
-			if(widget('admin@api')->deleteBackup($file)){
+			if(widget('admin@console')->deleteBackup($file)){
 				widget('admin@operate')->setOperate("删除了{$file}数据库备份文件");
 				$req->action->on('admin:notify','success','删除成功!');
 			}else{
@@ -210,7 +213,7 @@ $route->group('/admin',function($route){
 
 		$type = $req->post('type');
 
-		if(widget('admin@api')->cleanFiles($type)){
+		if(widget('admin@console')->cleanFiles($type)){
 			$req->action->on('admin:notify','success','清空成功!');
 		}else{
 			$req->action->on('admin:notify','error','清空失败!');
@@ -276,7 +279,21 @@ $route->group('/admin',function($route){
 			$res->goBack();
 		}else{
 			$req->action->on('admin:notify','error','旧密码不正确!');
-			$res->goBack();		
+			$res->goBack();
+		}
+	});
+
+	$route->post('/api/:table/:func',function($req,$res){
+
+		if($req->isAjax()){
+
+			$tableName = $req->get('table');
+
+			$func = $req->get('func');
+
+			$arg = array_merge($req->get(),$req->post());
+
+			widget('admin@api')->setTableName($tableName)->run($func,$arg);
 		}
 	});
 

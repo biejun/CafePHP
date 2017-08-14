@@ -8,6 +8,16 @@ namespace App\Admin\Widget
 
 		public $table = 'configs';
 
+		public function getSiteConfig()
+		{
+			$data = $this->cache->get('site:configs');
+			if(!$data){
+				$data = $this->db->rows('configs','*','`group` = 1');
+				$this->cache->add('site:configs',$data);
+			}
+			return $data;
+		}
+
 		public function updateSiteConfigs($data){
 
 			foreach ($data as $key => $value) {

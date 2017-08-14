@@ -66,13 +66,16 @@
 						<div class="item-body">
 							<div data-bind="visible:showTextarea,css:{'plan-textarea':true}" style="display:none">
 								<textarea data-bind="value:planning" class="planning" rows="4" placeholder="任务内容"></textarea>
-								<div class="plan-priority" data-bind="click:changePriority">
-									<span class="priority" data-bind="text:priority"></span>
-									优先级
+								<div class="plan-priority">
+									<div data-bind="click:changePriority">
+										<span data-bind="attr:{'class':'priority level-'+level()},text:priorityText"></span>
+										优先级
+									</div>
 									<div class="options-box" data-bind="visible:optionsBox" style="display:none">
 										<ul>
-											<li>ddd</li>
-											<li>ddd</li>
+											<li class="level-1" data-bind="click:selectLevel.bind($data,1,'普通'),css:{'current':level() == 1}">普通</li>
+											<li class="level-2" data-bind="click:selectLevel.bind($data,2,'紧急'),css:{'current':level() == 2}">紧急</li>
+											<li class="level-3" data-bind="click:selectLevel.bind($data,3,'非常紧急'),css:{'current':level() == 3}">非常紧急</li>
 										</ul>
 									</div>
 								</div>
@@ -94,18 +97,25 @@
 
 <script type="text/javascript">
 (function(c){
-	var Plan = function(text,){
+	var Plan = function(text){
 
 	}
 	var viewModel = function(){
+
 		this.showTextarea = ko.observable(true);
 		this.planning = ko.observable('');
 		this.plans = ko.observableArray();
-		this.priority = ko.observable('普通');
+		this.level = ko.observable(1);
 		this.optionsBox = ko.observable(false);
+		this.priorityText = ko.observable('普通');
 		this.changePriority = function(){
 			this.optionsBox(true);
 		}.bind(this);
+		this.selectLevel = function(i,text){
+			this.level(i);
+			this.priorityText(text);
+			this.optionsBox(false);
+		}
 	}
 
 	ko.applyBindings(new viewModel,document.getElementById('plan'));

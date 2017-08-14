@@ -5,7 +5,7 @@
 		this.child = child || false;
 	}
 	var Header = function(){
-		this.currentPath = new req().getAll().path;
+		this.currentPath = new req().path;
 		this.nav = ko.observableArray([
 				new Nav('控制台','javascript:;',[
 					new Nav('网站概要',c.path+'admin/console')
@@ -14,13 +14,13 @@
 					,new Nav('数据库备份',c.path+'admin/console/backup')
 				])
 				,new Nav('设置',c.path+'admin/settings')
-				,new Nav('字体图标',c.path+'admin/fonts')
+				,new Nav('图标',c.path+'admin/fonts')
 		]);
 
 		this.user = ko.observableArray([
 				new Nav(c.loginUser,'javascript:;',[
-					new Nav('个人资料',c.path+'admin/account/profile')
-					,new Nav('用户管理',c.path+'admin/account/operation')
+					new Nav('账号信息',c.path+'admin/account/profile?do=edit')
+					,new Nav('管理用户',c.path+'admin/account/operation')
 					,new Nav('添加用户',c.path+'admin/account/add')
 				])
 				,new Nav('退出登录',c.path+'admin/logout')
