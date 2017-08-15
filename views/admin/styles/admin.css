@@ -186,7 +186,7 @@ input.search-input:hover{
 }
 
 .item-wrap .item-body{
-	background-color: #fff;
+	background-color: #F7F7F7;
 	border: 1px solid rgba(0,0,0,.1);
 }
 
@@ -300,7 +300,7 @@ input.search-input:hover{
 .table>.thead>.tr>.th,
 .table>.tbody>.tr>.td{
 	font-size: .8rem;
-	background-color: #fff;
+	background-color: #F7F7F7;
 }
 
 .table>.tbody>.tr>.td{
