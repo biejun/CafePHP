@@ -5,13 +5,15 @@ namespace Coffee\Foundation;
 use Coffee\DataBase\DB;
 use Coffee\Cache\Cache;
 
-class Widget
+abstract class Widget
 {
 	public $app;
 
 	public $db;
 
 	public $cache;
+
+	public $table = '';
 
 	public function __construct($app = '')
 	{
@@ -47,8 +49,49 @@ class Widget
 		return $_cacheHandler;
 	}
 
+	public function setTable($table)
+	{
+		$this->table = $table;
+
+		return $this;
+	}
+
 	/**
-	 *	应用部件调用
+	 *  执行应用组件中的方法
+	 *
+	 *	@param string $func 回调函数
+	 *  @param array $args 回调函数参数
+	 *
+	**/
+	public function run($func, $args)
+	{
+		$reflection = new \ReflectionClass($this);
+
+		$parentClass = $reflection->getParentClass();
+
+		if($parentClass){
+
+			$parentMethods = $parentClass->getMethods();
+			// 过滤父类方法
+			while ($it = current($parentMethods)) {
+				if($func === $it->getName()){
+					return false;
+				}else{
+					next($parentMethods);
+				}				
+			}
+			if($reflection->hasMethod($func)){
+				$method = $reflection->getMethod($func);
+				if($method->isPublic()){
+					$method->invokeArgs($this,$args);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 *	获取应用组件
 	 *
 	 * 	@param string $widget 组件名不区分大小写,调用子组件用@分隔，如"admin@api"
 	 *	@return instance
@@ -66,7 +109,6 @@ class Widget
 			$instance = $appNameSpace;
 
 			foreach ($parts as $value) {
-
 				$instance .= ucfirst($value);
 			}
 

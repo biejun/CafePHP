@@ -6,15 +6,10 @@ namespace App\Admin\Widget
 
 	class AdminApi extends Widget
 	{
-		public $tableName = '';
 
-		public $condition = [];
-
-		public function setTableName()
+		public function hello($tt)
 		{
-
+			echo $tt;
 		}
-
-		//public function
 	}
 }

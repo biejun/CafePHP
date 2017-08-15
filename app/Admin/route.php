@@ -44,7 +44,11 @@ $route->group('/admin',function($route){
 
 	$route->get('/logout',function($req,$res){
 
-		__unsetsession('__admin_name__');
+		// __unsetsession('__admin_name__');
+
+		session_unset();
+		
+		session_destroy();
 
 		__unsetcookie('__admin_token__');
 
@@ -283,18 +287,15 @@ $route->group('/admin',function($route){
 		}
 	});
 
-	$route->post('/api/:table/:func',function($req,$res){
+	$route->get('/api/:table/:func',function($req,$res){
 
-		if($req->isAjax()){
+		$tableName = $req->get('table');
 
-			$tableName = $req->get('table');
+		$func = $req->get('func');
 
-			$func = $req->get('func');
+		$arg = array_merge($req->get(),$req->post());
 
-			$arg = array_merge($req->get(),$req->post());
-
-			widget('admin@api')->setTableName($tableName)->run($func,$arg);
-		}
+		widget('admin@api')->setTable($tableName)->run($func,$arg);
 	});
 
 });
