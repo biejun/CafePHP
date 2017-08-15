@@ -287,16 +287,13 @@ $route->group('/admin',function($route){
 		}
 	});
 
-	// 定义一个公用API接口 ( 实验功能，有待复杂性测试 )
-	$route->post('/api/:table/:func',function($req,$res){
-
-		$tableName = $req->get('table');
+	// 定义一个公用API接口
+	$route->post('/api/:func',function($req,$res){
 
 		$func = $req->get('func');
 
-		if(!empty($tableName) && !empty($func)){
+		if(!empty($func)){
 			$data = widget('admin@api')->run($func,$req->post());
-
 			if($data){
 				$res->json($data,true);
 			}else{
