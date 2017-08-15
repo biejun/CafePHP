@@ -49,6 +49,12 @@ abstract class Widget
 		return $_cacheHandler;
 	}
 
+	/**
+	 *  设置操作数据库的表
+	 *
+	 *	@param string $table 表名称
+	 *
+	**/
 	public function setTable($table)
 	{
 		$this->table = $table;
@@ -61,12 +67,12 @@ abstract class Widget
 	 *
 	 *	@param string $func 回调函数
 	 *  @param array $args 回调函数参数
+	 *  @return mixed
 	 *
 	**/
 	public function run($func, $args)
 	{
 		$reflection = new \ReflectionClass($this);
-
 		$parentClass = $reflection->getParentClass();
 
 		if($parentClass){
@@ -83,7 +89,15 @@ abstract class Widget
 			if($reflection->hasMethod($func)){
 				$method = $reflection->getMethod($func);
 				if($method->isPublic()){
-					$method->invokeArgs($this,$args);
+					$params = [];
+					foreach ($method->getParameters() as $arg) {
+						if($args[$arg->name]){
+							$params[$arg->name] = $args[$arg->name];
+						}else{
+							$params[$arg->name] = null;
+						}
+					}
+					return $method->invokeArgs($this,$params);
 				}
 			}
 		}
@@ -105,9 +119,7 @@ abstract class Widget
 		$appNameSpace = '\\App\\'.ucfirst($parts[0]).'\\Widget\\';
 
 		if( count($parts) > 1 ){
-
 			$instance = $appNameSpace;
-
 			foreach ($parts as $value) {
 				$instance .= ucfirst($value);
 			}

@@ -108,7 +108,7 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
-		$res->view->assign('subtitle','');
+		$res->view->assign('subtitle','用户管理');
 		$res->view->show('operation');
 	});
 
@@ -287,15 +287,22 @@ $route->group('/admin',function($route){
 		}
 	});
 
-	$route->get('/api/:table/:func',function($req,$res){
+	// 定义一个公用API接口 ( 实验功能，有待复杂性测试 )
+	$route->post('/api/:table/:func',function($req,$res){
 
 		$tableName = $req->get('table');
 
 		$func = $req->get('func');
 
-		$arg = array_merge($req->get(),$req->post());
+		if(!empty($tableName) && !empty($func)){
+			$data = widget('admin@api')->run($func,$req->post());
 
-		widget('admin@api')->setTable($tableName)->run($func,$arg);
+			if($data){
+				$res->json($data,true);
+			}else{
+				$res->json('参数错误',false);
+			}
+		}
 	});
 
 });
