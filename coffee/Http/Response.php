@@ -187,13 +187,13 @@ class Response{
 		exit($this->body);
 	}
 
-	private function _parseXml($data)
+	private function parseXml($data)
 	{
 		if (is_array($data)) {
 			$result = '';
 			foreach ($data as $key => $val) {
 				$tagName = is_int($key) ? 'item' : $key;
-				$result .= '<' . $tagName . '>' . $this->_parseXml($val) . '</' . $tagName . '>';
+				$result .= '<' . $tagName . '>' . $this->parseXml($val) . '</' . $tagName . '>';
 			}
 			return $result;
 		} else {
@@ -205,10 +205,10 @@ class Response{
 	{
 		$xml = '<?xml version="1.0" encoding="'.$charset.'"?>';
 		$xml .= '<response>';
-		$xml .= $this->_parseXml($data);
-		$xml .= '<response>';
+		$xml .= $this->parseXml($data);
+		$xml .= '</response>';
 		$this->status($code)
-			->header('Content-Type', 'application/xml; charset='.$charset)
+			->header('Content-Type', 'text/xml; charset='.$charset)
 			->write($xml)
 			->send();
 	}
@@ -221,6 +221,19 @@ class Response{
 		$this->status($code)
 			->header('Content-Type', 'application/json; charset='.$charset)
 			->write(json_encode($res))
+			->send();
+	}
+
+	public function jsonp($data,$success=true,$code=200,$charset='UTF-8')
+	{
+		$callback = (new Request)->get('callback',uniqid('Callback_'));
+
+		$res = new \StdClass;
+		$res->success = $success;
+		$res->data = $data;
+		$this->status($code)
+			->header('Content-Type', 'application/json; charset='.$charset)
+			->write($callback.'('.json_encode($res).')')
 			->send();
 	}
 

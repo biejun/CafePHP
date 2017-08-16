@@ -33,8 +33,8 @@
 									<th width="220" align="right">
 										一句话介绍
 									</th>
-									<td width="500">
-										<input type="text" class="s-input"/>
+									<td width="500" class="form-group">
+										<input type="text" class="form-control"/>
 									</td>
 								</tr>
 							</tbody>
@@ -56,24 +56,24 @@
 									<th width="220" align="right">
 										当前密码
 									</th>
-									<td width="500">
-										<input type="password" name="oldPassword" class="s-input"/>
+									<td width="500" class="form-group">
+										<input type="password" name="oldPassword" class="form-control"/>
 									</td>
 								</tr>
 								<tr>
 									<th width="220" align="right">
 										新的密码
 									</th>
-									<td width="500">
-										<input type="password" name="newPassword" class="s-input"/>
+									<td width="500" class="form-group">
+										<input type="password" name="newPassword" class="form-control"/>
 									</td>
 								</tr>
 								<tr>
 									<th width="220" align="right">
 										确认密码
 									</th>
-									<td width="500">
-										<input type="password" name="newPasswordOnce" class="s-input"/>
+									<td width="500" class="form-group">
+										<input type="password" name="newPasswordOnce" class="form-control"/>
 									</td>
 								</tr>
 							</tbody>

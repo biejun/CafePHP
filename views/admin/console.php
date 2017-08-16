@@ -19,19 +19,22 @@
 						</header>
 						<div class="item-body">
 							<?php foreach ($loggedLogs as $row) :?>
-							<ul class="item-list">
-								<li>
-									<span class="flag"><i class="icon-asterisk"></i></span>
-									<span class="text">
-										<strong class="mr-5"><?php echo $row['name'];?></strong>登录了管理后台，登录地点在<strong class="ml-5"><?php echo $row['city'];?></strong>。
-										<time class="time mt-5"><?php echo date("Y-m-d H:i",$row['time']);?></time>
-									</span>
-								</li>
+								<div class="item-card card">
+									<div class="text">
+										<p>
+											<span class="time"><?php echo date("Y-m-d H:i",$row['time']);?></span>
+											登录操作提示
+										</p>
+										<p class="info">
+											<span>登录用户：</span><?php echo $row['name'];?>
+										</p>
+										<p class="info">
+											<span>登录地点：</span><?php echo $row['city'];?>
+										</p>
+									</div>
+								</div>
 							</ul>
 							<?php endforeach;?>
-							<footer class="item-footer">
-								<button class="ribbon-button">清理日志</button>
-							</footer>
 						</div>
 					</div>
 				</div>
@@ -42,15 +45,19 @@
 						</header>
 						<div class="item-body">
 							<?php foreach ($operateLogs as $row) :?>
-							<ul class="item-list">
-								<li>
-									<span class="flag"><i class="icon-asterisk"></i></span>
-									<span class="text">
-										<strong class="mr-5"><?php echo $row['name'];?></strong><?php echo $row['text'];?>。
-										<time class="time mt-5"><?php echo $row['time'];?></time>
-									</span>
-								</li>
-							</ul>
+							<div class="item-card card">
+								<div class="text">
+									<p>
+										<?php echo $row['text'];?>
+									</p>
+									<p class="info">
+										<span>操作用户：</span><?php echo $row['name'];?>
+									</p>
+									<p class="info">
+										<span>操作时间：</span><?php echo $row['time'];?>
+									</p>
+								</div>
+							</div>
 							<?php endforeach;?>
 							<footer class="item-footer">
 								<button class="ribbon-button">清理日志</button>
@@ -63,9 +70,9 @@
 						<header class="item-header">
 							<h3>待办事项<i class="icon icon-angle-down"></i></h3>
 						</header>
-						<div class="item-body">
+						<div class="item-body card">
 							<div data-bind="visible:showTextarea,css:{'plan-textarea':true}" style="display:none">
-								<textarea data-bind="value:planning" class="planning" rows="4" placeholder="任务内容"></textarea>
+								<textarea data-bind="value:planning" class="form-control planning" rows="4" placeholder="任务内容"></textarea>
 								<div class="plan-priority">
 									<div data-bind="click:changePriority">
 										<span data-bind="attr:{'class':'priority level-'+level()},text:priorityText"></span>

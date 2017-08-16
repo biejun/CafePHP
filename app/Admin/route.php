@@ -34,6 +34,10 @@ $route->group('/admin',function($route){
 
 	$route->get('/login',function($req,$res){
 
+		if( widget('admin@user')->isAdmin() ){
+			$res->redirect('/admin/console');
+		}
+
 		$csrf = strtoupper( md5( uniqid(rand(), true) ) );
 
 		__session('__admin_login_csrf__',$csrf);
@@ -44,11 +48,11 @@ $route->group('/admin',function($route){
 
 	$route->get('/logout',function($req,$res){
 
-		// __unsetsession('__admin_name__');
-
 		session_unset();
 		
 		session_destroy();
+
+		// __unsetsession('__admin_name__');
 
 		__unsetcookie('__admin_token__');
 
@@ -158,20 +162,20 @@ $route->group('/admin',function($route){
 
 		$action = $req->get('action');
 
-		if('export' === $action){ // 导出
+		if('export' === $action){ // 备份
 
 			if(widget('admin@console')->exportSQL()){
 				widget('admin@operate')->setOperate("备份了数据库");
-				$req->action->on('admin:notify','success','导出成功!');
+				$req->action->on('admin:notify','success','备份成功!');
 			}else{
-				$req->action->on('admin:notify','error','导出失败!');
+				$req->action->on('admin:notify','error','备份失败!');
 			}
 		}else if('restore' === $action){ // 还原
 
 			$file = trim($req->post('file'));
 
 			if(widget('admin@console')->restoreSQL($file)){
-				widget('admin@operate')->setOperate("还原了{$file}数据库备份文件");
+				widget('admin@operate')->setOperate("还原了\"{$file}\"数据库备份文件");
 				$req->action->on('admin:notify','success','还原成功!');
 			}else{
 				$req->action->on('admin:notify','error','还原失败!');
@@ -181,7 +185,7 @@ $route->group('/admin',function($route){
 			$file = trim($req->post('file'));
 
 			if(widget('admin@console')->deleteBackup($file)){
-				widget('admin@operate')->setOperate("删除了{$file}数据库备份文件");
+				widget('admin@operate')->setOperate("删除了\"{$file}\"数据库备份文件");
 				$req->action->on('admin:notify','success','删除成功!');
 			}else{
 				$req->action->on('admin:notify','error','删除失败!');

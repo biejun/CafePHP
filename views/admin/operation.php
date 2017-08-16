@@ -6,7 +6,7 @@
 	<div class="container">
 		<div class="main-panel">
 			<div class="right-ribbons">
-				<input type="text" class="search-input" placeholder="搜索用户..." data-bind="value:search,valueUpdate:'keyup'" />
+				<input type="text" class="form-control" placeholder="搜索用户..." data-bind="value:search,valueUpdate:'keyup'" />
 			</div>
 			<h2><?php echo $subtitle;?></h2>
 		</div>

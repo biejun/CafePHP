@@ -21,11 +21,11 @@
 						<td width="120">
 							<span class="item-name">(<?php echo $row['name'];?>)</span>
 						</td>
-						<td width="500">
+						<td width="500" class="form-group">
 							<?php if($row['type'] === 'text') : ?>
-								<input name="<?php echo $row['name'];?>[value]" class="s-input" value="<?php echo $row['value'];?>">
+								<input name="<?php echo $row['name'];?>[value]" class="form-control" value="<?php echo $row['value'];?>">
 							<?php elseif($row['type'] === 'bigtext') : ?>
-								<textarea rows="4" name="<?php echo $row['name'];?>[value]" class="s-input"><?php echo $row['value'];?></textarea>
+								<textarea rows="4" name="<?php echo $row['name'];?>[value]" class="form-control"><?php echo $row['value'];?></textarea>
 							<?php endif;?>
 						</td>
 					</tr>
