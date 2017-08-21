@@ -397,7 +397,7 @@ if( 1 == $step ){
 			<p>生成伪静态文件...成功</p>
 			<p>写入数据库表...成功</p>
 			<p>写入管理员权限...成功</p>
-			<p>安装完成，系统将在<span id="num"></span>秒后自动<a href="<?php echo conf('system','path');?>">返回首页</a></p>
+			<p>安装完成，系统将在<span id="num"></span>秒后自动<a href="<?php echo conf('system','path');?>">进入管理后台</a></p>
 		</div>
 
 		<script>
@@ -409,7 +409,7 @@ if( 1 == $step ){
 						auto_redirect(sec);
 					},1000);
 				}else{
-					location.href = "<?php echo conf('system','path');?>";
+					location.href = "<?php echo conf('system','path');?>admin/login";
 				}
 			}
 			auto_redirect(5);
