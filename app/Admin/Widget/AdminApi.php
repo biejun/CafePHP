@@ -6,7 +6,26 @@ namespace App\Admin\Widget
 
 	class AdminApi extends Widget
 	{
-		public function getUsers($page,$limit)
+		function user($uid)
+		{
+
+		}
+
+		function logs($page, $limit)
+		{
+			$page = ($page) ? intval($page) : 1;
+
+			$limit = ($limit) ? intval($limit) : 20;
+
+			return widget('admin@log')->getLogs($page, $limit);
+		}
+
+		function operates()
+		{
+			return widget('admin@operate')->getOperates();
+		}
+
+		function users($page,$limit)
 		{
 
 			$page = ($page) ? intval($page) : 1;

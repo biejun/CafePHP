@@ -12,66 +12,62 @@
 		</div>
 		<div class="item-wrap">
 			<div class="row">
-				<div class="width-3-1">
+				<div id="logs" class="width-3-1">
 					<div class="item-box">
 						<header class="item-header">
 							<h3>登录日志<i class="icon icon-angle-down"></i></h3>
 						</header>
-						<div class="item-body">
-							<?php foreach ($loggedLogs as $row) :?>
-								<div class="item-card card">
-									<div class="text">
-										<p>
-											<span class="time"><?php echo date("Y-m-d H:i",$row['time']);?></span>
-											登录操作提示
-										</p>
-										<p class="info">
-											<span>登录用户：</span><?php echo $row['name'];?>
-										</p>
-										<p class="info">
-											<span>登录地点：</span><?php echo $row['city'];?>
-										</p>
-									</div>
-								</div>
-							</ul>
-							<?php endforeach;?>
-						</div>
-					</div>
-				</div>
-				<div class="width-3-1">
-					<div class="item-box">
-						<header class="item-header">
-							<h3>操作日志<i class="icon icon-angle-down"></i></h3>
-						</header>
-						<div class="item-body">
-							<?php foreach ($operateLogs as $row) :?>
+						<div class="item-body" data-bind="foreach:logs">
 							<div class="item-card card">
 								<div class="text">
 									<p>
-										<?php echo $row['text'];?>
+										<span class="time" data-bind="text:time"></span>
+										登录操作提示
 									</p>
 									<p class="info">
-										<span>操作用户：</span><?php echo $row['name'];?>
+										<span class="mr-5" data-bind="text:'登录用户：'"></span>
+										<span data-bind="text:name"></span>
 									</p>
 									<p class="info">
-										<span>操作时间：</span><?php echo $row['time'];?>
+										<span class="mr-5" data-bind="text:'登录地点：'"></span>
+										<span data-bind="text:city"></span>
 									</p>
 								</div>
 							</div>
-							<?php endforeach;?>
-							<footer class="item-footer">
-								<button class="ribbon-button">清理日志</button>
-							</footer>
+						</div>
+					</div>
+				</div>
+				<div id="operates" class="width-3-1">
+					<div class="item-box">
+						<header class="item-header">
+						<button type="button" class="ribbon-button fr" data-bind="text:'清理日志'"></button>
+							<h3>操作日志<i class="icon icon-angle-down"></i></h3>
+						</header>
+						<div class="item-body" data-bind="foreach:operates">
+							<div class="item-card card">
+								<div class="text">
+									<p data-bind="text:text"></p>
+									<p class="info">
+										<span class="mr-5" data-bind="text:'操作用户：'"></span>
+										<span data-bind="text:name"></span>
+									</p>
+									<p class="info">
+										<span class="mr-5" data-bind="text:'操作时间：'"></span>
+										<span data-bind="text:time"></span>
+									</p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div id="plan" class="width-3-1">
 					<div class="item-box">
 						<header class="item-header">
+							<button type="button" class="ribbon-button fr" data-bind="click:function(){showTextarea(true)},text:'新建任务'"></button>
 							<h3>待办事项<i class="icon icon-angle-down"></i></h3>
 						</header>
-						<div class="item-body card">
-							<div data-bind="visible:showTextarea,css:{'plan-textarea':true}" style="display:none">
+						<div class="item-body">
+							<div class="card" data-bind="visible:showTextarea,css:{'plan-textarea':true}" style="display:none">
 								<textarea data-bind="value:planning" class="form-control planning" rows="4" placeholder="任务内容"></textarea>
 								<div class="plan-priority">
 									<div data-bind="click:changePriority">
@@ -86,12 +82,9 @@
 										</ul>
 									</div>
 								</div>
-								<button type="button" class="plan-btn plan-submit">创建</button>
+								<button type="button" class="plan-btn plan-submit" data-bind="click:created">创建</button>
 								<button type="button" class="plan-btn plan-cancel" data-bind="click:function(){showTextarea(false)}">取消</button>
 							</div>
-							<footer class="item-footer" data-bind="visible:!showTextarea()">
-								<button class="ribbon-button" data-bind="click:function(){showTextarea(true)},text:'新建任务'"></button>
-							</footer>
 						</div>
 					</div>
 				</div>
@@ -104,12 +97,9 @@
 
 <script type="text/javascript">
 (function(c){
-	var Plan = function(text){
-
-	}
 	var viewModel = function(){
 
-		this.showTextarea = ko.observable(true);
+		this.showTextarea = ko.observable(false);
 		this.planning = ko.observable('');
 		this.plans = ko.observableArray();
 		this.level = ko.observable(1);
@@ -123,10 +113,67 @@
 			this.priorityText(text);
 			this.optionsBox(false);
 		}
+		this.created = function(){
+			alert('这个功能还没实现');
+		}
 	}
 
 	ko.applyBindings(new viewModel,document.getElementById('plan'));
 })(_CONFIG_);
+</script>
+<script type="text/javascript">
+(function(a,c){
+	var viewModel = function(){
+
+		this.limit = ko.observable(10);
+		this.page = ko.observable(1);
+		this.logs = ko.observableArray([]);
+	}
+	var vm = new viewModel,
+		path = c.path;
+
+	ko.applyBindings(vm,document.getElementById('logs'));
+
+	a.post(path+'admin/api/logs'
+		,{
+			page : vm.page()
+			,limit: vm.limit()
+		}
+		,function(res){
+			res = a.jsonParse(res);
+			if(res.success){
+				vm.logs(res.data);
+			}
+		}
+	);
+})(ajax,_CONFIG_);
+</script>
+<script type="text/javascript">
+(function(a,c){
+	var viewModel = function(){
+
+		this.limit = ko.observable(10);
+		this.page = ko.observable(1);
+		this.operates = ko.observableArray([]);
+	}
+	var vm = new viewModel,
+		path = c.path;
+
+	ko.applyBindings(vm,document.getElementById('operates'));
+
+	a.post(path+'admin/api/operates'
+		,{
+			page : vm.page()
+			,limit: vm.limit()
+		}
+		,function(res){
+			res = a.jsonParse(res);
+			if(res.success){
+				vm.operates(res.data);
+			}
+		}
+	);
+})(ajax,_CONFIG_);
 </script>
 
 <?php $this->show('end');?>

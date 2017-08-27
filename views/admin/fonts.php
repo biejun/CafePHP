@@ -36,7 +36,7 @@
 <section class="page-main" role="main">
 	<div class="container" id="icons">
 		<div class="main-panel">
-			<div class="right-ribbons">
+			<div class="fr">
 				<input type="text" class="form-control" placeholder="搜索图标..." data-bind="value:search,valueUpdate:'keyup'" />
 			</div>
 			<h2>字体图标</h2>

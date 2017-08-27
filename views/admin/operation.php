@@ -5,7 +5,7 @@
 <section class="page-main" role="main" id="app">
 	<div class="container">
 		<div class="main-panel">
-			<div class="right-ribbons">
+			<div class="fr">
 				<input type="text" class="form-control" placeholder="搜索用户..." data-bind="value:search,valueUpdate:'keyup'" />
 			</div>
 			<h2><?php echo $subtitle;?></h2>
@@ -60,7 +60,7 @@
 
 	ko.applyBindings(vm,document.getElementById('app'));
 
-	ajax.post(path+'admin/api/getusers'
+	ajax.post(path+'admin/api/users'
 		,{
 			page : 1
 			,limit: 10

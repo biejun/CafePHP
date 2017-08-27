@@ -154,10 +154,6 @@ button:focus{
 	border-bottom: 1px solid #d6d6d6;
 }
 
-.right-ribbons{
-	float: right;
-}
-
 button.ribbon-button{
 	display: inline-block;
 	color: #3f8cef;
@@ -165,8 +161,6 @@ button.ribbon-button{
 	background-color: transparent;
 	cursor: pointer;
 	font-size: 14px;
-	height: 25px;
-	vertical-align: -5px;
 }
 
 button.ribbon-button>i{
@@ -198,6 +192,7 @@ button.ribbon-button>i{
 	font-weight: normal;
 	margin:0;
 	margin-bottom: 10px;
+	margin-left: 3px;
 }
 
 .item-wrap .item-body .item-card{
@@ -219,13 +214,16 @@ button.ribbon-button>i{
 	font-size: 12px;
 	color: #888;
 }
-.item-wrap .item-body .item-card .info span{
-	margin-right: 5px;
-}
 
 .item-wrap .item-footer{
 	text-align: center;
 	padding: 10px 0;
+}
+
+.checkbox{
+	display: inline-block;
+	line-height: 1.42857143;
+	padding-right: 5px;
 }
 
 @keyframes slideIn {

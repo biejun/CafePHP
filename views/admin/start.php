@@ -11,6 +11,7 @@
 
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/grid.css" />
+	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/magic-check.css" />
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/fonts.css?v=<?php echo $suffixVersion;?>"/>
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/table.css?v=<?php echo $suffixVersion;?>"/>
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>views/admin/styles/admin.css?v=<?php echo $suffixVersion;?>" />

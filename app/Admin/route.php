@@ -6,12 +6,9 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
-		$loggedLogs = widget('admin@user')->getloggedLogs();
-		$operateLogs = widget('admin@operate')->getOperate();
-
 		$res->view->assign('subtitle','控制台');
-		$res->view->assign('loggedLogs',$loggedLogs);
-		$res->view->assign('operateLogs',$operateLogs);
+		// $res->view->assign('logs',widget('admin@log')->getLogs());
+		// $res->view->assign('operates',widget('admin@operate')->getOperates());
 		$res->view->show('console');
 	});
 

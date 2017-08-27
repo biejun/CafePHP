@@ -69,7 +69,7 @@ namespace App\Admin\Widget
 
 			__setcookie( '__admin_token__', $token , $timeout);
 
-			$this->setLoginLog($username, $time);
+			widget('admin@log')->setLog($username, $time);
 		}
 
 		public function updatePassword($oldPassword,$newPassword)
@@ -88,25 +88,6 @@ namespace App\Admin\Widget
 				return true;
 			}
 			return false;
-		}
-
-		public function setLoginLog($username, $time)
-		{
-
-			$data = $this->getloggedLogs();
-
-			$data[] = ['name'=>$username,'time'=>$time,'city'=> getCity()];
-
-			$this->cache->set('admin:loggedLogs',$data);
-		}
-
-		public function getloggedLogs()
-		{
-			$data = $this->cache->get('admin:loggedLogs');
-			if( !empty($data) ){
-				return array_reverse(array_slice($data, 0, 10));
-			}
-			return array();
 		}
 	}
 }

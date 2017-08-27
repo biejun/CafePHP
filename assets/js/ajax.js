@@ -1,8 +1,8 @@
 /*
  * @Author: Bie Jun 
  * @Date: 2017-08-24 11:15:50 
- * @Last Modified by:   Bie Jun 
- * @Last Modified time: 2017-08-24 11:15:50 
+ * @Last Modified by: Bie Jun
+ * @Last Modified time: 2017-08-24 11:47:52
  */
 (function (doc,win) {
 

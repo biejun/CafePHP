@@ -5,7 +5,7 @@
 <section class="page-main" role="main">
 	<div class="container">
 		<div class="main-panel">
-			<div class="right-ribbons">
+			<div class="fr mt-5">
 				<button type="submit" class="ribbon-button" role="button"><i class="icon icon-plus-circled"></i>自定义配置项</button>
 			</div>
 			<h2><?php echo $subtitle;?></h2>

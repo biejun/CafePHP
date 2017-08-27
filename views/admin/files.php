@@ -5,7 +5,7 @@
 <section class="page-main" role="main">
 	<div class="container">
 		<div class="main-panel">
-			<div class="right-ribbons">
+			<div class="fr mt-5">
 				<form action="<?php echo $this->path;?>admin/delete/clean"
 					onsubmit="return check(this);" class="table-btn-group"
 					method="post">

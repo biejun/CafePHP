@@ -5,7 +5,7 @@
 <section class="page-main" role="main">
 	<div class="container">
 		<div class="main-panel">
-			<div class="right-ribbons">
+			<div class="fr mt-5">
 				<form action="<?php echo $this->path;?>admin/post/backup/export" method="post">
 					<button type="submit" class="ribbon-button" role="button"><i class="icon icon-plus-circled"></i>备份数据库</button>
 				</form>

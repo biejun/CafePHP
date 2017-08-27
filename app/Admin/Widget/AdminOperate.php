@@ -6,21 +6,21 @@ namespace App\Admin\Widget
 
 	class AdminOperate extends Widget
 	{
-		public $operate = 'admin:operate';
+		public $cacheName = 'admin:operate';
 
 		public function setOperate($text)
 		{
-			$data = $this->getOperate();
+			$data = $this->getOperates();
 			$name = __session('__admin_name__');
 
 			$data[] = ['name'=>$name,'text'=>$text,'time'=>date("Y-m-d H:i:s")];
 
-			$this->cache->set($this->operate,$data);
+			$this->cache->set($this->cacheName,$data);
 		}
 
-		public function getOperate()
+		public function getOperates()
 		{
-			$data = $this->cache->get($this->operate);
+			$data = $this->cache->get($this->cacheName);
 
 			if(!empty($data)){
 				return $data;

@@ -23,6 +23,14 @@
 							<tbody>
 								<tr>
 									<th width="220" align="right">
+										头像
+									</th>
+									<td width="500">
+										<button>上传头像</button>
+									</td>
+								</tr>
+								<tr>
+									<th width="220" align="right">
 										账号
 									</th>
 									<td width="500">
@@ -31,10 +39,41 @@
 								</tr>
 								<tr>
 									<th width="220" align="right">
-										一句话介绍
+										性别
+									</th>
+									<td width="500">
+										<div class="checkbox">
+											<input class="magic-radio" name="sex" type="radio" id="sex1" value="option2" checked="checked">
+											<label for="sex1">男</label>
+										</div>
+										<div class="checkbox">
+											<input class="magic-radio" name="sex" type="radio" id="sex2" value="option2" checked="checked">
+											<label for="sex2">女</label>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th width="220" align="right">
+										手机号
 									</th>
 									<td width="500" class="form-group">
-										<input type="text" class="form-control"/>
+										<input type="number" class="form-control">
+									</td>
+								</tr>
+								<tr>
+									<th width="220" align="right">
+										邮箱
+									</th>
+									<td width="500" class="form-group">
+										<input type="email" class="form-control">
+									</td>
+								</tr>
+								<tr>
+									<th width="220" align="right">
+										自我介绍
+									</th>
+									<td width="500" class="form-group">
+										<input type="text" class="form-control">
 									</td>
 								</tr>
 							</tbody>
