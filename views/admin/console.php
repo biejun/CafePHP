@@ -105,6 +105,10 @@
 										</tr>
 									</tbody>
 								</table>
+								<div class="btn-group">
+									<button type="button" class="btn btn-delete">删除</button>
+									<button type="button" class="btn btn-complete">完成</button>
+								</div>
 							</div>
 						</div>
 					</div>
