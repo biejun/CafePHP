@@ -167,6 +167,12 @@ if( 1 == $step ){
 					'group'=> $group
 				]);
 
+				$uid = $db->id();
+
+				$db->insert('user_info',[
+					'uid' => $uid
+				]);
+
 				rewrite( $path );
 
 				$array = array();

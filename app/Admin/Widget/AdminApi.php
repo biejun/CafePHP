@@ -8,7 +8,7 @@ namespace App\Admin\Widget
 	{
 		function user($uid)
 		{
-
+			return widget('admin@user')->getUserInfoByUid($uid);
 		}
 
 		function logs($page, $limit)

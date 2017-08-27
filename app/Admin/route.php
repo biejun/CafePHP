@@ -7,8 +7,6 @@ $route->group('/admin',function($route){
 		$req->action->on('admin:permission',$req,$res);
 
 		$res->view->assign('subtitle','控制台');
-		// $res->view->assign('logs',widget('admin@log')->getLogs());
-		// $res->view->assign('operates',widget('admin@operate')->getOperates());
 		$res->view->show('console');
 	});
 
@@ -210,6 +208,34 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
+	});
+
+	$route->get('/plans',function($req,$res){
+
+		$req->action->on('admin:permission',$req,$res);
+
+		$uid = intval(__session('__admin_uid__'));
+
+		$res->json(widget('admin@plan')->getPlanByUid($uid),true);
+	});
+
+	$route->post('/add/plan',function($req,$res){
+
+		$req->action->on('admin:permission',$req,$res);
+
+		$text = trim($req->post('text'));
+
+		$level = intval($req->post('level'));
+
+		$uid = intval(__session('__admin_uid__'));
+
+		if(widget('admin@plan')->add($text,$level,$uid)){
+			$res->json('创建成功!',true);
+		}else{
+			$res->json('创建失败!',false);
+		}
+
+		$res->goBack();
 	});
 
 	$route->post('/delete/clean',function($req,$res){

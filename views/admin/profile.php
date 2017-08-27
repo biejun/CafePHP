@@ -70,7 +70,7 @@
 								</tr>
 								<tr>
 									<th width="220" align="right">
-										自我介绍
+										一句话介绍
 									</th>
 									<td width="500" class="form-group">
 										<input type="text" class="form-control">

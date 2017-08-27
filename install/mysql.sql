@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS `any_users` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL DEFAULT '',
   `password` varchar(60) NOT NULL DEFAULT '',
-  `avatar` varchar(255) NOT NULL DEFAULT '',
   `created` int(10) unsigned NOT NULL DEFAULT '0',
   `logged` int(10) unsigned NOT NULL DEFAULT '0',
   `timeout` int(10) unsigned NOT NULL DEFAULT '0',
@@ -19,6 +18,30 @@ CREATE TABLE IF NOT EXISTS `any_users` (
 ) ENGINE=MyISAM DEFAULT CHARSET=%charset% AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
+
+DROP TABLE IF EXISTS `any_user_info`;
+CREATE TABLE IF NOT EXISTS `any_user_info` (
+  `uid` int(10) unsigned NOT NULL,
+  `avatar` varchar(255) NOT NULL DEFAULT '',
+  `sign` varchar(255) NOT NULL DEFAULT '',
+  `phone` varchar(255) NOT NULL DEFAULT '',
+  `email` varchar(255) NOT NULL DEFAULT '',
+  `sex` enum('男','女') NOT NULL DEFAULT '男', 
+  KEY `uid` (`uid`,`sex`)
+) ENGINE=MyISAM DEFAULT CHARSET=%charset%;
+
+-- --------------------------------------------------------
+
+DROP TABLE IF EXISTS `any_plans`;
+CREATE TABLE IF NOT EXISTS `any_plans` (
+  `pid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL,
+  `text` varchar(255) NOT NULL DEFAULT '',
+  `status` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `level` tinyint(3) unsigned NOT NULL DEFAULT 1,
+  PRIMARY KEY (`pid`),
+  KEY `uid` (`uid`,`level`)
+) ENGINE=MyISAM DEFAULT CHARSET=%charset% AUTO_INCREMENT=1;
 
 --
 -- 表的结构 `any_config`

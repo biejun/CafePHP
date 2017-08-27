@@ -445,6 +445,35 @@ button.ribbon-button>i{
 	color: #d6d6d6;
 }
 
+.plan-list{
+	width:100%;
+}
+.plan-list td{
+	padding: 5px 10px;
+	font-size: 14px;
+	border-bottom:1px solid #f3f3f3;
+	line-height: 1.42857143;
+}
+
+.plan-list td .magic-checkbox + label:before{
+	border-color:#e1e1e1;
+}
+
+.plan-list > thead > tr > th{
+	padding: 5px 10px;
+	background-color: #f3f3f3;
+	font-size: 14px;
+	border-bottom: 1px solid #e8e8e8;
+	border-left: 1px solid #e8e8e8;
+}
+.plan-list > thead > tr > th:first-child{
+	border-left: none;
+}
+
+.plan-list > tbody > tr:last-child td{
+	border-bottom:none;
+}
+
 .tab-nav{
 	list-style: none;
 	font-size: 14px;

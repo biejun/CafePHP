@@ -10,11 +10,11 @@ namespace App\Admin\Widget
 
 		public function setLog($username, $time)
 		{
-            $data = $this->getlogs(NULL);
+			$data = $this->getlogs(NULL);
 
-            $data[] = ['name'=>$username,'time'=>date("Y-m-d H:i",$time),'city'=> getCity()];
+			$data[] = ['name'=>$username,'time'=>date("Y-m-d H:i",$time),'city'=> getCity()];
 
-            $this->cache->set($this->cacheName,$data);
+			$this->cache->set($this->cacheName,$data);
 		}
 
 		public function getLogs($page = 1, $limit = 20)
@@ -27,11 +27,11 @@ namespace App\Admin\Widget
 				return array_reverse($data);
 			}
 			return array();
-        }
-        
-        public function deleteLogs()
-        {
+		}
 
-        }
+		public function deleteLogs()
+		{
+
+		}
 	}
 }

@@ -37,10 +37,11 @@ namespace App\Admin\Widget
 
 					$time = $_SERVER['REQUEST_TIME'];
 
-					$data = $this->db->row($this->table,"name,timeout","`token`='$token' and `group` = '3'");
+					$data = $this->db->row($this->table,"uid,name,timeout","`token`='$token' and `group` = '3'");
 
 					if( $data && $time < $data['timeout'] ){
 						// 将验证结果记录到临时会话。只验证一次token，减少SQL查询
+						__session('__admin_uid__',$data['uid']);
 						__session('__admin_name__',$data['name']);
 						return true;
 					}
@@ -88,6 +89,27 @@ namespace App\Admin\Widget
 				return true;
 			}
 			return false;
+		}
+
+		/**
+		 * @param int $uid 用户ID 
+		**/
+		public function getUserInfoByUid($uid)
+		{
+			$uid = $this->db->escape($uid);
+
+			$users = $this->db->prefix . 'users';
+			$user_info = $this->db->prefix . 'user_info';
+
+			$res = $this->db->query("SELECT A.uid, A.name ,
+				FROM_UNIXTIME(A.created, '%Y-%m-%d') AS created,
+				A.group, B.*
+				FROM `{$users}` AS A
+				INNER JOIN
+				`{$user_info}` AS B
+				ON A.uid = B.uid WHERE A.uid = '$uid'");
+			
+			return $res->fetch_array(MYSQLI_ASSOC);
 		}
 	}
 }
