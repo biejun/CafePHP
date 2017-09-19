@@ -34,8 +34,6 @@ class App
 
 		$this->init();
 
-		$this->sendHeaders();
-
 		if($appFiles = $this->getAppFiles()){
 
 			$route = new Router($this->request,$this->response);
@@ -60,6 +58,8 @@ class App
 
 			$route->dispatch();
 		}
+
+		$this->sendHeaders();
 	}
 
 	private function sendHeaders()
@@ -67,10 +67,9 @@ class App
 
 		if (!headers_sent()) {
 
-			header("Content-type: text/html; charset=UTF-8");
-
-			header("X-Powered-By: Coffee/".self::VERSION);
+			header("Content-type: text/html; charset=" . G( 'system','charset' ) );
 		}
+
 	}
 
 	private function init()
@@ -83,7 +82,9 @@ class App
 		mb_internal_encoding(G('system','charset'));
 
 		date_default_timezone_set(G('system','timezone'));
-
+		
+		header("X-Powered-By: Coffee/".self::VERSION);
+		
 		session_start();
 	}
 

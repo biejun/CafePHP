@@ -147,10 +147,10 @@ if( 1 == $step ){
 
 			if($sql){
 
-				$db = (new DB( conf('database') ))->connect( conf('database','create') );
+				$db = (new DB( G('database') ))->connect( G('database','create') );
 
-				$sql = str_replace('any_',conf('database','prefix'), $sql);
-				$sql = str_replace('%charset%',conf('database','charset'), $sql);
+				$sql = str_replace('any_',G('database','prefix'), $sql);
+				$sql = str_replace('%charset%',G('database','charset'), $sql);
 				$sql = explode(';', $sql);
 
 				foreach ($sql as $query) {
@@ -207,7 +207,7 @@ if( 1 == $step ){
 ?><!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head lang="zh-CN">
-	<meta charset="<?php echo conf('system','charset'); ?>" />
+	<meta charset="<?php echo G('system','charset'); ?>" />
 	<title>快速安装</title>
 	<link rel="stylesheet" type="text/css" href="assets/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="assets/css/common.css" />
@@ -316,33 +316,33 @@ if( 1 == $step ){
 		<form method="post" action="?step=1" onsubmit="return validate_form(this)">
 			<div class="form-addons">
 				<label for="">数据库驱动</label>
-				<select class="form-input" name="driver" value="<?php echo conf('database','driver');?>">
+				<select class="form-input" name="driver" value="<?php echo G('database','driver');?>">
 					<option value="mysqli">MySQLi</option>
 				</select>
 			</div>
 			<div class="form-addons">
 				<label for="">数据库服务器</label>
-				<input type="text" class="form-input" name="host" value="<?php echo conf('database','host');?>" onchange="input_trim(this);">
+				<input type="text" class="form-input" name="host" value="<?php echo G('database','host');?>" onchange="input_trim(this);">
 			</div>
 			<div class="form-addons">
 				<label for="">数据库服务器</label>
-				<input type="text" class="form-input" name="host" value="<?php echo conf('database','host');?>" onchange="input_trim(this);">
+				<input type="text" class="form-input" name="host" value="<?php echo G('database','host');?>" onchange="input_trim(this);">
 			</div>
 			<div class="form-addons">
 				<label for="">数据库名称</label>
-				<input type="text" class="form-input" name="name" value="<?php echo conf('database','name');?>" onchange="input_trim(this);">
+				<input type="text" class="form-input" name="name" value="<?php echo G('database','name');?>" onchange="input_trim(this);">
 			</div>
 			<div class="form-addons">
 				<label for="">数据库用户名</label>
-				<input type="text" class="form-input" name="user" value="<?php echo conf('database','user');?>" onchange="input_trim(this);">
+				<input type="text" class="form-input" name="user" value="<?php echo G('database','user');?>" onchange="input_trim(this);">
 			</div>
 			<div class="form-addons">
 				<label for="">数据库密码</label>
-				<input type="password" class="form-input" name="password" value="<?php echo conf('database','password');?>" onchange="input_trim(this);">
+				<input type="password" class="form-input" name="password" value="<?php echo G('database','password');?>" onchange="input_trim(this);">
 			</div>
 			<div class="form-addons">
 				<label for="">数据库表前缀</label>
-				<input type="text" class="form-input" name="prefix" value="<?php echo conf('database','prefix');?>" onchange="input_trim(this);">
+				<input type="text" class="form-input" name="prefix" value="<?php echo G('database','prefix');?>" onchange="input_trim(this);">
 			</div>
 			<div class="form-addons">
 				<label for="">是否自动创建数据库</label>
@@ -403,7 +403,7 @@ if( 1 == $step ){
 			<p>生成伪静态文件...成功</p>
 			<p>写入数据库表...成功</p>
 			<p>写入管理员权限...成功</p>
-			<p>安装完成，系统将在<span id="num"></span>秒后自动<a href="<?php echo conf('system','path');?>">进入管理后台</a></p>
+			<p>安装完成，系统将在<span id="num"></span>秒后自动<a href="<?php echo G('system','path');?>">进入管理后台</a></p>
 		</div>
 
 		<script>
@@ -415,7 +415,7 @@ if( 1 == $step ){
 						auto_redirect(sec);
 					},1000);
 				}else{
-					location.href = "<?php echo conf('system','path');?>admin/login";
+					location.href = "<?php echo G('system','path');?>admin/login";
 				}
 			}
 			auto_redirect(5);

@@ -9,32 +9,36 @@ if (!function_exists('showError')) {
 	 * @param  int $line     错误行号
 	 * @param  string $file    错误文件路径
 	 */
-	function showError($severity,$msg,$line,$file){
+    function showError($severity,$msg,$line,$file){
 
-		$hash = substr(md5($line),3,7);
-		$style = "<style>
-				.error_{$hash}{padding:20px;background:#505050;font-size:14px;}
-				.error_{$hash}>p{line-height:1.777;color:#e0e0e0;margin:0;}
-				.error_{$hash}>p>strong{color:#e49631;}
-			</style>";
+        $hash = substr(md5($line),3,7);
 
-		$log = '<p>'.sprintf('%s %s','<strong>'.$severity.'：</strong>',$msg).'</p>';
-		$log .= '<p>'.sprintf('Line %s：%s',$line,$file).'</p>';
+        $log = '<p>'.sprintf('%s %s','<strong>'.$severity.'：</strong>',$msg).'</p>';
+        $log .= '<p>'.sprintf('Line %s：%s',$line,$file).'</p>';
 
-        (new \Coffee\Http\Response)
-            ->status(500)
-            ->header('Content-Type', 'text/html; charset='.G('system','charset'))
-            ->write( $style ."<div class='error_{$hash}'>{$log}</div>")
-            ->send();
-	}
+        $html = "<style>*{margin:0;padding:0}
+            .error_{$hash}{padding:20px;background:#505050;font-size:14px;}
+            .error_{$hash}>p{line-height:1.777;color:#e0e0e0;margin:0;}
+            .error_{$hash}>p>strong{color:#e49631;}
+            </style><div class='error_{$hash}'>{$log}</div>";
 
-	set_error_handler(function($severity, $msg, $file, $line){
-		showError('['.$severity.']',$msg,$line,$file);
-	});
+        if (!headers_sent()) {
 
-	set_exception_handler(function($e){
-		showError('捕获异常',$e->getMessage(),$e->getLine(),$e->getFile());
-	});
+            header("Content-type: text/html; charset=" . G( 'system','charset' ) );
+
+            header('HTTP/1.1 500 Internal Server Error');
+        }
+        
+        echo $html;
+    }
+
+    set_error_handler(function($severity, $msg, $file, $line){
+        showError('['.$severity.']',$msg,$line,$file);
+    });
+
+    set_exception_handler(function($e){
+        showError('捕获异常',$e->getMessage(),$e->getLine(),$e->getFile());
+    });
 }
 
 if (!function_exists('W')) {
