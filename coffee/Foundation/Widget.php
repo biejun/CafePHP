@@ -32,7 +32,7 @@ abstract class Widget
 		static $_dbHandler;
 
 		if($_dbHandler === null){
-			$_dbHandler = (new DB( conf( 'database' ) ))->connect();
+			$_dbHandler = (new DB( G( 'database' ) ))->connect();
 		}
 
 		return $_dbHandler;
@@ -43,7 +43,7 @@ abstract class Widget
 		static $_cacheHandler;
 
 		if($_cacheHandler === null){
-			$_cacheHandler = Cache::init( conf( 'cache' ) );
+			$_cacheHandler = Cache::init( G( 'cache' ) );
 		}
 
 		return $_cacheHandler;
@@ -84,7 +84,7 @@ abstract class Widget
 					return false;
 				}else{
 					next($parentMethods);
-				}				
+				}
 			}
 			if($reflection->hasMethod($func)){
 				$method = $reflection->getMethod($func);
@@ -105,12 +105,12 @@ abstract class Widget
 	}
 
 	/**
-	 *	获取应用组件
+	 *	实例化一个应用组件
 	 *
 	 * 	@param string $widget 组件名不区分大小写,调用子组件用@分隔，如"admin@api"
 	 *	@return instance
 	 */
-	public static function get($widget)
+	public static function instance($widget)
 	{
 		if(!isset($widget)||empty($widget)) return false;
 
@@ -119,16 +119,16 @@ abstract class Widget
 		$appNameSpace = '\\App\\'.ucfirst($parts[0]).'\\Widget\\';
 
 		if( count($parts) > 1 ){
-			$instance = $appNameSpace;
+			$className = $appNameSpace;
 			foreach ($parts as $value) {
-				$instance .= ucfirst($value);
+				$className .= ucfirst($value);
 			}
 
 		}else{
 
-			$instance = $appNameSpace.ucfirst($parts[0]);
+			$className = $appNameSpace.ucfirst($parts[0]);
 		}
-		return new $instance($parts[0]);
+		return new $className($parts[0]);
 	}
 
 	/**

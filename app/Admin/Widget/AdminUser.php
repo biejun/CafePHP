@@ -54,7 +54,7 @@ namespace App\Admin\Widget
 
 		public function updateLoginTime($username)
 		{
-			$salt = conf('system','salt');
+			$salt = G('system','salt');
 
 			$time = $_SERVER['REQUEST_TIME'];
 
@@ -70,7 +70,7 @@ namespace App\Admin\Widget
 
 			__setcookie( '__admin_token__', $token , $timeout);
 
-			widget('admin@log')->setLog($username, $time);
+			W('admin@log')->setLog($username, $time);
 		}
 
 		public function updatePassword($oldPassword,$newPassword)
@@ -92,7 +92,7 @@ namespace App\Admin\Widget
 		}
 
 		/**
-		 * @param int $uid 用户ID 
+		 * @param int $uid 用户ID
 		**/
 		public function getUserInfoByUid($uid)
 		{
@@ -108,7 +108,7 @@ namespace App\Admin\Widget
 				INNER JOIN
 				`{$user_info}` AS B
 				ON A.uid = B.uid WHERE A.uid = '$uid'");
-			
+
 			return $res->fetch_array(MYSQLI_ASSOC);
 		}
 	}

@@ -30,9 +30,9 @@ trait DBTrait
 
 	public function setCharset()
 	{
-		if ($charset = conf('database','charset')) {
+		if ($charset = G('database','charset')) {
 			$this->charset = $charset;
-			if ($collate = conf('database','collate')) {
+			if ($collate = G('database','collate')) {
 				$this->collate = $collate;
 			}else{
 				if('utf8mb4' === $this->charset){

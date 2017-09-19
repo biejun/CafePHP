@@ -10,16 +10,22 @@ if (!function_exists('showError')) {
 	 * @param  string $file    错误文件路径
 	 */
 	function showError($severity,$msg,$line,$file){
+
 		$hash = substr(md5($line),3,7);
-		echo '<style>
-				.error_',$hash,'{padding:20px;background:#505050;font-size:14px;}
-				.error_',$hash,'>p{line-height:1.777;color:#e0e0e0;margin:0;}
-				.error_',$hash,'>p>strong{color:#e49631;}
-			</style>';
+		$style = "<style>
+				.error_{$hash}{padding:20px;background:#505050;font-size:14px;}
+				.error_{$hash}>p{line-height:1.777;color:#e0e0e0;margin:0;}
+				.error_{$hash}>p>strong{color:#e49631;}
+			</style>";
 
 		$log = '<p>'.sprintf('%s %s','<strong>'.$severity.'：</strong>',$msg).'</p>';
 		$log .= '<p>'.sprintf('Line %s：%s',$line,$file).'</p>';
-		echo '<div class="error_',$hash,'">',$log,'</div>';
+
+        (new \Coffee\Http\Response)
+            ->status(500)
+            ->header('Content-Type', 'text/html; charset='.G('system','charset'))
+            ->write( $style ."<div class='error_{$hash}'>{$log}</div>")
+            ->send();
 	}
 
 	set_error_handler(function($severity, $msg, $file, $line){
@@ -27,59 +33,59 @@ if (!function_exists('showError')) {
 	});
 
 	set_exception_handler(function($e){
-		showError('异常提示',$e->getMessage(),$e->getLine(),$e->getFile());
+		showError('捕获异常',$e->getMessage(),$e->getLine(),$e->getFile());
 	});
 }
 
-if (!function_exists('widget')) {
+if (!function_exists('W')) {
 	# 打印出漂亮的数组
-	function widget($widget){
+	function W ($widget){
 
-		return \Coffee\Foundation\Widget::get($widget);
+		return \Coffee\Foundation\Widget::instance($widget);
 	}
 }
 
-if (!function_exists('conf')) {
+if (!function_exists('G')) {
 	/**
 	 * 获取任何全局配置部分或单个设置值
 	 *
 	 * @param $section string 全局配置分组名
 	 * @param $value string 分组类的某个变量
-	 * @param $update string 更新某个值 例如：禁用debug conf ('system', 'debug', true);
+	 * @param $update string 更新某个值 例如：禁用debug G('system', 'debug', true);
 	 */
-	function conf ($section = false, $value = false, $update = null) {
-		static $conf;
+	function G ($section = false, $value = false, $update = null) {
 
-		// 第一次进来时读取配置
-		if ($conf === null) {
-			if ( isset( $GLOBALS['conf'] ) ) {
-				$conf = & $GLOBALS['conf'];
-			}else{
+		static $_G;
 
-				$configFiles = ['config/system.php', 'config/database.php'];
+        if($_G === null ){
 
-				foreach ($configFiles as $file)
-				{
-					if(file_exists($file)){
-						$conf = array_replace_recursive( (array) $conf
-							, include ($file) );
-					}else{
-						throw new \Exception("没有找到".$file."配置文件");
-					}
-				}
-			}
-		}
+            $files = ['config/system.php', 'config/database.php'];
+
+            foreach ($files as $file)
+            {
+                if(file_exists($file)){
+                    $_G = array_replace_recursive( (array) $_G
+                        , include ($file) );
+                }else{
+                    throw new \Exception("没有找到".$file."配置文件");
+                }
+            }
+        }
+
 		// 读取或配置
 		if ( $section && $value ) {
+
 			if ($update !== null) {
-				$conf[$section][$value] = $update;
+				$_G[$section][$value] = $update;
 			}
-			return isset($conf[$section][$value]) ? $conf[$section][$value] : false;
+			return isset($_G[$section][$value]) ? $_G[$section][$value] : false;
 		}
-		if ($section) {
-			return isset($conf[$section]) ? $conf[$section] : false;
+
+        if ($section) {
+			return isset($_G[$section]) ? $_G[$section] : false;
 		}
-		return $conf;
+
+		return $_G;
 	}
 }
 
@@ -453,20 +459,20 @@ function __substr($binary_string, $start, $length) {
  * @param integer $expire 会话过期时间
 */
 function __setcookie($key, $value, $expire = 0, $path = null){
-    if(is_null($path)) $path = conf('system','path');
+    if(is_null($path)) $path = G('system','path');
     // 空格转%20s
     setrawcookie($key, rawurlencode($value), $expire, $path);
     $_COOKIE[$key] = $value;
 }
 // 获取指定的Cookie值
 function __getcookie($key, $default = null, $path = null){
-    if(is_null($path)) $path = conf('system','path');
+    if(is_null($path)) $path = G('system','path');
 
     return isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;
 }
 // 删除指定的Cookie
 function __unsetcookie($key, $path = null){
-    if(is_null($path)) $path = conf('system','path');
+    if(is_null($path)) $path = G('system','path');
 
     if (!isset($_COOKIE[$key])) {
         return;
@@ -493,7 +499,7 @@ function __unsetsession($key){
 
 // 打印出漂亮的数组 $debuger 为程序断点
 function __print( $array, $debuger = false ){
-    if( conf('system','debug') ){
+    if( G('system','debug') ){
         echo '<pre>',print_r((array) $array),'</pre>';
         if($debuger) die('------- STOP -------');
     }

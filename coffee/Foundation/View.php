@@ -4,7 +4,6 @@ namespace Coffee\Foundation;
 
 class View
 {
-	public $root;
 
 	public $path;
 
@@ -17,7 +16,7 @@ class View
 	public function setTheme($theme = null ,$path = null)
 	{
 		$this->theme = ($theme === null) ? $this->site->theme : $theme;
-		$this->path = ($path === null) ? conf('system','path') : $path;
+		$this->path = ($path === null) ? G('system','path') : $path;
 		return $this;
 	}
 
@@ -55,7 +54,7 @@ class View
 		}else{
 			$theme = sprintf("%s%s%s",$ds,$this->theme,$ds);
 		}
-		return implode("",[$this->root,'views',$theme,$page,'.php']);
+		return implode("",[Path . $ds ,'views',$theme,$page,'.php']);
 	}
 	/**
 	 * 模板渲染

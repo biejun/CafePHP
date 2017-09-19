@@ -22,7 +22,7 @@ namespace App\Admin\Widget
 
 		public function getCacheFiles()
 		{
-			$cacheFolder = conf('cache','location');
+			$cacheFolder = G('cache','location');
 			// 读取文件夹
 			$array = array();
 			if($handle=opendir($cacheFolder)){

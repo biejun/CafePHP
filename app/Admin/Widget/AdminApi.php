@@ -8,7 +8,7 @@ namespace App\Admin\Widget
 	{
 		function user($uid)
 		{
-			return widget('admin@user')->getUserInfoByUid($uid);
+			return W('admin@user')->getUserInfoByUid($uid);
 		}
 
 		function logs($page, $limit)
@@ -17,12 +17,12 @@ namespace App\Admin\Widget
 
 			$limit = ($limit) ? intval($limit) : 20;
 
-			return widget('admin@log')->getLogs($page, $limit);
+			return W('admin@log')->getLogs($page, $limit);
 		}
 
 		function operates()
 		{
-			return widget('admin@operate')->getOperates();
+			return W('admin@operate')->getOperates();
 		}
 
 		function users($page,$limit)

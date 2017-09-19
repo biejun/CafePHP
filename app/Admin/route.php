@@ -14,7 +14,7 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
-		$res->view->assign('data',widget('admin@config')->getSiteConfig());
+		$res->view->assign('data',W('admin@config')->get());
 		$res->view->assign('subtitle','设置');
 		$res->view->show('settings');
 	});
@@ -29,7 +29,7 @@ $route->group('/admin',function($route){
 
 	$route->get('/login',function($req,$res){
 
-		if( widget('admin@user')->isAdmin() ){
+		if( W('admin@user')->isAdmin() ){
 			$res->redirect('/admin/console');
 		}
 
@@ -44,7 +44,7 @@ $route->group('/admin',function($route){
 	$route->get('/logout',function($req,$res){
 
 		session_unset();
-		
+
 		session_destroy();
 
 		// __unsetsession('__admin_name__');
@@ -58,7 +58,7 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
-		$data = widget('admin@console')->getBackupFiles();
+		$data = W('admin@console')->getBackupFiles();
 
 		$res->view->assign('subtitle','数据库备份');
 		$res->view->assign('data',$data);
@@ -69,7 +69,7 @@ $route->group('/admin',function($route){
 
 		$req->action->on('admin:permission',$req,$res);
 
-		$data = widget('admin@console')->getCacheFiles();
+		$data = W('admin@console')->getCacheFiles();
 		$totalSize = formatSize(array_sum(array_column($data,'size')));
 
 		$res->view->assign('subtitle','缓存文件');
@@ -137,12 +137,12 @@ $route->group('/admin',function($route){
 			$res->json('密码不能少于六位!',false);
 		}
 
-		if(!widget('admin@user')->checkUserName($username)){
+		if(!W('admin@user')->checkUserName($username)){
 			$res->json('您没有权限登录!',false);
 		}
 
-		if(widget('admin@user')->checkPassword($username,$password)){
-			widget('admin@user')->updateLoginTime($username);
+		if(W('admin@user')->checkPassword($username,$password)){
+			W('admin@user')->updateLoginTime($username);
 			// 从会话中删除已验证过得CSRF令牌
 			__unsetsession('__admin_login_csrf__');
 			$res->json('登录成功',true);
@@ -159,8 +159,8 @@ $route->group('/admin',function($route){
 
 		if('export' === $action){ // 备份
 
-			if(widget('admin@console')->exportSQL()){
-				widget('admin@operate')->setOperate("备份了数据库");
+			if(W('admin@console')->exportSQL()){
+				W('admin@operate')->setOperate("备份了数据库");
 				$req->action->on('admin:notify','success','备份成功!');
 			}else{
 				$req->action->on('admin:notify','error','备份失败!');
@@ -169,8 +169,8 @@ $route->group('/admin',function($route){
 
 			$file = trim($req->post('file'));
 
-			if(widget('admin@console')->restoreSQL($file)){
-				widget('admin@operate')->setOperate("还原了\"{$file}\"数据库备份文件");
+			if(W('admin@console')->restoreSQL($file)){
+				W('admin@operate')->setOperate("还原了\"{$file}\"数据库备份文件");
 				$req->action->on('admin:notify','success','还原成功!');
 			}else{
 				$req->action->on('admin:notify','error','还原失败!');
@@ -179,8 +179,8 @@ $route->group('/admin',function($route){
 
 			$file = trim($req->post('file'));
 
-			if(widget('admin@console')->deleteBackup($file)){
-				widget('admin@operate')->setOperate("删除了\"{$file}\"数据库备份文件");
+			if(W('admin@console')->deleteBackup($file)){
+				W('admin@operate')->setOperate("删除了\"{$file}\"数据库备份文件");
 				$req->action->on('admin:notify','success','删除成功!');
 			}else{
 				$req->action->on('admin:notify','error','删除失败!');
@@ -196,8 +196,8 @@ $route->group('/admin',function($route){
 
 		$data = $req->post();
 
-		if(widget('admin@config')->updateSiteConfigs($data)){
-			widget('admin@operate')->setOperate('更新了站点设置');
+		if(W('admin@config')->set($data)){
+			W('admin@operate')->setOperate('更新了站点设置');
 			$req->action->on('admin:notify','success','保存成功!');
 		}
 
@@ -216,7 +216,15 @@ $route->group('/admin',function($route){
 
 		$uid = intval(__session('__admin_uid__'));
 
-		$res->json(widget('admin@plan')->getPlanByUid($uid),true);
+		$data = W('admin@plan')->getPlanByUid($uid);
+
+		if($data){
+			$res->json('1',true);
+		}else{
+			$res->json('2',false);
+		}
+
+		//$res->json(W('admin@plan')->getPlanByUid($uid),true);
 	});
 
 	$route->post('/add/plan',function($req,$res){
@@ -229,7 +237,7 @@ $route->group('/admin',function($route){
 
 		$uid = intval(__session('__admin_uid__'));
 
-		if(widget('admin@plan')->add($text,$level,$uid)){
+		if(W('admin@plan')->add($text,$level,$uid)){
 			$res->json('创建成功!',true);
 		}else{
 			$res->json('创建失败!',false);
@@ -244,7 +252,7 @@ $route->group('/admin',function($route){
 
 		$type = $req->post('type');
 
-		if(widget('admin@console')->cleanFiles($type)){
+		if(W('admin@console')->cleanFiles($type)){
 			$req->action->on('admin:notify','success','清空成功!');
 		}else{
 			$req->action->on('admin:notify','error','清空失败!');
@@ -304,8 +312,8 @@ $route->group('/admin',function($route){
 			$res->goBack();
 		}
 
-		if(widget('admin@user')->updatePassword($oldPassword,$newPassword)){
-			widget('admin@operate')->setOperate('修改了账户密码');
+		if(W('admin@user')->updatePassword($oldPassword,$newPassword)){
+			W('admin@operate')->setOperate('修改了账户密码');
 			$req->action->on('admin:notify','error','设置成功!');
 			$res->goBack();
 		}else{
@@ -320,7 +328,7 @@ $route->group('/admin',function($route){
 		$func = $req->get('func');
 
 		if(!empty($func)){
-			$data = widget('admin@api')->run($func,$req->post());
+			$data = W('admin@api')->run($func,$req->post());
 			if($data){
 				$res->json($data,true);
 			}else{

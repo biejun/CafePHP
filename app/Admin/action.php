@@ -16,7 +16,7 @@ $action->add('route:failed',function($req,$res){
 // 验证管理员权限
 $action->add('admin:permission',function($req,$res){
 
-	if( widget('admin@user')->isAdmin() ){
+	if( W('admin@user')->isAdmin() ){
 		$res->view->assign('admin_name',__session('__admin_name__'));
 		$res->view->assign('suffixVersion',date('ymdHi'));
 	}else{

@@ -16,8 +16,6 @@ class App
 {
 	const VERSION = '0.0.5/15.06.14';
 
-	public $root;
-
 	public $request;
 
 	public $response;
@@ -78,13 +76,13 @@ class App
 	private function init()
 	{
 
-		ini_set('display_errors', conf('system','debug') ? 'On' : 'Off');
+		ini_set('display_errors', G('system','debug') ? 'On' : 'Off');
 
-		error_reporting(conf('system','debug') ? E_ALL ^ E_NOTICE : 0);
+		error_reporting(G('system','debug') ? E_ALL ^ E_NOTICE : 0);
 
-		mb_internal_encoding(conf('system','charset'));
+		mb_internal_encoding(G('system','charset'));
 
-		date_default_timezone_set(conf('system','timezone'));
+		date_default_timezone_set(G('system','timezone'));
 
 		session_start();
 	}
@@ -92,7 +90,7 @@ class App
 	// 获取应用路由配置
 	private function getAppFiles()
 	{
-		$appPath = $this->getAppPath();
+		$appPath = App . DIRECTORY_SEPARATOR;
 
 		$reqPath = $this->request->fetchPath();
 
@@ -112,21 +110,5 @@ class App
 		}
 
 		return ['route'=>$route,'action'=>$action];
-	}
-
-	// 设置系统根目录
-	public function setRoot($root)
-	{
-		$this->root = $root . DIRECTORY_SEPARATOR;
-
-		$this->response->view->root = $root . DIRECTORY_SEPARATOR;
-
-		return $this;
-	}
-
-	// 获取应用路径
-	public function getAppPath()
-	{
-		return $this->root .'app'. DIRECTORY_SEPARATOR;
 	}
 }

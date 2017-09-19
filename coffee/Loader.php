@@ -35,21 +35,27 @@ class Loader
 	/**
 	 *	初始化并添加命名空间
 	 */
-	public static function register($basePath)
+	public static function register()
 	{
+		static $_includes;
+
 		spl_autoload_register('Coffee\\Loader::autoload', true, true);
 
-		$coffeePath = $basePath.'/coffee';
+		self::addNamespace([ 'Coffee' => Coffee , 'App' => App ]);
 
-		$appPath = $basePath.'/app';
+		if(!isset($_includes['helpers'])){
 
-		self::addNamespace([ 'Coffee' => $coffeePath,'App' => $appPath]);
+			include Coffee .'/Support/helpers.php';
 
-		static $_helpers = false;
+			$_includes['helpers'] = true;
+		}
 
-		if(!$_helpers) {
-			$_helpers = true;
-			include $coffeePath . '/Support/helpers.php';
+		$scriptName = ltrim($_SERVER['SCRIPT_NAME'],'/');
+
+		// 安装程序与程序入口文件分离
+		if( $scriptName === 'index.php' ){
+
+			(new \Coffee\Foundation\App)->start();
 		}
 	}
 

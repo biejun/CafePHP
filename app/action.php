@@ -4,7 +4,7 @@
 $action->add('route:before',function($req,$res){
 
 	// 将站点配置映射到视图模型中
-	$data = widget('admin@config')->getSiteConfig();
+	$data = W('admin@config')->get();
 	if(!empty($data)){
 		$site = new stdClass;
 		foreach ($data as $row) {

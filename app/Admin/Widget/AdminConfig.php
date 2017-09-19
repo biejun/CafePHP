@@ -8,22 +8,31 @@ namespace App\Admin\Widget
 
 		public $table = 'configs';
 
-		public function getSiteConfig()
+		private $group = 1;
+
+		public function setGroup($group)
 		{
-			$data = $this->cache->get('site:configs');
+			$this->group = (int) $group;
+
+			return $this;
+		}
+
+		public function get()
+		{
+			$data = $this->cache->get('site:configs:'.$this->group);
 			if(!$data){
-				$data = $this->db->rows('configs','*','`group` = 1');
-				$this->cache->add('site:configs',$data);
+				$data = $this->db->rows('configs','*','`group` ='.$this->group);
+				$this->cache->add('site:configs:'.$this->group,$data);
 			}
 			return $data;
 		}
 
-		public function updateSiteConfigs($data){
+		public function set($data){
 
 			foreach ($data as $key => $value) {
-				$this->db->update($this->table,$value," `name` = '$key' and `group` = '1'");
+				$this->db->update($this->table,$value," `name` = '$key' and `group` = ".$this->group);
 			}
-			$this->cache->delete('site:configs');
+			$this->cache->delete('site:configs:'.$this->group);
 
 			return true;
 		}
