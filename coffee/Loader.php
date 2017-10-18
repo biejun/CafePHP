@@ -1,4 +1,14 @@
 <?php
+/**
+ * AnyPHP Coffee
+ *
+ * An agile development core based on PHP.
+ *
+ * @version  0.0.6
+ * @link 	 https://github.com/biejun/anyphp
+ * @copyright Copyright (c) 2017-2018 Jun Bie
+ * @license This content is released under the MIT License.
+ */
 
 namespace Coffee;
 
@@ -37,10 +47,18 @@ class Loader
 	 */
 	public static function register()
 	{
+		static $_functions;
 
 		spl_autoload_register('Coffee\\Loader::autoload', true, true);
 
 		self::addNamespace([ 'Coffee' => CORE , 'App' => APP ]);
+
+		// 载入函数库，包含Polyfil
+		if(!$_functions){
+			$file = CORE . '/Support/Functions.php';
+			(file_exists($file)) && include $file;
+			$_functions = true;
+		}
 	}
 
 	public static function addNamespace($namespace, $baseDir = '')

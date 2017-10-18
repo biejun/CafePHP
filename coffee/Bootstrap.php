@@ -10,7 +10,8 @@
  * @license This content is released under the MIT License.
  */
 
-require __DIR__.'/Loader.php';
+/* 载入系统模块加载器 */
+require CORE . '/Loader.php';
 
 /* 注册系统模块加载器 */
 \Coffee\Loader::register();

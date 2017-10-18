@@ -10,11 +10,8 @@
  *
  */
 
-/* 定义目录分隔符 (Non modifiable) */
-define( 'DS', DIRECTORY_SEPARATOR );
-
 /* 定义系统绝对路径 (Non modifiable) */
-define( 'ABSPATH', realpath(__DIR__ . '/..') . DS );
+define( 'ABSPATH', realpath(__DIR__ . '/..') . '/' );
 
 /* 定义系统核心层目录 (Non modifiable) */
 define( 'CORE', ABSPATH . 'coffee' );
@@ -23,7 +20,10 @@ define( 'CORE', ABSPATH . 'coffee' );
 define( 'APP', ABSPATH . 'app' );
 
 /* 定义系统配置目录 */
-define( 'CONFIG', dirname(__FILE__) . DS );
+define( 'CONFIG', dirname(__FILE__) . '/' );
+
+/* 定义系统配置目录 */
+define( 'THEME', ABSPATH . 'theme' );
 
 /**
  * 定义系统运行环境
@@ -34,3 +34,6 @@ define( 'IS_DEVELOPMENT', 0 );
 
 /* 定义系统时区 */
 define( 'TIMEZONE', 'PRC' );
+
+/* 定义系统默认字符编码集 */
+define( 'CHARSET', 'UTF-8' );

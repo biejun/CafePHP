@@ -19,15 +19,26 @@
 
 namespace Coffee\Foundation;
 
+use Coffee\Http\Request;
+use Coffee\Http\Response;
+use Coffee\Http\Router;
+use Coffee\Foundation\Action;
+use Coffee\Foundation\View;
+
 class App
 {
-	/* 定义系统默认字符编码集 */
-	public $charset = 'utf-8';
-
 	/* 定义系统默认语言 */
 	public $lang = 'zh_CN';
 
 	public $version = '0.0.6';
+
+	public $request = NULL;
+
+	public $response = NULL;
+
+	public $view = NULL;
+
+	public $action = NULL;
 
 	public function __construct()
 	{
@@ -40,16 +51,24 @@ class App
 
 	public function run()
 	{
+		$this->request = new Request;
+
+		$this->response = new Response;
+
+		$this->view = new View;
+
+		$this->action = new Action;
+
 		$this->sendHeaders();
 
-		$this->process();
+		$this->process($this->request, $this->response);
 	}
 
 	private function setCharset()
 	{
-		mb_internal_encoding($this->charset);
+		mb_internal_encoding(CHARSET);
 
-		header("Content-type: text/plain; charset={$this->charset}");
+		header("Content-type: text/plain; charset=" . CHARSET);
 	}
 
 	private function setEnvironment()
@@ -98,8 +117,53 @@ class App
 	}
 
 	/* 处理一个请求 */
-	public function process()
+	public function process(Request $request, Response $response)
+	{
+		$appFiles = $this->matchApp($request);
+
+		$route = new Router($request,$response);
+
+		// 加载路由
+		array_walk($appFiles['route'], function($file,$deep,$route)
+		{
+			if(file_exists($file))
+			{
+				include $file;
+			}
+		},$route);
+
+		// 加载动作
+		array_walk($appFiles['action'], function($file,$deep,$action)
+		{
+			if(file_exists($file))
+			{
+				include $file;
+			}
+		},$this->action);
+
+		$route->dispatch();
+	}
+
+	public function matchApp(Request $request)
 	{
 
+		$paths = $request->fetchPath();
+
+		$route = $action = [];
+
+		$route[] = APP . '/route.php';
+
+		$action[] = APP. '/action.php';
+
+		$app = array_pop($paths);
+
+		if(!empty($app))
+		{
+			$route[] = APP . '/' . strtolower($app) . '/route.php';
+			
+			$action[] = APP . '/' . strtolower($app) . '/action.php';
+		}
+
+		return ['route' => $route, 'action' => $action];
 	}
 }
