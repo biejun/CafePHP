@@ -37,26 +37,10 @@ class Loader
 	 */
 	public static function register()
 	{
-		static $_includes;
 
 		spl_autoload_register('Coffee\\Loader::autoload', true, true);
 
-		self::addNamespace([ 'Coffee' => Coffee , 'App' => App ]);
-
-		if(!isset($_includes['helpers'])){
-
-			include Coffee .'/Support/helpers.php';
-
-			$_includes['helpers'] = true;
-		}
-
-		$scriptName = ltrim($_SERVER['SCRIPT_NAME'],'/');
-
-		// 安装程序与程序入口文件分离
-		if( $scriptName === 'index.php' ){
-
-			(new \Coffee\Foundation\App)->start();
-		}
+		self::addNamespace([ 'Coffee' => CORE , 'App' => APP ]);
 	}
 
 	public static function addNamespace($namespace, $baseDir = '')
