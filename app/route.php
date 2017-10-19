@@ -2,5 +2,8 @@
 
 $route->get('/',function(){
 	//$this->view->tpl('index');
-	$this->response->json(array('dd'));
+	$demo = $this->import('admin@api');
+	$post = $this->import('post@api');
+	$post->hello();
+	//$this->response->json(array('dd'));
 });

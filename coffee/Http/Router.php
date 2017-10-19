@@ -16,7 +16,7 @@ class Router
 
 	protected $response;
 
-	public function __construct($request, $response)
+	public function __construct(Request $request, Response $response)
 	{
 		$this->routes = new RouteCollection;
 
@@ -101,7 +101,7 @@ class Router
 
 	public function dispatch()
 	{
-		
+
 		$this->routes->matchs($this->request,$this->response);
 	}
 }

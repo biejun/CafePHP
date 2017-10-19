@@ -23,7 +23,7 @@ define( 'APP', ABSPATH . 'app' );
 define( 'CONFIG', dirname(__FILE__) . '/' );
 
 /* 定义系统配置目录 */
-define( 'THEME', ABSPATH . 'theme' );
+define( 'VIEWS', ABSPATH . 'views' );
 
 /**
  * 定义系统运行环境

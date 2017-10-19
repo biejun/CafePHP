@@ -22,24 +22,27 @@ namespace Coffee\Foundation;
 use Coffee\Http\Request;
 use Coffee\Http\Response;
 use Coffee\Http\Router;
-use Coffee\Foundation\Action;
-use Coffee\Foundation\View;
 
 class App
 {
 	/* 定义系统默认语言 */
 	public $lang = 'zh_CN';
 
-	public $version = '0.0.6';
+	public $version = '0.0.6/15.06.14';
 
-	public $request = NULL;
+	public $request = null;
 
-	public $response = NULL;
+	public $response = null;
 
-	public $view = NULL;
+	public $view = null;
 
-	public $action = NULL;
+	public $action = null;
 
+	public $session = null;
+
+	public $cookie = null;
+
+	/* 初始化设置 */
 	public function __construct()
 	{
 		$this->setCharset();
@@ -49,6 +52,7 @@ class App
 		$this->setEnvironment();
 	}
 
+	/* 运行应用 */
 	public function run()
 	{
 		$this->request = new Request;
@@ -57,13 +61,19 @@ class App
 
 		$this->view = new View;
 
+		$this->view->lang = $this->lang;
+
 		$this->action = new Action;
+
+		$this->session = new Session;
+
+		$this->cookie = new Cookie;
 
 		$this->sendHeaders();
 
-		$this->process($this->request, $this->response);
+		$this->process();
 	}
-
+	/* 设置系统字符编码集 */
 	private function setCharset()
 	{
 		mb_internal_encoding(CHARSET);
@@ -71,6 +81,7 @@ class App
 		header("Content-type: text/plain; charset=" . CHARSET);
 	}
 
+	/* 设置系统环境变量 */
 	private function setEnvironment()
 	{
 		$this->environment( !isset($_SERVER['CI_ENV'])?:$_SERVER['CI_ENV'] );
@@ -105,6 +116,7 @@ class App
 		}
 	}
 
+	/* 设置时区 */
 	private function setTimezone()
 	{
 		date_default_timezone_set(TIMEZONE);
@@ -117,11 +129,11 @@ class App
 	}
 
 	/* 处理一个请求 */
-	public function process(Request $request, Response $response)
+	public function process()
 	{
-		$appFiles = $this->matchApp($request);
+		$appFiles = $this->matchApp();
 
-		$route = new Router($request,$response);
+		$route = new Router($this->request,$this->response);
 
 		// 加载路由
 		array_walk($appFiles['route'], function($file,$deep,$route)
@@ -144,10 +156,11 @@ class App
 		$route->dispatch();
 	}
 
-	public function matchApp(Request $request)
+	/* 匹配应用 */
+	public function matchApp()
 	{
 
-		$paths = $request->fetchPath();
+		$paths = $this->request->fetchPath();
 
 		$route = $action = [];
 
@@ -155,15 +168,21 @@ class App
 
 		$action[] = APP. '/action.php';
 
-		$app = array_pop($paths);
+		$app = array_shift($paths);
 
 		if(!empty($app))
 		{
 			$route[] = APP . '/' . strtolower($app) . '/route.php';
-			
+
 			$action[] = APP . '/' . strtolower($app) . '/action.php';
 		}
 
 		return ['route' => $route, 'action' => $action];
+	}
+
+	/* 载入应用组件 */
+	public function import($component)
+	{
+		return Component::instance($component);
 	}
 }

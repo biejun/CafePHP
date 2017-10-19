@@ -5,6 +5,8 @@ namespace Coffee\Foundation;
 class View
 {
 
+	public $lang = '';
+
 	public $path;
 
 	public $theme;
@@ -17,7 +19,7 @@ class View
 
 	public function setTheme($theme = null ,$path = null)
 	{
-		$this->theme = ($theme === null) ? $this->site->theme : $theme;
+		$this->theme = ($theme === null) ? ($this->site->theme) ? $this->site->theme : '' : $theme;
 		$this->path = ($path === null) ? G('system','path') : $path;
 		return $this;
 	}
@@ -56,9 +58,9 @@ class View
 	private function getThemePath($page)
 	{
 		if(!$this->theme){
-			$theme = THEME . "/{$this->setTheme()->theme}/{$page}";
+			$theme = VIEWS . "/{$this->setTheme()->theme}/{$page}";
 		}else{
-			$theme = THEME . "/{$this->theme}/{$page}";
+			$theme = VIEWS . "/{$this->theme}/{$page}";
 		}
 		return $theme.$this->ext;
 	}
