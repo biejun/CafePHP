@@ -5,5 +5,8 @@ use Coffee\Foundation\Component;
 
 class Admin extends Component
 {
-
+	public function checkInstall($module)
+	{
+		
+	}
 }

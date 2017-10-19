@@ -411,3 +411,36 @@ if (!function_exists('array_column')) {
         return $resultArray;
     }
 }
+
+function urlRewriteByApache($path)
+{
+    $file = fopen('.htaccess', 'wb');
+
+    $content = '
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    RewriteEngine On
+    RewriteBase ' . $path . '
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+</IfModule>';
+
+    fwrite($file, $content);
+}
+
+function urlRewriteByNginx($path)
+{
+    $file = fopen('nginx.conf', 'wb');
+
+    $content = '
+location '.$path.' {
+    if (-f $request_filename/index.php){
+        rewrite (.*) $1/index.php;
+    }
+    if (!-f $request_filename){
+        rewrite (.*) /index.php;
+    }
+}';
+
+    fwrite($file, $content);}

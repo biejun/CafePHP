@@ -185,4 +185,42 @@ class App
 	{
 		return Component::instance($component);
 	}
+
+	/* 渲染一个页面 */
+	public function render($tpl,$vars = null,$status = 200)
+	{
+		$this->response->status($status)
+			->header('Content-Type', 'text/html; charset='.CHARSET)
+			->write($this->view->tpl($tpl,$vars))
+			->send();
+	}
+
+	public function checkSystemInit()
+	{
+		$systemLock = CONFIG . '/system.lock';
+
+		# 判断系统是否已上锁，未上锁就进行初始化配置
+		if(!file_exists($systemLock))
+		{
+			$path = str_replace('index.php','',$_SERVER['SCRIPT_NAME']);
+
+			$php_sapi = PHP_SAPI;
+
+			if($php_sapi === 'apache2handler')
+			{
+				urlRewriteByApache($path);
+			}
+			else if($php_sapi === 'fpm-fcgi' || $php_sapi === 'cgi-fcgi')
+			{
+				urlRewriteByNginx($path);
+			}
+
+			$currentPath = $this->request->getPath();
+
+			if($currentPath != $path . 'install/system')
+			{
+				$this->response->redirect($path . 'install/system?step=1');
+			}
+		}
+	}
 }

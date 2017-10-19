@@ -19,8 +19,8 @@ class View
 
 	public function setTheme($theme = null ,$path = null)
 	{
-		$this->theme = ($theme === null) ? ($this->site->theme) ? $this->site->theme : '' : $theme;
-		$this->path = ($path === null) ? G('system','path') : $path;
+		$this->theme = is_null($theme) ? (isset($this->site->theme)) ? $this->site->theme : '' : $theme;
+		$this->path = is_null($path) ? G('system','path') : $path;
 		return $this;
 	}
 
@@ -49,9 +49,9 @@ class View
 			$vars = $this->vars;
 		}
 		if($content = $this->render($tpl,$vars)){
-			echo $content;
+			return $content;
 		}else{
-			throw new \Exception("缺少模板文件$tpl");
+			throw new \Exception("'{$this->theme}'主题下缺少模板文件‘{$tpl}{$this->ext}’");
 		}
 	}
 

@@ -48,6 +48,8 @@ class RouteCollection implements Countable
 
         $action = new Action;
 
+        $action->on('route:init');
+
         if( $route ){
 
             if( is_callable( $route->action ) ) {
@@ -64,7 +66,6 @@ class RouteCollection implements Countable
             }
 
         }else{
-
             $action->on('route:failed');
         }
     }

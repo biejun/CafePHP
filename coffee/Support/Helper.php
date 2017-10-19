@@ -16,6 +16,7 @@
  * @package Coffee\Foundation\Helper
  * @since 0.0.5 帮助你开发更便捷
  */
+
 namespace Coffee\Support;
 
 class Helper
@@ -27,7 +28,7 @@ class Helper
 	 * @param string $rule 默认类型或正则表达式
 	 * @return void
 	 */
-	public function validate($value,$rule)
+	public static function validate($value,$rule)
 	{
 
 		$validate = [

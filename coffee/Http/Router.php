@@ -65,6 +65,9 @@ class Router
 
 	public function group($prefix, $routes)
 	{
+		if(!empty($this->groupStack)){
+			$prefix = end($this->groupStack) . $prefix;
+		}
 		$this->groupStack[] = $prefix;
 
 		if($routes instanceof Closure){
