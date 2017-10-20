@@ -443,4 +443,68 @@ location '.$path.' {
     }
 }';
 
-    fwrite($file, $content);}
+    fwrite($file, $content);
+}
+
+// 获取IP地址
+function getIp(){
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
+        $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }elseif (isset($_SERVER['HTTP_CLIENT_IP'])){
+        $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }else{
+        $ip=$_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
+}
+
+/**
+ * 移动上传文件
+ *
+ * @param   string  $from   文件来源
+ * @param   string  $target 移动目标地
+ * @return  boolean
+ */
+function uploadMove( $from, $target= '' ){
+
+    if ( function_exists( "move_uploaded_file" ) ){
+        if ( move_uploaded_file( $from, $target ) ){
+            @chmod($target,0755);
+            return true;
+        }
+    }elseif ( copy( $from, $target ) ){
+        @chmod( $target,0755 );
+        return true;
+    }
+    return false;
+}
+// 删除文件夹
+function removeDir( $dir ){
+
+    $dh=opendir( $dir );
+    while( $file=readdir( $dh ) ){
+        if( $file != "." && $file != ".." ){
+            $fullpath = $dir."/".$file;
+            if( !is_dir( $fullpath ) ){
+                unlink( $fullpath );
+            }else{
+                remove_dir( $fullpath );
+            }
+        }
+    }
+    closedir( $dh );
+    if( rmdir( $dir ) ){
+        return true;
+    }else{
+        return false;
+    }
+}
+// 格式化大小
+function formatSize($filesize){
+
+    $unit = array(' B', ' KB', ' MB', ' GB', ' TB');
+    for ($f = 0; $filesize >= 1024 && $f < 4; $f++){
+        $filesize /= 1024;
+    }
+    return round($filesize, 2).$unit[$f];
+}

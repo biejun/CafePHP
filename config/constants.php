@@ -37,3 +37,6 @@ define( 'TIMEZONE', 'PRC' );
 
 /* 定义系统默认字符编码集 */
 define( 'CHARSET', 'UTF-8' );
+
+/* 定义站点根目录 */
+define( 'PATH' , str_replace('index.php','',$_SERVER['SCRIPT_NAME']) );

@@ -26,7 +26,7 @@ use Coffee\Http\Router;
 class App
 {
 	/* 定义系统默认语言 */
-	public $lang = 'zh_CN';
+	public $lang = 'zh-CN';
 
 	public $version = '0.0.6/15.06.14';
 
@@ -50,6 +50,8 @@ class App
 		$this->setTimezone();
 
 		$this->setEnvironment();
+
+		$this->exceptionAndErrorHandler();
 	}
 
 	/* 运行应用 */
@@ -97,7 +99,6 @@ class App
 				error_reporting(-1);
 				ini_set('display_errors', 1);
 			break;
-			case 'testing':
 			case 'production':
 				ini_set('display_errors', 0);
 				if (version_compare(PHP_VERSION, '5.3', '>='))
@@ -202,25 +203,44 @@ class App
 		# 判断系统是否已上锁，未上锁就进行初始化配置
 		if(!file_exists($systemLock))
 		{
-			$path = str_replace('index.php','',$_SERVER['SCRIPT_NAME']);
-
 			$php_sapi = PHP_SAPI;
 
 			if($php_sapi === 'apache2handler')
 			{
-				urlRewriteByApache($path);
+				urlRewriteByApache(PATH);
 			}
 			else if($php_sapi === 'fpm-fcgi' || $php_sapi === 'cgi-fcgi')
 			{
-				urlRewriteByNginx($path);
+				urlRewriteByNginx(PATH);
 			}
 
 			$currentPath = $this->request->getPath();
 
-			if($currentPath != $path . 'install/system')
+			if($currentPath != PATH . 'install')
 			{
-				$this->response->redirect($path . 'install/system?step=1');
+				$this->response->redirect(PATH . 'install?step=1');
 			}
 		}
+	}
+
+	/* 系统异常和错误处理 */
+	public function exceptionAndErrorHandler()
+	{
+		set_error_handler(function($errNo, $errStr, $errFile, $errLine){
+			$error = [];
+			$error['message'] = $errStr;
+			$error['file'] = $errFile;
+			$error['line'] = $errLine;
+			print_r($error);
+		});
+
+		set_exception_handler(function($e){
+			$exception = [];
+			$exception['message'] = $e->getMessage();
+			$exception['file'] = $e->getFile();
+			$exception['line'] = $e->getLine();
+			$exception['trace'] = $e->getTraceAsString();
+			print_r($exception);
+		});
 	}
 }

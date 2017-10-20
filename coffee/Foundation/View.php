@@ -1,5 +1,21 @@
 <?php
+/**
+ * AnyPHP Coffee
+ *
+ * An agile development core based on PHP.
+ *
+ * @version  0.0.6
+ * @link 	 https://github.com/biejun/anyphp
+ * @copyright Copyright (c) 2017-2018 Jun Bie
+ * @license This content is released under the MIT License.
+ */
 
+/**
+ * 应用前端视图渲染
+ *
+ * @package Coffee\Foundation\View
+ * @since 0.0.5
+ */
 namespace Coffee\Foundation;
 
 class View
@@ -7,20 +23,26 @@ class View
 
 	public $lang = '';
 
-	public $path;
+	public $charset = CHARSET;
 
-	public $theme;
+	public $path = PATH;
 
 	public $ext = '.php';
 
 	public $site;
 
+	protected $currentView = '';
+
+	protected $currentViewPath;
+
 	protected $vars = [];
 
-	public function setTheme($theme = null ,$path = null)
+	public function setView($view = null ,$path = null)
 	{
-		$this->theme = is_null($theme) ? (isset($this->site->theme)) ? $this->site->theme : '' : $theme;
-		$this->path = is_null($path) ? G('system','path') : $path;
+		if(!is_null($path)) $this->path = $path;
+
+		$this->currentView = is_null($view) ? (isset($this->site->view)) ? $this->site->view : '' : $view;
+		$this->currentViewPath = $this->path . 'views/' . $this->currentView . '/';
 		return $this;
 	}
 
@@ -51,18 +73,18 @@ class View
 		if($content = $this->render($tpl,$vars)){
 			return $content;
 		}else{
-			throw new \Exception("'{$this->theme}'主题下缺少模板文件‘{$tpl}{$this->ext}’");
+			throw new \Exception("{$this->currentViewPath}目录下缺少模板文件'{$tpl}{$this->ext}'");
 		}
 	}
 
-	private function getThemePath($page)
+	private function getViewPath($page)
 	{
-		if(!$this->theme){
-			$theme = VIEWS . "/{$this->setTheme()->theme}/{$page}";
+		if(!$this->currentView){
+			$view = VIEWS . "/{$this->setView()->currentView}/{$page}";
 		}else{
-			$theme = VIEWS . "/{$this->theme}/{$page}";
+			$view = VIEWS . "/{$this->currentView}/{$page}";
 		}
-		return $theme.$this->ext;
+		return $view.$this->ext;
 	}
 	/**
 	 * 模板渲染
@@ -72,7 +94,7 @@ class View
 	**/
 	public function render($tpl,$vars)
 	{
-		$tpl = $this->getThemePath($tpl);
+		$tpl = $this->getViewPath($tpl);
 		if( file_exists( $tpl ) ){
 			ob_start();
 			ob_implicit_flush(0);

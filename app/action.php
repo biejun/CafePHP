@@ -6,7 +6,7 @@ $action->add('route:init',function(){
 	/* 检查系统初始化安装配置 */
 	$this->checkSystemInit();
 	/* 设置默认主题 */
-	$this->view->setTheme('pc');
+	$this->view->setView('pc');
 });
 
 /* 路由请求响应前挂载的动作 */

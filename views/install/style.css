@@ -1,0 +1,10 @@
+@charset 'UTF-8';
+
+body{
+	background-color: #f2f2f2;
+}
+
+.sys-top{
+	height: 100px;
+	background-color: #000;
+}

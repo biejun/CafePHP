@@ -1,0 +1,54 @@
+/**
+ *  自适应TABLE布局
+ *  兼容IE9+
+ */
+.table{
+	width: 100%;
+	display: table;
+}
+.table>.thead{
+	display: table-header-group;
+}
+.table>.tbody{
+	display: table-row-group;
+}
+.table>.thead>.tr,
+.table>.tbody>.tr{
+	display: table-row;
+}
+.table>.thead>.tr>.th,
+.table>.tbody>.tr>.td{
+	display: table-cell;
+	border-bottom: 1px solid #eee;
+	padding: .5rem;
+	text-align: center;
+	font-size: 1.1rem;
+}
+.table>.thead>.tr>.th{
+	border-bottom: 1px solid #ddd;
+	font-weight: bold;
+}
+@media screen and (max-width: 767px){
+	.table{
+		border:none;
+	}
+	.table>.thead{
+		display: none;
+	}
+	.table>.tbody>.tr{
+		display: block;
+		margin-bottom: 10px;
+		border: 1px solid #ddd;
+	}
+	.table>.tbody>.tr>.td{
+		display: block;
+		text-align: right;
+		border-left: none;
+		border-bottom: 1px solid #eee;
+	}
+	.table>.tbody>.tr>.td:before{
+		content: attr(data-label);
+		float: left;
+		font-weight: bold;
+	}
+}
