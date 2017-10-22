@@ -1,10 +1,67 @@
 @charset 'UTF-8';
-
 body{
-	background-color: #f2f2f2;
+	background: #f8f8f8;
+}
+.post-header{
+	height:100px;
+	line-height: 100px;
+	background: #353535;
+	font-size: 14px;
+	color: #fff;
+	text-align: center;
+}
+.post-body{
+	width: 350px;
+	margin:20px auto;
+}
+.post-body .post-form{
+	padding: 15px 0;
+}
+.post-body .post-form input[type=text],
+.post-body .post-form input[type=password]{
+	display: block;
+	width: 100%;
+	padding: 5px 8px;
+	font-size: 12px;
+	border:1px solid #ddd;
+	border-radius: 2px;
+}
+.post-body .post-form label{
+	display: block;
+	font-size: 12px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.post-body .post-form input{
+	margin-bottom: 10px;
 }
 
-.sys-top{
-	height: 100px;
-	background-color: #000;
+.post-body .post-form input[verify]{
+	width: 300px;
+	display: inline-block;
+	margin-right: 5px;
+}
+
+.post-body .post-form a[button]{
+	font-size: 12px;
+	display: inline-block;
+}
+.post-body .post-errors{
+	font-size: 12px;
+	line-height: 1.777;
+	margin-bottom: 10px;
+	color: red;
+}
+.post-body .post-buttons button{
+	border:1px solid #ddd;
+	padding: 5px 6px;
+	border-radius: 2px;
+	font-size: 12px;
+	display: inline-block;
+	background: #fff;
+}
+.post-body .post-buttons button:first-child{
+	background: #3b98fd;
+	border-color: #3b98fd;
+	color: #fff;
 }
