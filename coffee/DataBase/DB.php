@@ -59,6 +59,7 @@ class DB
 			$this->prefix = $db['prefix'];
 			$this->database = $db['name'];
 			$this->handler = new \mysqli($db['host'], $db['user'], $db['password'], $db['port']);
+
 			if($this->handler->connect_errno){
 				throw new \Exception('Connect Error (' . $this->handler->connect_errno . ') '. $this->handler->connect_error);
 			}
@@ -87,18 +88,18 @@ class DB
 	/**
 	 * 连接指定数据库
 	 *
-	 * @param  string  $database 数据库
-	 * @param  boolean $created  数据库不存在是否新建
+	 * @param  string  $database 数据库名
+	 * @param  boolean $create  数据库不存在是否新建
 	 * @return $this
 	 */
-	public function connect($database = null,$created = false)
+	public function connect($database = null,$create = false)
 	{
 		$database = is_null($database) ? $this->database : $database;
 		$exists = $this->handler->select_db($database);
 		if(!$exists){
 			// 自动创建数据库
-			if($created){
-				$this->createDatabase($database);
+			if($create){
+				$this->createDB($database);
 				$this->handler->select_db($database);
 			}else{
 				throw new \Exception("Can't select MySQL database(".$database.")!");
@@ -113,7 +114,7 @@ class DB
 	public function from($table, $alias = null)
 	{
 		$this->table = $this->prefix . $table;
-		if(!is_null($alias)) $this->alias = $alias;
+		if(!is_null($alias)) $this->tableAlias = $alias;
 		return $this;
 	}
 
@@ -153,6 +154,14 @@ class DB
 
 	/**
 	* 组装SQL JOIN
+	*
+	* $this->db->from('user','a')
+	* ->select('a.uid,a.uname')
+	* ->join(['user_info','b'],'left','b.uid = a.uid')
+	*
+	* select a.uid,b.uname from user as a left join user_info as b
+	* on b.uid = a.uid
+	*
 	* @param string|array $join 数据库表名
 	* @param string       $type 连接类型（不需要加join）
 	* @param string  $condition 条件（不需要加on）
@@ -321,7 +330,7 @@ class DB
 	}
 
 	# 创建数据库
-	public function createDatabase($database)
+	public function createDB($database)
 	{
 
 		$query = "CREATE DATABASE IF NOT EXISTS %s DEFAULT CHARACTER SET %s COLLATE %s;";
@@ -332,7 +341,7 @@ class DB
 	}
 
 	# 删除数据库
-	public function dropDatabase($database)
+	public function dropDB($database)
 	{
 
 		$result = $this->query(sprintf("DROP DATABASE `%s`;",$database));

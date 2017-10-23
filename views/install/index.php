@@ -3,9 +3,9 @@
 <head>
 	<meta charset="<?=$this->charset;?>"/>
 	<meta name="robots" content="none" />
-	<!-- HTTP 1.1 --> 
-	<meta http-equiv="pragma" content="no-cache"> 
-	<!-- HTTP 1.0 --> 
+	<!-- HTTP 1.1 -->
+	<meta http-equiv="pragma" content="no-cache">
+	<!-- HTTP 1.0 -->
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="renderer" content="webkit">
@@ -33,16 +33,18 @@
 			<input type="password" data-bind="value:dbpassword"/>
 			<label>数据库表前缀</label>
 			<input type="text" data-bind="value:dbprefix"/>
-			<label>是否自动创建数据库</label>
-			<input type="checkbox" data-bind="checked:dbcreate"/>
-			<label>数据库加密密钥</label>
+			<label>数据加密密钥</label>
 			<input type="text" verify data-bind="value:dbhash"/><a href="javascript:;" button data-bind="click:function(){dbhash(randomHash())}">换一个</a>
+			<label>是否自动创建数据库</label>
+			<input type="checkbox" data-bind="checked:dbcreate"/><span>是</span>
 		</div>
 		<div data-bind="visible:step()===2" class="post-form">
 			<label>管理员用户名</label>
 			<input type="text" data-bind="value:username"/>
 			<label>管理员密码</label>
 			<input type="password" data-bind="value:password"/>
+			<label>确认密码</label>
+			<input type="password" data-bind="value:passwordonce"/>
 			<label>管理后台安全码（用于二次验证）</label>
 			<input type="text" data-bind="value:safetycode" />
 		</div>
@@ -87,7 +89,7 @@
 			}
 		}());
 
-		this.title = ['数据库连接配置','创建管理员'];
+		this.title = ['数据库连接配置','创建管理账户'];
 
 		this.buttonText = ['下一步','完成'];
 
@@ -103,6 +105,7 @@
 
 		this.username = ko.observable('');
 		this.password = ko.observable('');
+		this.passwordonce = ko.observable('');
 		this.safetycode = ko.observable('');
 
 		this.saveConf = function(){
@@ -125,13 +128,13 @@
 				};
 
 				if(data.dbname === ''){
-					this.errors.push('数据库名不能为空');
+					this.errors.push('数据库名称不能为空！');
 				}
 				if(data.dbuser === ''){
-					this.errors.push('数据库用户名不能为空');
+					this.errors.push('数据库用户名不能为空！');
 				}
 				if(data.dbpassword === ''){
-					this.errors.push('数据库密码不能为空');
+					this.errors.push('数据库密码不能为空！');
 				}
 
 				if(this.errors().length === 0){
@@ -139,10 +142,9 @@
 						,data
 						,function(res){
 							res = ajax.jsonParse(res);
-							if(res.status){
+							if(res.success){
 								this.step(2);
 							}else{
-								this.errors([]);
 								this.errors.push(res.data);
 							}
 						}.bind(this)
@@ -154,22 +156,28 @@
 					do:2,
 					username:this.username(),
 					password:this.password(),
+					passwordonce:this.passwordonce(),
 					safetycode:this.safetycode()
 				}
 
 				if(data.username === ''){
-					this.errors.push('用户名不能为空');
+					this.errors.push('用户名不能为空!');
 				}
 				if(data.password === ''){
-					this.errors.push('密码不能为空');
+					this.errors.push('密码不能为空!');
 				}
 
 				if(this.errors().length === 0){
 					ajax.post(req.url
 						,data
 						,function(res){
-
-						}
+							res = ajax.jsonParse(res);
+							if(res.success){
+								alert('haha');
+							}else{
+								this.errors.push(res.data);
+							}
+						}.bind(this)
 					);
 				}
 			}

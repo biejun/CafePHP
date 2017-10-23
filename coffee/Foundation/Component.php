@@ -23,13 +23,16 @@ use Coffee\Cache\Cache;
 
 abstract class Component
 {
-
+	/* 当前数据库连接对象 */
 	public $db;
 
+	/* 当前组件操作的数据库名 */
 	public $database = null;
 
-	public $created = false;
+	/* 是否创建数据库 */
+	public $create = false;
 
+	/* 当前组件操作的表名 */
 	public $table = '';
 
 	public function __construct()
@@ -37,10 +40,9 @@ abstract class Component
 
 		$this->db = $this->initDB();
 
-		$this->db->connect($this->database,$this->created);
+		$this->db->connect($this->database,$this->create?$this->create:G('database','create'));
 
 		if( !empty($this->table) ) $this->db->from($this->table);
-
 		if( method_exists( $this, '_initialize' ) ) $this->_initialize();
 	}
 
@@ -105,17 +107,13 @@ abstract class Component
 	public static function instance($component)
 	{
 		if(empty($component)) return false;
-
 		$parts = (strpos($component,'@')!==false) ? explode( '@', $component ) : [ucfirst($component)];
-
 		$app = array_shift($parts);
-
 		$appNameSpace = '\\App\\'.ucfirst($app).'\\Components\\';
 
 		if( count($parts) > 0 )
 		{
 			$className = $appNameSpace;
-
 			foreach ($parts as $value)
 			{
 				$className .= ucfirst($value);

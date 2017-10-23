@@ -23,7 +23,7 @@ function G ($section = false, $value = false, $update = null) {
 
     if($_G === null ){
 
-        $files = ['system.php', 'database.php'];
+        $files = ['database.php']; // 这里可读取多个配置文件
 
         foreach ($files as $file)
         {
