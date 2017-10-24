@@ -45,15 +45,20 @@
 			<input type="password" data-bind="value:password"/>
 			<label>确认密码</label>
 			<input type="password" data-bind="value:passwordonce"/>
-			<label>管理后台安全码（用于二次验证）</label>
-			<input type="text" data-bind="value:safetycode" />
+<!-- 			<label>管理后台安全码（用于二次验证）</label>
+			<input type="text" data-bind="value:safetycode" /> -->
 		</div>
-		<div data-bind="foreach:errors()" class="post-errors">
-			<div data-bind="text:$data"></div>
+		<div data-bind="visible:step()===3" class="post-form">
+			安装完成，<a href="<?=$this->path;?>admin/login" title="管理后台">进入管理后台</a>。
 		</div>
-		<div class="post-buttons">
-			<button type="button" data-bind="text:buttonText[step()-1],click:saveConf"></button>
-			<button type="button" data-bind="visible:(step()==2),click:function(){step(1)},text:'上一步'"></button>
+		<div data-bind="visible:step()<3">
+			<div data-bind="foreach:errors()" class="post-errors">
+				<div data-bind="text:$data"></div>
+			</div>
+			<div class="post-buttons">
+				<button type="button" data-bind="text:buttonText[step()-1],click:saveConf"></button>
+				<button type="button" data-bind="visible:(step()==2),click:function(){step(1)},text:'上一步'"></button>
+			</div>
 		</div>
 	</div>
 </div>
@@ -83,19 +88,19 @@
 		this.step = ko.observable(function(){
 			var step = parseInt(req.getQuery('step'));
 			if(step){
-				return (step > 2) ? 2 : step;
+				return (step > 3) ? 3 : step;
 			}else{
 				return 1;
 			}
 		}());
 
-		this.title = ['数据库连接配置','创建管理账户'];
+		this.title = ['数据库连接配置','创建管理账户','安装完成'];
 
 		this.buttonText = ['下一步','完成'];
 
 		this.errors = ko.observableArray([]);
 
-		this.dbname = ko.observable('');
+		this.dbname = ko.observable('anyphp');
 		this.dbuser = ko.observable('');
 		this.dbpassword = ko.observable('');
 		this.dbprefix = ko.observable('any_');
@@ -173,7 +178,8 @@
 						,function(res){
 							res = ajax.jsonParse(res);
 							if(res.success){
-								alert('haha');
+								alert('安装完成!');
+								this.step(3);
 							}else{
 								this.errors.push(res.data);
 							}

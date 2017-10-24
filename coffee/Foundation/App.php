@@ -199,7 +199,7 @@ class App
 	public function checkSystemInit()
 	{
 		# 判断系统是否已上锁，未上锁就进行初始化配置
-		if(!file_exists(CONFIG . '/system.lock'))
+		if(!file_exists(CONFIG . '/install.lock'))
 		{
 			$php_sapi = PHP_SAPI;
 

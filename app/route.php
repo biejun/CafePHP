@@ -56,14 +56,15 @@ if(!file_exists(CONFIG . '/system.lock')){
 								if(!$sql){
 									throw new Exception("没有找到config/mysql.sql文件", 1);
 								}
-								$sql = str_replace('%prefix%',G('database','prefix'), $sql);
-								$sql = str_replace('%charset%',G('database','charset'), $sql);
-								$sql = explode(';', $sql);
-								$this->import('admin')->createTables($sql);
-								$this->import('admin')->add($username,$password);
+								$this->import('admin')->querys($sql);
+								$this->import('admin@user')->add($username,$password,3);
 							}catch(Exception $e){
 								$this->response->json($e->getMessage(),false);
 							}
+
+							$fp = fopen(CONFIG . 'install.lock', 'wb');
+							fwrite($fp, '');
+							fclose($fp);
 
 							$this->response->json('创建成功！');
 						}else{

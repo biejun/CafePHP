@@ -196,8 +196,9 @@ class DB
 	}
 
 	/* 执行SQL语句 */
-	public function query($sql)
+	public function query($sql=null)
 	{
+		if(!empty($this->sql)&&is_null($sql)) $sql = $this->sql;
 		$exec = $this->handler->query($sql);
 
 		if($this->handler->error){
@@ -291,7 +292,7 @@ class DB
 	}
 
 	# 查询单条数据 返回一个数组
-	public function row($debug=false)
+	public function row($array_type = MYSQLI_ASSOC,$debug=false)
 	{
 		$row = [];
 		$sql = '';
@@ -302,7 +303,7 @@ class DB
 		if($debug) throw new \Exception($sql);
 		$result=$this->query($sql);
 		if ($result){
-			$row = $result->fetch_array(MYSQLI_ASSOC);
+			$row = $result->fetch_array($array_type);
 		}
 		return $row;
 	}
@@ -327,6 +328,20 @@ class DB
 			$this->flush($result);
 		}
 		return $temp;
+	}
+
+	# 查询单个字段的值
+	public function one($debug=false)
+	{
+		$row = $this->row(MYSQLI_NUM,$debug);
+		return $row[0];
+	}
+
+	# 判断某个字段的值是否存在
+	public function repeat($debug=false)
+	{
+		$row=$this->row(MYSQLI_BOTH,$debug);
+		return (bool) $row;
 	}
 
 	# 创建数据库
