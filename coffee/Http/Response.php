@@ -195,7 +195,7 @@ class Response{
 		}
 	}
 
-	public function xml($data,$code=200,$charset=CHARSET)
+	public function sendXML($data,$code=200,$charset=CHARSET)
 	{
 		$xml = '<?xml version="1.0" encoding="'.$charset.'"?>';
 		$xml .= '<response>';
@@ -207,7 +207,7 @@ class Response{
 			->send();
 	}
 
-	public function json($data,$success=true,$code=200,$charset=CHARSET)
+	public function sendJSON($data,$success=true,$code=200,$charset=CHARSET)
 	{
 		$res = new \StdClass;
 		$res->success = $success;
@@ -218,7 +218,7 @@ class Response{
 			->send();
 	}
 
-	public function jsonp($data,$success=true,$code=200,$charset=CHARSET)
+	public function sendJSONP($data,$success=true,$code=200,$charset=CHARSET)
 	{
 		$callback = (new Request)->get('callback',uniqid('Callback_'));
 

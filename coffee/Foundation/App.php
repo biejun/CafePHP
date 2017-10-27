@@ -212,9 +212,7 @@ class App
 				urlRewriteByNginx(PATH);
 			}
 
-			$currentPath = $this->request->getPath();
-
-			if($currentPath != PATH . 'install')
+			if(false === strpos($this->request->getPath(),'install'))
 			{
 				$this->response->redirect(PATH . 'install?step=1');
 			}

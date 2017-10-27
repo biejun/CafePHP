@@ -23,30 +23,39 @@
 	<div data-bind="text:title[step()-1]" class="post-header"></div>
 	<div class="post-body">
 		<div data-bind="visible:step()==1" class="post-form">
-			<label>数据库服务器</label>
-			<input type="text" data-bind="value:dbhost">
-			<label>数据库名称</label>
+			<label>数据库名</label>
 			<input type="text" data-bind="value:dbname"/>
-			<label>数据库用户名</label>
-			<input type="text" data-bind="value:dbuser"/>
-			<label>数据库密码</label>
-			<input type="password" data-bind="value:dbpassword"/>
-			<label>数据库表前缀</label>
+			<em>将系统安装到哪个数据库？</em>
+			<label>用户名</label>
+			<input type="text" data-bind="value:dbuser" placeholder="用户名" />
+			<em>您的数据库用户名。</em>
+			<label>密码</label>
+			<input type="password" data-bind="value:dbpassword" placeholder="密码" />
+			<em>您的数据库密码。</em>
+			<label>数据库主机</label>
+			<input type="text" data-bind="value:dbhost">
+			<em>如果localhost不能用，您通常可以从网站服务提供商处得到正确的信息。</em>
+			<label>表前缀</label>
 			<input type="text" data-bind="value:dbprefix"/>
 			<label>数据加密密钥</label>
 			<input type="text" verify data-bind="value:dbhash"/><a href="javascript:;" button data-bind="click:function(){dbhash(randomHash())}">换一个</a>
-			<label>是否自动创建数据库</label>
-			<input type="checkbox" data-bind="checked:dbcreate"/><span>是</span>
+			<label>是否创建数据库</label>
+			<input type="checkbox" data-bind="checked:dbcreate"/>
+			<em data-bind="text:'如果您的数据库服务器中不存在'+dbname()+'数据库，我们将会为您自动创建一个。'"></em>
 		</div>
 		<div data-bind="visible:step()===2" class="post-form">
-			<label>管理员用户名</label>
+			<label>用户名</label>
 			<input type="text" data-bind="value:username"/>
-			<label>管理员密码</label>
+			<em>用户名只能含有字母、数字及下划线。</em>
+			<label>密码</label>
 			<input type="password" data-bind="value:password"/>
+			<em>密码必须包含字母和数字，并且不能小于六位的复杂组合。</em>
 			<label>确认密码</label>
 			<input type="password" data-bind="value:passwordonce"/>
-<!-- 			<label>管理后台安全码（用于二次验证）</label>
-			<input type="text" data-bind="value:safetycode" /> -->
+			<em>再输一次。</em>
+			<label>安全码</label>
+			<input type="password" data-bind="value:safetycode" />
+			<em>用于后台操作的安全验证。</em>
 		</div>
 		<div data-bind="visible:step()===3" class="post-form">
 			安装完成，<a href="<?=$this->path;?>admin/login" title="管理后台">进入管理后台</a>。
@@ -74,7 +83,7 @@
 
 	var randomHash = function(len){
 		len = len || 32;
-		var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&',
+		var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_ []{}<>~`+=,.;:/?|',
 			maxLen = chars.length;
 		var hash = '';
 		for (var i = len - 1; i >= 0; i--) {
@@ -94,16 +103,16 @@
 			}
 		}());
 
-		this.title = ['数据库连接配置','创建管理账户','安装完成'];
+		this.title = ['数据库连接配置','创建管理员账号','安装完成'];
 
 		this.buttonText = ['下一步','完成'];
 
 		this.errors = ko.observableArray([]);
 
-		this.dbname = ko.observable('anyphp');
+		this.dbname = ko.observable('coffee');
 		this.dbuser = ko.observable('');
 		this.dbpassword = ko.observable('');
-		this.dbprefix = ko.observable('any_');
+		this.dbprefix = ko.observable('coffee_');
 		this.dbcreate = ko.observable(true);
 		this.dbhost = ko.observable('localhost');
 		this.dbhash = ko.observable(randomHash());
@@ -122,7 +131,7 @@
 			if(step === 1){
 
 				var data = {
-					do:1,
+					step:1,
 					dbhost:this.dbhost(),
 					dbname:this.dbname(),
 					dbuser:this.dbuser(),
@@ -143,7 +152,7 @@
 				}
 
 				if(this.errors().length === 0){
-					ajax.post(req.path
+					ajax.post(req.path+'/setup-config'
 						,data
 						,function(res){
 							res = ajax.jsonParse(res);
@@ -158,7 +167,7 @@
 			}else if(step === 2){
 
 				var data = {
-					do:2,
+					step:2,
 					username:this.username(),
 					password:this.password(),
 					passwordonce:this.passwordonce(),
@@ -173,7 +182,7 @@
 				}
 
 				if(this.errors().length === 0){
-					ajax.post(req.url
+					ajax.post(req.path+'/setup-config'
 						,data
 						,function(res){
 							res = ajax.jsonParse(res);

@@ -12,7 +12,7 @@ body{
 }
 .post-body{
 	width: 350px;
-	margin:20px auto;
+	margin:30px auto;
 }
 .post-body .post-form{
 	padding: 15px 0;
@@ -39,6 +39,13 @@ body{
 	margin-bottom: 10px;
 }
 
+.post-body .post-form input + em{
+	margin-bottom:10px;
+	margin-top: -5px;
+	color:#888;
+	display: block;
+}
+
 .post-body .post-form input[verify]{
 	width: 300px;
 	display: inline-block;
@@ -57,15 +64,20 @@ body{
 }
 .post-body .post-buttons button{
 	border:1px solid #ddd;
-	padding: 5px 6px;
+	padding: 6px 10px;
 	border-radius: 2px;
 	font-size: 12px;
 	display: inline-block;
 	background: #fff;
 	cursor: pointer;
+	opacity: .8;
 }
 .post-body .post-buttons button:first-child{
 	background: #3b98fd;
 	border-color: #3b98fd;
 	color: #fff;
+}
+
+.post-body .post-buttons button:hover{
+	opacity: 1;
 }

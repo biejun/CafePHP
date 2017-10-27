@@ -511,4 +511,8 @@ class DB
 		$this->handler->close();
 		$this->handler = null;
 	}
+	public function __get($key)
+	{
+		return $this->$key;
+	}
 }
