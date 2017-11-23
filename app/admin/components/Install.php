@@ -1,4 +1,4 @@
-<?php namespace App\Install\Components;
+<?php namespace App\Admin\Components;
 
 use Coffee\Foundation\Component;
 

@@ -1,6 +1,4 @@
-~function(){
-
-	var modules = this;
+(function(global){
 
 	function safeAdd(x, y) {
 		var lsw = (x & 0xFFFF) + (y & 0xFFFF)
@@ -260,6 +258,6 @@
 		return rawHMACMD5(key, string)
 	}
 
-	modules.md5 = md5;
+	global.md5 = md5;
 
-}.call(this);
+})(this);

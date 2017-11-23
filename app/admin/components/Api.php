@@ -1,5 +1,4 @@
-<?php
-namespace App\Admin\Components;
+<?php namespace App\Admin\Components;
 
 use Coffee\Foundation\Component;
 

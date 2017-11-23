@@ -182,7 +182,7 @@ class App
 	}
 
 	/* 载入应用组件 */
-	public function import($component)
+	public function load($component)
 	{
 		return Component::instance($component);
 	}
@@ -196,27 +196,9 @@ class App
 			->send();
 	}
 
-	public function checkSystemInit()
+	public function checkSystemInstall()
 	{
-		# 判断系统是否已上锁，未上锁就进行初始化配置
-		if(!file_exists(CONFIG . '/install.lock'))
-		{
-			$php_sapi = PHP_SAPI;
-
-			if($php_sapi === 'apache2handler')
-			{
-				urlRewriteByApache(PATH);
-			}
-			else if($php_sapi === 'fpm-fcgi' || $php_sapi === 'cgi-fcgi')
-			{
-				urlRewriteByNginx(PATH);
-			}
-
-			if(false === strpos($this->request->getPath(),'install'))
-			{
-				$this->response->redirect(PATH . 'install?step=1');
-			}
-		}
+		return file_exists(CONFIG . '/install.lock');
 	}
 
 	/* 系统异常和错误处理 */

@@ -3,7 +3,7 @@
  *
  * 根据页面地址取得参数
  */
-(function(w){
+(function(global){
 	/**
 	 * 解析请求地址
 	 * @param string url  页面链接地址
@@ -122,11 +122,9 @@
 		return (key) ? params[key] : params;
 	}
 
-	function Request(url){
+	function Request(){
 
-		this.url = url || w.location.toString();
-
-		var params = Request_parse(this.url);
+		var params = Request_parse(window.location.toString());
 
 		for(var key in params){
 			this[key] = params[key];
@@ -159,6 +157,6 @@
 		}
 	};
 
-	this.Request = Request;
+	global.Request = Request;
 
-})(window);
+})(this);

@@ -412,7 +412,7 @@ if (!function_exists('array_column')) {
     }
 }
 
-function urlRewriteByApache($path)
+function urlRewriteByApache($path = PATH)
 {
     $file = fopen('.htaccess', 'wb');
 
@@ -429,7 +429,7 @@ function urlRewriteByApache($path)
     fwrite($file, $content);
 }
 
-function urlRewriteByNginx($path)
+function urlRewriteByNginx($path = PATH)
 {
     $file = fopen('nginx.conf', 'wb');
 

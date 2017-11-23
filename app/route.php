@@ -1,5 +1,8 @@
 <?php
 
 $route->get('/',function(){
-	echo 'Hello World!';
+
+	$this->view->assign('suffixVersion',date('ymdHi'));
+
+	$this->render($this->checkSystemInstall()?'index':'install');
 });

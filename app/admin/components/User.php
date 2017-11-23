@@ -40,4 +40,14 @@ class User extends Component
 	{
 
 	}
+
+	public function checkUsername()
+	{
+
+	}
+
+	public function checkPassword()
+	{
+
+	}
 }
