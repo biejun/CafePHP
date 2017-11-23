@@ -17,4 +17,4 @@ require CORE . '/Loader.php';
 \Coffee\Loader::register();
 
 /* 启动应用 */
-$app = (new \Coffee\Foundation\App)->run();
+(new \Coffee\Foundation\App)->run();

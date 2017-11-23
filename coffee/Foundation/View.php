@@ -31,6 +31,8 @@ class View
 
 	public $site;
 
+	public $assets = array();
+
 	protected $currentView = '';
 
 	protected $currentViewPath;
@@ -50,6 +52,44 @@ class View
 	{
 		$this->ext = $ext;
 		return $this;
+	}
+
+	public function addCSS($cssFiles, $suffixVersion = null)
+	{
+		$num = func_num_args();
+		if($num > 2) $suffixVersion = func_get_arg(2);
+		if(is_array($cssFiles)){
+			array_walk($cssFiles, array($this,'addCSS'), $suffixVersion);
+		}else{
+			if(in_array($cssFiles, array('grid.css','table.css','fonts.css','magic-check.css'))){
+				$this->assets['css'][] = $this->pathJoinVersion($this->path . 'assets/css/' . $cssFiles, $suffixVersion);
+			}else{
+				$this->assets['css'][] = $this->pathJoinVersion($this->currentViewPath . $cssFiles, $suffixVersion);
+			}
+			return $this;
+		}
+	}
+
+	public function addJS($jsFiles, $suffixVersion = null)
+	{
+		$num = func_num_args();
+		if($num > 2) $suffixVersion = func_get_arg(2);
+		if(is_array($jsFiles)){
+			array_walk($jsFiles, array($this,'addJS'), $suffixVersion);
+		}else{
+			if(in_array($jsFiles, array('ajax.js','cookie.js','md5.js','request.js'))){
+				$this->assets['js'][] = $this->pathJoinVersion($this->path . 'assets/js/' . $jsFiles, $suffixVersion);
+			}else{
+				$this->assets['js'][] = $this->pathJoinVersion($this->currentViewPath . $jsFiles, $suffixVersion);
+			}
+			return $this;
+		}
+	}
+
+	/* 给文件资源加上版本号 */
+	public function pathJoinVersion($filePath, $suffixVersion = null)
+	{
+		return $filePath . (is_null($suffixVersion) ? '' : '?v='.$suffixVersion);
 	}
 
 	public function assign($key,$value='')

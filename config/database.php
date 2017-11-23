@@ -10,6 +10,7 @@
     'prefix' => 'coffee_',
     'charset' => 'utf8',
     'collate' => '',
+    'hash' => 'G06{v|/oQn*/F/#g=us~V(.A`{Rj]wz ',
     'create' => true,
   ),
   'cache' => 

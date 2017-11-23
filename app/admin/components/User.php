@@ -6,9 +6,7 @@ class User extends Component
 {
 	public function add($user)
 	{
-		$count = (bool) $this->db->from('users')->select('count(*)')->where('`name`=%s',$user['name'])->one();
-
-		if(!$count){
+		if(!$this->checkUsername($user['name'])){
 
 			$this->db->from('users')->insert([
 				'name'=>trim($user['name'])
@@ -41,13 +39,28 @@ class User extends Component
 
 	}
 
-	public function checkUsername()
+	public function checkUsername($username)
 	{
-
+		return (bool) $this->db->from('users')->select('count(*)')->where('`name`=%s',$username)->one();
 	}
 
-	public function checkPassword()
+	public function checkPassword($username, $password)
 	{
+		$pw = $this->db->from('users')->select('password')->where('`name`=%s',$username)->one();
+		return password_verify($password, $pw);
+	}
 
+	public function updateToken($username)
+	{
+		$dbhash = G('database','hash');
+		$time = $_SERVER['REQUEST_TIME'];
+		$timeout = $time + 3600 * 24; // 登录状态记录一天
+		$data = [
+			'logged' => $time,
+			'timeout' => $timeout,
+			'token' => md5( $dbhash . md5($username) . $timeout )
+		];
+		$this->db->from('users')->where('`name` = %s',$username)->update($data);
+		return $data;
 	}
 }
