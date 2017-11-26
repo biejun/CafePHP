@@ -61,7 +61,7 @@ class View
 		if(is_array($cssFiles)){
 			array_walk($cssFiles, array($this,'addCSS'), $suffixVersion);
 		}else{
-			if(in_array($cssFiles, array('grid.css','table.css','fonts.css','magic-check.css'))){
+			if(in_array($cssFiles, array('grid.css','table.css','fonts.css','checkbox.css'))){
 				$this->assets['css'][] = $this->pathJoinVersion($this->path . 'assets/css/' . $cssFiles, $suffixVersion);
 			}else{
 				$this->assets['css'][] = $this->pathJoinVersion($this->currentViewPath . $cssFiles, $suffixVersion);
