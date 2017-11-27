@@ -44,6 +44,21 @@ button:focus{
 	box-shadow: inset 0 1px 2px rgba(27,31,35,0.075);
 }
 
+.form-control.error{
+	border-color: #ec1c1c;
+}
+.form-control.error.focus, .form-control.error:focus {
+	outline: none;
+	box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(236,28,28,0.2);
+}
+
+.validation-message{
+	margin: 0;
+	padding: 0;
+	margin-top: 5px;
+	color: #ec1c1c;
+}
+
 .card{
 	background: #fff;
 	border-radius: 3px;

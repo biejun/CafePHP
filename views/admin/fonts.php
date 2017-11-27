@@ -1,4 +1,4 @@
-<?php $this->show('start');?>
+<?php echo $this->tpl('start');?>
 
 <style>
 .font-icon{
@@ -9,8 +9,7 @@
 }
 .font-icon:hover{
 	color: #333;
-	background: #fff;
-	padding-left: 10px;
+	background: #fafafa;
 }
 .the-icon {
 	font-family: "fontello";
@@ -31,7 +30,8 @@
 	line-height: 24px;
 }
 </style>
-<?php $this->show('header');?>
+
+<?php echo $this->tpl('header');?>
 
 <section class="page-main" role="main">
 	<div class="container" id="icons">
@@ -50,42 +50,34 @@
 	</div>
 </section>
 
-<?php $this->show('scripts');?>
+<?php echo $this->tpl('scripts');?>
 
 <script type="text/javascript">
-	(function(a,c){
-		var viewModel = function(){
-			this.iconPrefix = '';
-			this.data = ko.observableArray();
-			this.search = ko.observable('');
-			this.icons = ko.computed(function() {
-				var searchText = this.search().trim();
-				return this.data().filter(function(row){
-					if(searchText === ''){
+	var a = new Ajax, path = _CONFIG_.path;
+	var Model = function(){
+		this.iconPrefix = '';
+		this.data = ko.observableArray();
+		this.search = ko.observable('');
+		this.icons = ko.computed(function() {
+			var searchText = this.search().trim();
+			return this.data().filter(function(row){
+				if(searchText === ''){
+					return row;
+				}else{
+					if(row.css.indexOf(searchText) >= 0){
 						return row;
-					}else{
-						if(row.css.indexOf(searchText) >= 0){
-							return row;
-						}
 					}
-				});
-			}, this);
-		}
-		var vm = new viewModel();
-		ko.applyBindings(vm,document.getElementById('icons'));
-		setTimeout(function(){
-			a.get(c.path + 'assets/fonts/config.json'
-				,{}
-				,function(res){
-					if(!res) return false;
-					var data = a.jsonParse(res);
-					vm.iconPrefix = data.css_prefix_text;
-					vm.data(data.glyphs);
 				}
-			);
-		},1000);
+			});
+		}, this);
+	}
+	var viewModel = new Model;
+	ko.applyBindings(viewModel,document.getElementById('icons'));
 
-	})(ajax,_CONFIG_);
+	a.post(path+'assets/fonts/config.json',null,function (res) {
+		viewModel.iconPrefix = res.css_prefix_text;
+		viewModel.data(res.glyphs);
+	})
 </script>
 
-<?php $this->show('end');?>
+<?php echo $this->tpl('end');?>

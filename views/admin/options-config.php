@@ -3,14 +3,14 @@
 <?php echo $this->tpl('header');?>
 
 <section class="page-main" id="app" role="main">
-	<div class="container">
+	<div class="container" data-bind="visible:data" style="display:none;">
 		<div class="main-panel">
 			<div class="fr mt-5">
 				<button type="submit" class="ribbon-button" role="button"><i class="icon icon-plus-circled"></i>自定义配置项</button>
 			</div>
 			<h2>设置</h2>
 		</div>
-		<div class="settings" path="<?php echo $this->path;?>admin/update/setting" method="post">
+		<div class="settings">
 			<table class="s-table" cellpadding="0" cellspacing="0">
 				<tbody data-bind="foreach:data">
 					<tr>
@@ -18,10 +18,10 @@
 						<td width="150">
 							<span class="item-name" data-bind="text:name"></span>
 						</td>
-						<td width="500" class="form-group">
+						<td width="600" class="form-group">
 							<!-- ko if:type == 'input' -->
 								<!-- ko if:datatype != 'checkbox' || datatype != 'radio' -->
-								<input data-bind="value:value,attr:{type:datatype}" class="form-control">
+								<input data-bind="value:value,attr:{type:datatype},css:{ error: value.hasError }" class="form-control">
 								<!-- /ko -->
 								<!-- ko if:datatype == 'checkbox' || datatype == 'radio' -->
 								<input data-bind="value:value,attr:{type:datatype}">
@@ -29,12 +29,13 @@
 								<!-- /ko -->
 							<!-- /ko -->
 							<!-- ko if:type == 'textarea' -->
-								<textarea data-bind="value:value,attr:pattern" class="form-control"></textarea>
+								<textarea data-bind="value:value,attr:pattern,css:{ error: value.hasError }" class="form-control"></textarea>
 							<!-- /ko -->
 							<!-- ko if:type == 'switch' -->
 								<input class='switch' type="checkbox" data-bind="checked:value" />
 							<!-- /ko -->
-							<span class="item-name" data-bind="text:description"></span>
+							<i data-bind="visible:value.validationMessage()!='',text:value.validationMessage" class="validation-message"></i>
+							<i class="item-name" data-bind="visible:value.validationMessage()=='',text:description"></i>
 						</td>
 					</tr>
 				</tbody>
@@ -55,9 +56,10 @@
 <?php echo $this->tpl('scripts');?>
 
 <script type="text/javascript">
-	var a = new Ajax;
+	var a = new Ajax, path = _CONFIG_.path;
 	var Model = function(){
 		this.data = ko.observableArray([]);
+		this.action = path+"admin/update/setting";
 		this.submit = function(){
 			console.log(this.data())
 		}
@@ -65,10 +67,28 @@
 	var viewModel = new Model;
 	ko.applyBindings(viewModel,document.getElementById('app'));
 
-	a.post('/admin/api/options',null,function (res) {
+	ko.extenders.required = function(target, isRequired) {
+		target.hasError = ko.observable();
+		target.validationMessage = ko.observable("");
+
+		//define a function to do validation
+		function validate(newValue) {
+			if(isRequired){
+				target.hasError(newValue ? false : true);
+				target.validationMessage(newValue ? "" : "请完成必填项");
+			}
+		}
+
+		validate(target());
+
+		target.subscribe(validate);
+
+		return target;
+	}
+
+	a.post(path+'admin/api/options',null,function (res) {
 		var data = res.data, arr, rules;
 		data.map(function(v){
-			v.value = ko.observable(v.value);
 			if(v.rules.indexOf('|')>0){
 				arr = v.rules.split('|');
 				for(var i in arr){
@@ -93,6 +113,7 @@
 					v.datatype = v.rules;
 				}
 			}
+			v.value = ko.observable(v.value).extend({ required: ( v.required) ? v.required : false });
 		});
 		viewModel.data(data);
 	})

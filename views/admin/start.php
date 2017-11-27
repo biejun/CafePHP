@@ -19,7 +19,8 @@
 	<script type="text/javascript" src="<?=$this->path;?>assets/js/knockout-3.4.2.js"></script>
 	<script type="text/javascript">
 	var _CONFIG_ = {
-		path : '<?=$this->path;?>'
+		path : '<?=$this->path;?>',
+		username : '<?=$this->account->name;?>'
 	}
 	</script>
 </head>

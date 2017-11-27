@@ -7,6 +7,7 @@ $route->group('/admin',function($route){
 
 	$route->get('/test',function(){
 		$this->action->on('check:login');
+		echo $this->view->account->name;
 	});
 
 	$route->get('/index',function(){
@@ -60,9 +61,8 @@ $route->group('/admin',function($route){
 	/* 系统设置 */
 	$route->group('/options',function($route){
 
-		$this->action->on('check:login');
-
 		$route->get('/config',function(){
+			$this->action->on('check:login');
 			$this->action->on('common:assets');
 			$this->render('options-config');
 		});

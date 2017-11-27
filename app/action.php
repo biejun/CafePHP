@@ -52,11 +52,14 @@ $action->add('route:failed',function(){
 $action->add('check:login',function($redirect = null){
 	$loginToken = $this->cookie->get('user_login_token');
 	if(!is_null($loginToken)){
-		if(!isset($this->session->login_id)){
+		if(!isset($this->session->login_uid)){
 			$tokenResult = $this->load('admin@users')->checkToken($loginToken);
 			if($tokenResult){
-				$this->session->login_id = $tokenResult['id'];
+				$this->session->login_uid = $tokenResult['id'];
 				$this->session->login_name = $tokenResult['name'];
+				$this->view->account = new stdClass;
+				$this->view->account->uid = $tokenResult['id'];
+				$this->view->account->name = $tokenResult['name'];
 			}else{
 				if(is_null($redirect)){
 					$this->response->sendJSON('您还没有登录!',false);
