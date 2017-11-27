@@ -2,6 +2,7 @@
 <html lang="<?=$this->lang;?>">
 <head>
 	<meta charset="<?=$this->charset;?>"/>
+	<title><?=$this->options->title;?></title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">

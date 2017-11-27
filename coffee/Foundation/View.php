@@ -29,8 +29,6 @@ class View
 
 	public $ext = '.php';
 
-	public $site;
-
 	public $assets = array();
 
 	protected $currentView = '';
@@ -43,7 +41,7 @@ class View
 	{
 		if(!is_null($path)) $this->path = $path;
 
-		$this->currentView = is_null($view) ? (isset($this->site->view)) ? $this->site->view : '' : $view;
+		$this->currentView = is_null($view) ? '': $view;
 		$this->currentViewPath = $this->path . 'views/' . $this->currentView . '/';
 		return $this;
 	}

@@ -2,8 +2,10 @@
 
 use Coffee\Foundation\Component;
 
-class User extends Component
+class Users extends Component
 {
+
+	/* 添加一个用户 */
 	public function add($user)
 	{
 		if(!$this->checkUsername($user['name'])){
@@ -29,38 +31,63 @@ class User extends Component
 		}
 	}
 
+	/* 获取用户详细 */
+	public function getMeta($uid)
+	{
+		return $this->db->from('usermeta')->select("max(case `key` when 'is_admin' then `value` else 'false' end) is_admin,
+ 				max(case `key` when 'email' then `value` else '' end) email,
+ 				max(case `key` when 'avatar' then `value` else '' end) avatar,
+ 				max(case `key` when 'description' then `value` else '' end) description,
+ 				max(case `key` when 'level' then `value` else '' end) level,
+ 				max(case `key` when 'safetycode' then `value` else '' end) safetycode ")
+			->where('`uid`=%d',$uid)
+			->group('uid')->row();
+	}
+
+	/* 删除一个用户 */
 	public function delete($uid)
 	{
 
 	}
 
-	public function update()
-	{
-
-	}
-
+	/* 检查用户名是否存在 */
 	public function checkUsername($username)
 	{
 		return (bool) $this->db->from('users')->select('count(*)')->where('`name`=%s',$username)->one();
 	}
 
+	/*  检查密码是否正确 */
 	public function checkPassword($username, $password)
 	{
 		$pw = $this->db->from('users')->select('password')->where('`name`=%s',$username)->one();
 		return password_verify($password, $pw);
 	}
 
-	public function updateToken($username)
+	/* 更新登录令牌 */
+	public function updateToken($username, $days = 1)
 	{
 		$dbhash = G('database','hash');
-		$time = $_SERVER['REQUEST_TIME'];
-		$timeout = $time + 3600 * 24; // 登录状态记录一天
+		$timeout = date('Y-m-d H:i:s',strtotime("+{$days} day")); // 登录状态记录一天
 		$data = [
-			'logged' => $time,
+			'logged' => date('Y-m-d H:i:s'),
 			'timeout' => $timeout,
 			'token' => md5( $dbhash . md5($username) . $timeout )
 		];
 		$this->db->from('users')->where('`name` = %s',$username)->update($data);
 		return $data;
+	}
+
+	/* 检查登录令牌 */
+	public function checkToken($loginToken)
+	{
+		$currentTime = date('Y-m-d H:i:s');
+		$verifications = $this->db->from('users')->select('id,name,timeout')
+			->where('`token`=%s',$loginToken)
+			->row();
+
+		if($verifications && $currentTime < $verifications['timeout']){
+			return $verifications;
+		}
+		return false;
 	}
 }

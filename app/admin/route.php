@@ -6,22 +6,19 @@ use Coffee\Support\Helper;
 $route->group('/admin',function($route){
 
 	$route->get('/test',function(){
-		echo G('database','hash');
+		$this->action->on('check:login');
 	});
 
 	$route->get('/index',function(){
+		$this->action->on('check:login');
 		$this->action->on('common:assets');
 		$this->render('index');
 	});
 
 	$route->get('/fonts',function(){
+		$this->action->on('check:login');
 		$this->action->on('common:assets');
 		$this->render('fonts');
-	});
-
-	$route->get('/settings',function(){
-		$this->action->on('common:assets');
-		$this->render('settings');
 	});
 
 	/* 路径为 /admin/login */
@@ -35,12 +32,14 @@ $route->group('/admin',function($route){
 		$this->render('login');
 	});
 
+	/* 退出登录 */
 	$route->get('/logout',function(){
-
-		//$this->render('index');
+		$this->session->destroy();
+		$this->cookie->delete('user_login_token');
+		$this->response->redirect(PATH .'admin/login');
 	});
 
-
+	/* 控制台页面 */
 	$route->group('/console',function($route){
 
 		/* 路径为 /admin/console/backup */
@@ -58,7 +57,21 @@ $route->group('/admin',function($route){
 
 	});
 
+	/* 系统设置 */
+	$route->group('/options',function($route){
+
+		$this->action->on('check:login');
+
+		$route->get('/config',function(){
+			$this->action->on('common:assets');
+			$this->render('options-config');
+		});
+	});
+
+	/* 程序安装 */
 	$route->post('/setup-config',function(){
+
+		$this->action->on('check:login');
 
 		extract($this->request->post());
 
@@ -105,7 +118,7 @@ $route->group('/admin',function($route){
 
 					try{
 						$this->load('admin@install')->import('config/mysql.sql');
-						$this->load('admin@user')->add($user);
+						$this->load('admin@users')->add($user);
 					}catch(Exception $e){
 						$this->response->sendJSON($e->getMessage(),false);
 					}
@@ -121,6 +134,7 @@ $route->group('/admin',function($route){
 
 	$route->group('/account',function($route){
 
+		/* 登录账号 */
 		$route->post('/login',function(){
 
 			$data = $this->request->post();
@@ -134,15 +148,15 @@ $route->group('/admin',function($route){
 			if($csrf != $this->session->login_csrf){
 				$this->response->sendJSON('请求参数错误!',false);
 			}
-			if(empty($username)||!$this->load('admin@user')->checkUsername($username)){
+			if(empty($username)||!$this->load('admin@users')->checkUsername($username)){
 				$this->response->sendJSON('用户不存在!',false);
 			}
 			if(empty($password)||!isset($password{5})){
 				$this->response->sendJSON('密码不能少于六位!',false);
 			}
-			if($this->load('admin@user')->checkPassword($username, $password)){
-				$tokens = $this->load('admin@user')->updateToken($username);
-				$this->cookie->set('admin_token', $tokens['token'], $tokens['timeout']);
+			if($this->load('admin@users')->checkPassword($username, $password)){
+				$tokens = $this->load('admin@users')->updateToken($username);
+				$this->cookie->set('user_login_token', $tokens['token'], strtotime($tokens['timeout']));
 				// 从会话中删除已验证过得CSRF令牌
 				unset($this->session->login_csrf);
 				$this->response->sendJSON('登录成功!');
@@ -150,10 +164,23 @@ $route->group('/admin',function($route){
 				$this->response->sendJSON('用户名与密码不匹配！', false);
 			}
 		});
+
+		/* 添加账号 */
+		$route->post('/add',function(){
+
+		});
+
+		/* 删除账号 */
+		$route->post('/delete',function(){
+
+		});
 	});
 
-	// 定义一个公用API接口
+	/* 定义一个公用API接口 */
 	$route->post('/api/:func',function($func){
+
+		$this->action->on('check:login');
+
 		$args = $this->request->post();
 
 		if(!empty($func)){

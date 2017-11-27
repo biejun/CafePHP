@@ -13,7 +13,7 @@
 					,new Nav('临时文件',c.path+'admin/console/temp')
 					,new Nav('数据备份',c.path+'admin/console/backup')
 				])
-				,new Nav('设置',c.path+'admin/settings')
+				,new Nav('设置',c.path+'admin/options/config')
 				,new Nav('图标',c.path+'admin/fonts')
 		]);
 

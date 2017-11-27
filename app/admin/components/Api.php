@@ -4,9 +4,8 @@ use Coffee\Foundation\Component;
 
 class Api extends Component
 {
-	public function settings()
+	public function options()
 	{
-		$res = $this->db->from('settings')->select('*')->rows();
-		return $res;
+		return $this->db->from('options')->select('*')->rows();
 	}
 }

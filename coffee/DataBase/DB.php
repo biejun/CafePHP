@@ -16,6 +16,8 @@
  * 使用方法:
  * $this->db->from('student')->select('name,age')->where('`sex`=%d and `age`>=%d',1,18)->rows();
  *
+ * 对于复杂的SQL语句建议直接使用$this->db->query()方法执行
+ *
  * @uses Coffee\Fondation\Component
  * @package Coffee\DataBase\DB
  * @since 0.0.5 包含了增删改查备份等功能
@@ -147,7 +149,15 @@ class DB
 	/* 组装SQL ORDER BY */
 	public function order($orderBy)
 	{
-		$this->sql .= ' ORDER BY {$orderBy}';
+		$this->sql .= " ORDER BY {$orderBy}";
+
+		return $this;
+	}
+
+	/* 组装SQL GROUP BY */
+	public function group($groupBy)
+	{
+		$this->sql .= " GROUP BY {$groupBy}";
 
 		return $this;
 	}
@@ -156,11 +166,11 @@ class DB
 	* 组装SQL JOIN
 	*
 	* $this->db->from('user','a')
-	* ->select('a.uid,a.uname')
-	* ->join(['user_info','b'],'left','b.uid = a.uid')
+	* ->select('a.id,a.uname')
+	* ->join(['usermeta','b'],'left','b.id = a.id')
 	*
-	* select a.uid,b.uname from user as a left join user_info as b
-	* on b.uid = a.uid
+	* select a.id,b.uname from user as a left join usermeta as b
+	* on b.id = a.id
 	*
 	* @param string|array $join 数据库表名
 	* @param string       $type 连接类型（不需要加join）
