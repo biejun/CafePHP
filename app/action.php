@@ -50,27 +50,38 @@ $action->add('route:failed',function(){
 
 /* 检查登录 */
 $action->add('check:login',function($redirect = null){
-	$loginToken = $this->cookie->get('user_login_token');
-	if(!is_null($loginToken)){
-		if(!isset($this->session->login_uid)){
+
+	$allowAccess = false;
+	// 验证当前临时会话窗口是否已存在登录记录
+	if(is_null($this->session->get('login_uid'))){ // 不存在则检查浏览器中是否存在登录令牌
+		$loginToken = $this->cookie->get('user_login_token'); // 取出令牌
+		if(!is_null($loginToken)){
+			// 检查令牌
 			$tokenResult = $this->load('admin@users')->checkToken($loginToken);
 			if($tokenResult){
-				$this->session->login_uid = $tokenResult['id'];
-				$this->session->login_name = $tokenResult['name'];
+				$allowAccess = true;
+				// 如果令牌是正确的就将当前用户信息存到临时会话中
+				$this->session->set('login_uid',$tokenResult['id']);
+				$this->session->set('login_name',$tokenResult['name']);
 				$this->view->account = new stdClass;
 				$this->view->account->uid = $tokenResult['id'];
 				$this->view->account->name = $tokenResult['name'];
-			}else{
-				if(is_null($redirect)){
-					$this->response->sendJSON('您还没有登录!',false);
-				}else{
-					$this->response->redirect($redirect);
-				}
 			}
 		}
 	}else{
+		$allowAccess = true;
+		$this->view->account = new stdClass;
+		$this->view->account->uid = $this->session->get('login_uid');
+		$this->view->account->name = $this->session->get('login_name');
+	}
+
+	if(!$allowAccess){
 		if(is_null($redirect)){
-			$this->response->sendJSON('您还没有登录!',false);
+			if($this->request->isAjax()){
+				$this->response->sendJSON('登录超时!',false);
+			}else{
+				$this->render('403',null,403);
+			}
 		}else{
 			$this->response->redirect($redirect);
 		}

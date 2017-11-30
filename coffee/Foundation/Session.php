@@ -48,20 +48,17 @@ class Session
 		return false;
 	}
 
-	public function __set($name, $value)
+	public function set($name, $value)
 	{
 		$_SESSION[$name] = $value;
 	}
 
-	public function __get($name)
+	public function get($name, $default = null)
 	{
-		if (isset($_SESSION[$name]))
-		{
-			return $_SESSION[$name];
-		}
+		return isset($_SESSION[$name]) ? $_SESSION[$name] : $default;
 	}
 
-	public function __unset($name)
+	public function delete($name)
 	{
 		unset($_SESSION[$name]);
 	}

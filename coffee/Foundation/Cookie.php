@@ -65,14 +65,7 @@ class Cookie
 	{
 		$key = $this->prefix . $key;
 
-		if (isset($_COOKIE[$key]))
-		{
-			return $_COOKIE[$key];
-		}
-		else
-		{
-			return $default;
-		}
+		return isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;
 	}
 
 	/**

@@ -3,7 +3,7 @@
 <?php echo $this->tpl('header');?>
 
 <section class="page-main" id="app" role="main">
-	<div class="container" data-bind="visible:data" style="display:none;">
+	<div class="container">
 		<div class="main-panel">
 			<div class="fr mt-5">
 				<button type="submit" class="ribbon-button" role="button"><i class="icon icon-plus-circled"></i>自定义配置项</button>
@@ -18,24 +18,27 @@
 						<td width="150">
 							<span class="item-name" data-bind="text:name"></span>
 						</td>
-						<td width="600" class="form-group">
-							<!-- ko if:type == 'input' -->
-								<!-- ko if:datatype != 'checkbox' || datatype != 'radio' -->
-								<input data-bind="value:value,attr:{type:datatype},css:{ error: value.hasError }" class="form-control">
+						<td width="600">
+							<div data-bind="visible:$parent.data" class="form-group" style="display:none;">
+								<!-- ko if:type == 'input' -->
+									<!-- ko if:datatype != 'checkbox' || datatype != 'radio' -->
+									<input data-bind="value:value,attr:{type:datatype},css:{ error: value.hasError }" class="form-control">
+									<!-- /ko -->
+									<!-- ko if:datatype == 'checkbox' || datatype == 'radio' -->
+									<input data-bind="value:value,attr:{type:datatype,id:name}">
+									<label data-bind="attr:{for:name}"></label>
+									<!-- /ko -->
 								<!-- /ko -->
-								<!-- ko if:datatype == 'checkbox' || datatype == 'radio' -->
-								<input data-bind="value:value,attr:{type:datatype}">
-								<label data-bind="attr:{for:name}"></label>
+								<!-- ko if:type == 'textarea' -->
+									<textarea data-bind="value:value,attr:pattern,css:{ error: value.hasError }" class="form-control"></textarea>
 								<!-- /ko -->
-							<!-- /ko -->
-							<!-- ko if:type == 'textarea' -->
-								<textarea data-bind="value:value,attr:pattern,css:{ error: value.hasError }" class="form-control"></textarea>
-							<!-- /ko -->
-							<!-- ko if:type == 'switch' -->
-								<input class='switch' type="checkbox" data-bind="checked:value" />
-							<!-- /ko -->
-							<i data-bind="visible:value.validationMessage()!='',text:value.validationMessage" class="validation-message"></i>
-							<i class="item-name" data-bind="visible:value.validationMessage()=='',text:description"></i>
+								<!-- ko if:type == 'switch' -->
+									<input class="switch" type="checkbox" data-bind="checked:value,attr:{'id':name}" />
+									<label data-bind="attr:{for:name}"></label>
+								<!-- /ko -->
+								<i data-bind="visible:value.validationMessage()!='',text:value.validationMessage" class="validation-message"></i>
+								<i class="item-name" data-bind="visible:value.validationMessage()=='',text:description"></i>
+							</div>
 						</td>
 					</tr>
 				</tbody>
@@ -44,7 +47,7 @@
 						<td></td>
 						<td></td>
 						<td>
-							<button type="submit" class="s-button mt-10" data-bind="click:submit">提交</button>
+							<button type="submit" class="s-button mt-10" data-bind="click:submit,text:'提交'"></button>
 						</td>
 					</tr>
 				</tfoot>

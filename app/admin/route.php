@@ -28,7 +28,7 @@ $route->group('/admin',function($route){
 		$suffixVersion = date('ymdHi');
 		$this->view->addCSS(['grid.css','css/login.css'], $suffixVersion);
 		$this->view->addJS(['ajax.js','js/login.js'], $suffixVersion);
-		$this->session->login_csrf = $csrf;
+		$this->session->set('login_csrf',$csrf);
 		$this->view->assign('__csrf__',$csrf);
 		$this->render('login');
 	});
@@ -145,7 +145,7 @@ $route->group('/admin',function($route){
 
 			$csrf = filter_var($data['__csrf__'],FILTER_UNSAFE_RAW);
 
-			if($csrf != $this->session->login_csrf){
+			if(is_null($this->session->get('login_csrf')) || $csrf != $this->session->get('login_csrf')){
 				$this->response->sendJSON('请求参数错误!',false);
 			}
 			if(empty($username)||!$this->load('admin@users')->checkUsername($username)){
@@ -158,7 +158,7 @@ $route->group('/admin',function($route){
 				$tokens = $this->load('admin@users')->updateToken($username);
 				$this->cookie->set('user_login_token', $tokens['token'], strtotime($tokens['timeout']));
 				// 从会话中删除已验证过得CSRF令牌
-				unset($this->session->login_csrf);
+				$this->session->delete('login_csrf');
 				$this->response->sendJSON('登录成功!');
 			}else{
 				$this->response->sendJSON('用户名与密码不匹配！', false);
