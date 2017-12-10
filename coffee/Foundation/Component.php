@@ -26,6 +26,13 @@ abstract class Component
 	/* 当前数据库连接对象 */
 	public $db;
 
+	/* 当前数据缓存对象 */
+	public $cache;
+
+	public $session;
+
+	public $cookie;
+
 	/* 当前组件操作的数据库名 */
 	public $database = null;
 
@@ -42,6 +49,12 @@ abstract class Component
 
 		$this->db->connect($this->database,$this->create?$this->create:G('database','create'));
 
+		$this->cache = $this->initCache();
+
+		$this->session = new Session;
+
+		$this->cookie = new Cookie;
+
 		if( !empty($this->table) ) $this->db->from($this->table);
 		if( method_exists( $this, '_initialize' ) ) $this->_initialize();
 	}
@@ -54,6 +67,16 @@ abstract class Component
 			$_connect = new DB(G('database'));
 		}
 		return $_connect;
+	}
+
+	private function initCache()
+	{
+		static $_cacheHandler;
+
+		if($_cacheHandler === null){
+			$_cacheHandler = Cache::init(G('cache'));
+		}
+		return $_cacheHandler;
 	}
 
 	/**
@@ -96,6 +119,12 @@ abstract class Component
 			}
 		}
 		return false;
+	}
+
+	/* 载入应用组件 */
+	public function load($component)
+	{
+		return self::instance($component);
 	}
 
 	/**

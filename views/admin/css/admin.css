@@ -15,6 +15,13 @@ button:focus{
 	outline: 2px solid #8fb9fe;
 }
 
+a{
+	color: #3f8cef;
+}
+a:hover{
+	color: #3980dc;
+}
+
 .form-group .form-control:focus {
 	background-color: #fff;
 }
@@ -23,40 +30,44 @@ button:focus{
 	max-width: 100%;
 	margin-right: 5px;
 }
-.form-control.focus, .form-control:focus, .form-select.focus, .form-select:focus {
+.form-control.focus, .form-control:focus{
 	border-color: #3f8cef;
 	outline: none;
 	box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(63,140,239,0.2);
 }
-.form-control, .form-select {
-	min-height: 34px;
+.form-control{
+	height: 34px;
 	padding: 6px 8px;
 	font-size: 14px;
-	line-height: 20px;
 	color: #24292e;
 	vertical-align: middle;
 	background-color: #fff;
 	background-repeat: no-repeat;
 	background-position: right 8px center;
 	border: 1px solid #e1e1e1;
+	line-height: 1.42857143;
 	border-radius: 3px;
 	outline: none;
 	box-shadow: inset 0 1px 2px rgba(27,31,35,0.075);
 }
 
 .form-control.error{
-	border-color: #ec1c1c;
+	border-color: #d84242;
 }
 .form-control.error.focus, .form-control.error:focus {
 	outline: none;
 	box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(236,28,28,0.2);
 }
 
+textarea.form-control{
+	height: auto;
+}
+
 .validation-message{
 	margin: 0;
 	padding: 0;
 	margin-top: 5px;
-	color: #ec1c1c;
+	color: #d84242;
 }
 
 .card{
@@ -267,14 +278,25 @@ button.ribbon-button>i{
 	padding: 8px 10px;
 }
 
+.settings > .s-table .s-child-table{
+	width: 100%;
+}
+
+.settings > .s-table .s-child-table th{
+	background: #d8d8d8;
+}
+.settings > .s-table .s-child-table td{
+	background: #eaeaea;
+}
+
 .settings .s-button{
 	display: inline-block;
 	line-height: 20px;
 	padding: 6px 15px;
 	cursor: pointer;
 	border: none;
-	background-color: #3f8cef;
-	color: #fff;
+	background-color: #e2e2e2;
+	color: #333;
 	white-space: nowrap;
 	border-radius: 3px;
 	-webkit-appearance: none;
@@ -282,7 +304,26 @@ button.ribbon-button>i{
 			appearance: none;
 }
 .settings .s-button:hover{
+	background: #d3d3d3;
+}
+
+.settings .s-button.s-primary{
+	background-color: #3f8cef;
+	color: #fff;
+}
+.settings .s-button.s-primary:hover{
 	background: #4384d8;
+}
+
+.settings .removeItem{
+	border:none;
+	padding: 0;
+	height: 34px;
+	line-height: 34px;
+	font-size: 20px;
+	cursor: pointer;
+	background-color: transparent;
+	color: #d84242;
 }
 
 .table>.thead>.tr>.th,
@@ -416,9 +457,9 @@ button.ribbon-button>i{
 	left: 0;
 	right: 0;
 	background-color: #fff;
-	border: 1px solid #e7e7e7;
 	border-radius: 3px;
-	box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.05);
+    -webkit-box-shadow: 0 7px 21px rgba(0,0,0,.1);
+    box-shadow: 0 7px 21px rgba(0,0,0,.1);
 }
 
 .plan-textarea .plan-priority > .options-box > ul{
@@ -450,12 +491,14 @@ button.ribbon-button>i{
 }
 
 .plan-textarea .plan-priority > .options-box li:hover{
-	background-color: #f8f8f8;
+	background-color: #f5f5f5;
 }
 
 .plan-textarea .plan-priority > .options-box li.current:after{
 	position: absolute;
-	content: "✔";
+	font-family: "fontello";
+	content: "\e817";
+	font-size: 12px;
 	right: 10px;
 	color: #d6d6d6;
 }
@@ -464,7 +507,7 @@ button.ribbon-button>i{
 	width:100%;
 }
 .plan-list td{
-	padding: 5px 10px;
+	padding: 8px 10px;
 	font-size: 14px;
 	border-bottom:1px solid #f3f3f3;
 	line-height: 1.42857143;
@@ -475,12 +518,11 @@ button.ribbon-button>i{
 }
 
 .plan-list > thead > tr > th{
-	padding: 5px 10px;
-	background-color: #f7f7f7;
+	padding: 8px 10px;
 	font-size: 14px;
 	border-top: 1px solid #eee;
 	border-bottom: 1px solid #eaeaea;
-	border-left: 1px solid #e8e8e8;
+	border-left: 1px solid #eee;
 }
 .plan-list > thead > tr > th:first-child{
 	border-left: none;

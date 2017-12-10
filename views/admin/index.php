@@ -90,17 +90,18 @@
 								<table class="plan-list" border="0" cellspacing="0">
 									<thead>
 										<tr>
-											<th>内容</th>
-											<th>状态</th>
+											<th align="left">正在进行<i class="icon icon-angle-down"></i></th>
+											<th align="right">状态</th>
 										</tr>
 									</thead>
 									<tbody data-bind="foreach:plans">
 										<tr>
 											<td>
-												<input class="magic-checkbox" type="checkbox" data-bind="attr:{id:'P'+$index()}">
-												<label data-bind="text:text,attr:{for:'P'+$index()}"></label>
+												<input class="checkbox" type="checkbox" data-bind="attr:{id:'P'+$index()}">
+												<label data-bind="text:text,attr:{for:'P'+$index()}" style="color:#333"></label>
 											</td>
-												<td align="right" data-bind="text:$parent.arr[level]">
+											<td align="right">
+												<span data-bind="text:$parent.arr[level],attr:{'class':'level-'+level}"></span>
 											</td>
 										</tr>
 									</tbody>
@@ -162,13 +163,12 @@
 				return;
 			}
 
-			a.post(path+'admin/add/plan'
+			a.post(path+'admin/console/add/todo'
 				,{
 					text : text
 					,level : level
 				}
 				,function(res){
-					res = a.jsonParse(res);
 					if(res.success){
 						_this.plans.unshift({text:text,level:level});
 						_this.showTextarea(false);
@@ -184,8 +184,7 @@
 	var vm = new viewModel;
 	ko.applyBindings(vm,document.getElementById('plans'));
 
-	a.get(path+'admin/plans',{},function(res){
-		res = a.jsonParse(res);
+	a.post(path+'admin/api/todolists',{page:1,limit:10},function(res){
 		console.log(res)
 		vm.plans(res.data);
 	});
@@ -205,13 +204,12 @@
 
 	ko.applyBindings(vm,document.getElementById('logs'));
 
-	a.post(path+'admin/api/logs'
+	a.post(path+'admin/api/loginlogs'
 		,{
 			page : vm.page()
 			,limit: vm.limit()
 		}
 		,function(res){
-			res = a.jsonParse(res);
 			if(res.success){
 				vm.logs(res.data);
 			}
@@ -232,13 +230,12 @@
 
 	ko.applyBindings(vm,document.getElementById('operates'));
 
-	a.post(path+'admin/api/operates'
+	a.post(path+'admin/api/operatelogs'
 		,{
 			page : vm.page()
 			,limit: vm.limit()
 		}
 		,function(res){
-			res = a.jsonParse(res);
 			if(res.success){
 				vm.operates(res.data);
 			}

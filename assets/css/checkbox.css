@@ -28,7 +28,7 @@ input[type=radio].radio+label:after,input[type=radio].radio+label:before,input[t
 }
 
 input[type=radio].radio+label:before,input[type=checkbox].checkbox+label:before {
-  background-color: #fafafa;
+  background-color: #e2e2e2;
   -moz-transition: all .3s ease-in-out;
   -o-transition: all .3s ease-in-out;
   -webkit-transition: all .3s ease-in-out;
@@ -100,7 +100,7 @@ input[type=checkbox].switch +label{
   appearance: none;
   width: 55px;
   height: 28px;
-  background-color: #fafafa;
+  background-color: #e2e2e2;
   position: relative;
   -moz-border-radius: 30px;
   -webkit-border-radius: 30px;
@@ -112,7 +112,7 @@ input[type=checkbox].switch +label{
 }
 
 input[type=checkbox].switch +label:hover:after {
-  background-color: #c7c7c7
+  background-color: #fff;
 }
 
 input[type=checkbox].switch +label:after {
@@ -121,7 +121,7 @@ input[type=checkbox].switch +label:after {
   position: absolute;
   width: 24px;
   height: 24px;
-  background-color: #adadad;
+  background-color: #fff;
   top: 2px;
   left: 2px;
   -moz-border-radius: 50%;

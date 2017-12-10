@@ -508,3 +508,14 @@ function formatSize($filesize){
     }
     return round($filesize, 2).$unit[$f];
 }
+// 获取位置（新浪接口）
+function getCity(){
+    $json = @file_get_contents('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip='.getIp());
+    if(isset($json)){
+        $address = json_decode($json,true);
+        if($address !== -3){
+            return $address['province'].$address['city'];
+        }
+    }
+    return '火星';
+}

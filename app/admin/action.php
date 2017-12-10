@@ -17,6 +17,6 @@ $action->add('route:failed',function(){
 });
 
 $action->add('common:assets',function(){
-	$this->view->addCSS(['grid.css','fonts.css','checkbox.css','css/admin.css']);
+	$this->view->addCSS(['grid.css','fonts.css','checkbox.css','css/admin.css'],date('his'));
 	$this->view->addJS(['ajax.js','request.js','cookie.js','js/header.js','js/notify.js']);
 });

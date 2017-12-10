@@ -1,13 +1,10 @@
 <?php
-/* 依赖类库 */
-use Coffee\Support\Helper;
-
 /* $this->grounp() 为相同前缀路径分组*/
 $route->group('/admin',function($route){
 
 	$route->get('/test',function(){
-		$this->action->on('check:login');
-		echo $this->view->account->name;
+		//$this->action->on('check:login');
+		//$this->load('admin@todolists')->get();
 	});
 
 	$route->get('/index',function(){
@@ -56,6 +53,15 @@ $route->group('/admin',function($route){
 
 		});
 
+		$route->post('/add/todo',function(){
+			$data = $this->request->post();
+			$uid = $this->session->get('login_uid');
+			$text = filter_var($data['text'],FILTER_UNSAFE_RAW);
+			$level = filter_var($data['level'],FILTER_VALIDATE_INT);
+			$this->load('admin@todolists')->add($uid, $text, $level);
+			$this->response->sendJSON('创建成功！');
+		});
+
 	});
 
 	/* 系统设置 */
@@ -70,8 +76,6 @@ $route->group('/admin',function($route){
 
 	/* 程序安装 */
 	$route->post('/setup-config',function(){
-
-		$this->action->on('check:login');
 
 		extract($this->request->post());
 
@@ -159,6 +163,8 @@ $route->group('/admin',function($route){
 				$this->cookie->set('user_login_token', $tokens['token'], strtotime($tokens['timeout']));
 				// 从会话中删除已验证过得CSRF令牌
 				$this->session->delete('login_csrf');
+				// 登录日志
+				$this->load('admin@logs')->addLoginLog($username);
 				$this->response->sendJSON('登录成功!');
 			}else{
 				$this->response->sendJSON('用户名与密码不匹配！', false);
