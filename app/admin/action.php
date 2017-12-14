@@ -17,6 +17,13 @@ $action->add('route:failed',function(){
 });
 
 $action->add('common:assets',function(){
-	$this->view->addCSS(['grid.css','fonts.css','checkbox.css','css/admin.css'],date('his'));
-	$this->view->addJS(['ajax.js','request.js','cookie.js','js/header.js','js/notify.js']);
+	$this->view->addCSS(['grid.css','fonts.css','table.css','checkbox.css','css/admin.css'],date('His'));
+	$this->view->addJS(['ajax.js','request.js','cookie.js','js/header.js','js/notify.js'],date('His'));
+});
+
+
+// 定义一个消息提醒的动作
+$action->add('admin:notify',function($success,$msg){
+	$this->cookie->set('__admin_notify_type__',$success);
+	$this->cookie->set('__admin_notify_msg__',$msg);
 });

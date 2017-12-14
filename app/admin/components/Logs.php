@@ -15,7 +15,7 @@ class Logs extends Component
 	{
 		$data = $this->getLoginLogs()->all();
 
-		$data[] = ['name'=>$username,'time'=>date("Y-m-d H:i"),'city'=> getCity()];
+		$data[] = ['name'=>$username,'time'=>date("Y-m-d H:i"),'city'=> '火星'];
 
 		$this->cache->set($this->loginLogs,$data);
 	}
@@ -27,7 +27,7 @@ class Logs extends Component
 
 		$data[] = ['name'=>$username,'time'=>date("Y-m-d H:i"),'text'=> $operateContent];
 
-		$this->cache->set($this->loginLogs,$data);
+		$this->cache->set($this->operateLogs,$data);
 	}
 
 	public function getLoginLogs()

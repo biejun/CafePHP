@@ -90,4 +90,11 @@ class Users extends Component
 		}
 		return false;
 	}
+
+	public function result($page=1, $limit=10)
+	{
+		return $this->db->from('users')->select('`id`,`name`,`created`,`logged`')
+			->order('created DESC LIMIT '.(($page-1)*$limit).",".$limit)
+			->rows();
+	}
 }

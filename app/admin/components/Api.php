@@ -23,4 +23,18 @@ class Api extends Component
 		$limit = filter_var($limit,FILTER_VALIDATE_INT,array("max_range"=>100));
 		return $this->load('admin@todolists')->get($uid)->result();
 	}
+
+	public function users($page, $limit)
+	{
+		$page = filter_var($page,FILTER_VALIDATE_INT,array("min_range"=>1));
+		$limit = filter_var($limit,FILTER_VALIDATE_INT,array("max_range"=>100));
+		return $this->load('admin@users')->result($page, $limit);
+	}
+
+	public function operatelogs($page, $limit)
+	{
+		$page = filter_var($page,FILTER_VALIDATE_INT,array("min_range"=>1));
+		$limit = filter_var($limit,FILTER_VALIDATE_INT,array("max_range"=>100));
+		return $this->load('admin@logs')->getOperateLogs()->result($page, $limit);	
+	}
 }

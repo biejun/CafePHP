@@ -5,6 +5,9 @@ $route->group('/admin',function($route){
 	$route->get('/test',function(){
 		//$this->action->on('check:login');
 		//$this->load('admin@todolists')->get();
+
+		$d = $this->load('admin@logs')->getOperateLogs()->result();
+		print_r($d);
 	});
 
 	$route->get('/index',function(){
@@ -42,15 +45,10 @@ $route->group('/admin',function($route){
 
 		/* 路径为 /admin/console/backup */
 		$route->get('/backup',function(){
-
-		});
-
-		$route->get('/cache',function(){
-
-		});
-
-		$route->get('/temp',function(){
-
+			$this->action->on('check:login');
+			$this->action->on('common:assets');
+			$this->view->assign('data',$this->load('admin')->getBackupFiles());
+			$this->render('console-backup');
 		});
 
 		$route->post('/add/todo',function(){
@@ -60,6 +58,44 @@ $route->group('/admin',function($route){
 			$level = filter_var($data['level'],FILTER_VALIDATE_INT);
 			$this->load('admin@todolists')->add($uid, $text, $level);
 			$this->response->sendJSON('创建成功！');
+		});
+
+		$route->post('/backup/export',function(){
+			$this->action->on('check:login');
+			$username = $this->session->get('login_name');
+			if($this->load('admin')->exportBackup()){
+				$this->load('admin@logs')->addOperateLog($username,'备份了数据库');
+				$this->action->on('admin:notify','success','备份成功!');
+			}else{
+				$this->action->on('admin:notify','error','备份失败!');
+			}
+			$this->response->goBack();
+		});
+
+		$route->post('/backup/restore',function(){
+			$this->action->on('check:login');
+			$username = $this->session->get('login_name');
+			$file = trim($this->request->post('file'));
+			if($this->load('admin')->restoreBackup($file)){
+				$this->load('admin@logs')->addOperateLog($username,"还原了数据库备份文件：{$file}");
+				$this->action->on('admin:notify','success','还原成功!');
+			}else{
+				$this->action->on('admin:notify','error','还原失败!');
+			}
+			$this->response->goBack();
+		});
+
+		$route->post('/backup/delete',function(){
+			$this->action->on('check:login');
+			$username = $this->session->get('login_name');
+			$file = trim($this->request->post('file'));
+			if($this->load('admin')->deleteBackup($file)){
+				$this->load('admin@logs')->addOperateLog($username,"删除了数据库备份文件：{$file}");
+				$this->action->on('admin:notify','success','删除成功!');
+			}else{
+				$this->action->on('admin:notify','error','删除失败!');
+			}
+			$this->response->goBack();
 		});
 
 	});
@@ -179,6 +215,18 @@ $route->group('/admin',function($route){
 		/* 删除账号 */
 		$route->post('/delete',function(){
 
+		});
+
+		$route->get('/operate',function(){
+			$this->action->on('check:login');
+			$this->action->on('common:assets');
+			$this->render('account-operate');
+		});
+
+		$route->get('/profile',function(){
+			$this->action->on('check:login');
+			$this->action->on('common:assets');
+			$this->render('account-profile');
 		});
 	});
 

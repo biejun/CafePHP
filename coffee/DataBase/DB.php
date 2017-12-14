@@ -206,9 +206,10 @@ class DB
 	}
 
 	/* 执行SQL语句 */
-	public function query($sql=null)
+	public function query($sql=null,$debug=false)
 	{
 		if(!empty($this->sql)&&is_null($sql)) $sql = $this->sql;
+		if($debug) throw new \Exception($sql);
 		$exec = $this->handler->query($sql);
 
 		if($this->handler->error){
