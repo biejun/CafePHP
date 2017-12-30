@@ -8,6 +8,8 @@
 			<h2>网站概要</h2>
 			<div class="dashboard">
 				在这里显示站点统计信息
+				
+<button onclick="modal.modalToShow(true)">11</button>
 			</div>
 		</div>
 		<div class="item-wrap">

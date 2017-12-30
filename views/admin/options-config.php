@@ -136,7 +136,7 @@
 									<textarea data-bind="value:value,attr:pattern,css:{ error: value.hasError }" class="form-control"></textarea>
 								<!-- /ko -->
 								<!-- ko if:type == 'switch' -->
-									<input class="switch" type="checkbox" data-bind="checked:value,attr:{'id':name}" />
+									<input class="switch" type="checkbox" data-bind="checked:value,attr:{'id':name},value:value" />
 									<label data-bind="attr:{for:name}"></label>
 								<!-- /ko -->
 								<i data-bind="visible:value.validationMessage()!='',text:value.validationMessage" class="validation-message"></i>
@@ -162,13 +162,17 @@
 <?php echo $this->tpl('scripts');?>
 
 <script type="text/javascript">
-	var a = new Ajax, path = _CONFIG_.path;
+(function(a,path){
 	var Model = function(){
 		this.data = ko.observableArray([]);
-		this.action = path+"admin/update/setting";
 		this.newItems = ko.observableArray([]);
 		this.submit = function(){
-			console.log(this.data())
+			if(confirm('确定要提交吗？')){
+				var data = ko.toJSON(this.data);
+				a.post(path+'admin/options/update',{data:data},function(res){
+					window.location.reload();
+				})
+			}
 		}
 		this.addItem = function(){
 			var id = this.newItems().length+1;
@@ -179,6 +183,7 @@
 				this.type = ko.observable();
 				this.value = ko.observable('');
 				this.datatype = ko.observable('');
+				this.description = ko.observable('');
 				this.required = ko.observable(false);
 				this.optionTypes = [
 					{text:'单行文本',value:'input'},
@@ -310,9 +315,9 @@
 			}
 			v.value = ko.observable(v.value).extend({ required: ( v.required) ? v.required : false });
 		});
-		console.log(res);
 		viewModel.data(data);
 	})
+})(new Ajax,_CONFIG_.path);
 </script>
 
 <?php echo $this->tpl('end');?>

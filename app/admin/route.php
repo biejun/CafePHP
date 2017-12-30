@@ -108,6 +108,19 @@ $route->group('/admin',function($route){
 			$this->action->on('common:assets');
 			$this->render('options-config');
 		});
+
+		$route->post('/update',function(){
+			$data = json_decode($this->request->post('data'));
+			try{
+				$this->load('admin@options')->updateAll($data);
+				$this->action->on('admin:notify','success','更新成功！!');
+				$this->response->sendJSON('更新成功！');
+
+			}catch(\Exception $e){
+				$this->action->on('admin:notify','error','更新失败！!');
+				$this->response->sendJSON($e->getMessage(),false);
+			}
+		});
 	});
 
 	/* 程序安装 */

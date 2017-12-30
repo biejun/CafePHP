@@ -37,3 +37,18 @@
 		<button type="button" class="close" data-bind="text:'&times;',click:function(){notifyToShow(false)}"></button>
 	</div>
 </div>
+
+<div id="modal" class="modal" data-bind="css:{'show':modalToShow}">
+	<div class="modal-show" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">xxxx</h4>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
+	<div class="modal-backdrop"></div>
+</div>
