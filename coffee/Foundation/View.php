@@ -42,7 +42,7 @@ class View
 		if(!is_null($path)) $this->path = $path;
 
 		$this->currentView = is_null($view) ? '': $view;
-		$this->currentViewPath = $this->path . 'views/' . $this->currentView . '/';
+		$this->currentViewPath = $this->pathJoin('views', $this->currentView);
 		return $this;
 	}
 
@@ -52,40 +52,34 @@ class View
 		return $this;
 	}
 
-	public function addCSS($cssFiles, $suffixVersion = null)
+	/* 将多个参数组合成一个路径 */
+	public function pathJoin()
 	{
-		$num = func_num_args();
-		if($num > 2) $suffixVersion = func_get_arg(2);
-		if(is_array($cssFiles)){
-			array_walk($cssFiles, array($this,'addCSS'), $suffixVersion);
-		}else{
-			if(in_array($cssFiles, array('grid.css','table.css','fonts.css','checkbox.css'))){
-				$this->assets['css'][] = $this->pathJoinVersion($this->path . 'assets/css/' . $cssFiles, $suffixVersion);
-			}else{
-				$this->assets['css'][] = $this->pathJoinVersion($this->currentViewPath . $cssFiles, $suffixVersion);
+		$path = array();
+		$args = func_get_args();
+		if(count($args) > 0){
+			foreach ($args as $key => $value) {
+				$path[] = $value;
 			}
-			return $this;
 		}
+		return $this->path . join('/', $path);
 	}
 
-	public function addJS($jsFiles, $suffixVersion = null)
+	/* 将多个参数组合到当前视图文件夹路径中 */
+	public function viewPathJoin()
 	{
-		$num = func_num_args();
-		if($num > 2) $suffixVersion = func_get_arg(2);
-		if(is_array($jsFiles)){
-			array_walk($jsFiles, array($this,'addJS'), $suffixVersion);
-		}else{
-			if(in_array($jsFiles, array('ajax.js','cookie.js','md5.js','request.js'))){
-				$this->assets['js'][] = $this->pathJoinVersion($this->path . 'assets/js/' . $jsFiles, $suffixVersion);
-			}else{
-				$this->assets['js'][] = $this->pathJoinVersion($this->currentViewPath . $jsFiles, $suffixVersion);
+		$path = array();
+		$args = func_get_args();
+		if(count($args) > 0){
+			foreach ($args as $key => $value) {
+				$path[] = $value;
 			}
-			return $this;
 		}
+		return $this->currentViewPath. '/' . join('/', $path);
 	}
 
 	/* 给文件资源加上版本号 */
-	public function pathJoinVersion($filePath, $suffixVersion = null)
+	public function fileJoinVersion($filePath, $suffixVersion = null)
 	{
 		return $filePath . (is_null($suffixVersion) ? '' : '?v='.$suffixVersion);
 	}
@@ -115,7 +109,8 @@ class View
 		}
 	}
 
-	private function getViewPath($page)
+	/* 获取视图文件路径 */
+	private function getViewFilePath($page)
 	{
 		if(!$this->currentView){
 			$view = VIEWS . "/{$this->setView()->currentView}/{$page}";
@@ -132,7 +127,7 @@ class View
 	**/
 	public function render($tpl,$vars)
 	{
-		$tpl = $this->getViewPath($tpl);
+		$tpl = $this->getViewFilePath($tpl);
 		if( file_exists( $tpl ) ){
 			ob_start();
 			ob_implicit_flush(0);

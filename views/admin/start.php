@@ -8,13 +8,11 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="renderer" content="webkit">
 	<meta name="force-rendering" content="webkit">
-	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/normalize.css" />
 <?php if(isset($this->assets['css'])) : ?>
 <?php foreach( $this->assets['css'] as $cssPath ) :?>
 	<link rel="stylesheet" type="text/css" href="<?=$cssPath;?>" />
 <?php endforeach;?>
 <?php endif;?>
-	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/common.css" />
 	<link rel="icon" href="<?=$this->path;?>favicon.ico" type="image/x-icon"/>
 	<script type="text/javascript" src="<?=$this->path;?>assets/js/knockout-3.4.2.js"></script>
 	<script type="text/javascript">

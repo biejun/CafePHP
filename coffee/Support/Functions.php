@@ -480,7 +480,6 @@ function uploadMove( $from, $target= '' ){
 }
 // 删除文件夹
 function removeDir( $dir ){
-
     $dh=opendir( $dir );
     while( $file=readdir( $dh ) ){
         if( $file != "." && $file != ".." ){
@@ -501,7 +500,6 @@ function removeDir( $dir ){
 }
 // 格式化大小
 function formatSize($filesize){
-
     $unit = array(' B', ' KB', ' MB', ' GB', ' TB');
     for ($f = 0; $filesize >= 1024 && $f < 4; $f++){
         $filesize /= 1024;
@@ -509,13 +507,15 @@ function formatSize($filesize){
     return round($filesize, 2).$unit[$f];
 }
 // 获取位置（新浪接口）
-function getCity(){
-    $json = @file_get_contents('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip='.getIp());
+function getCity($defaultCity = '火星'){
+    $ip = getIp();
+    if($ip === '::1') return $defaultCity;
+    $json = @file_get_contents('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip='.$ip);
     if(isset($json)){
         $address = json_decode($json,true);
         if($address !== -3){
             return $address['province'].$address['city'];
         }
     }
-    return '火星';
+    return $defaultCity;
 }

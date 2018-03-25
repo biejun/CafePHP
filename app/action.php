@@ -63,6 +63,7 @@ $action->add('check:login',function($redirect = null){
 				// 如果令牌是正确的就将当前用户信息存到临时会话中
 				$this->session->set('login_uid',$tokenResult['id']);
 				$this->session->set('login_name',$tokenResult['name']);
+				// 将当前已登录用户信息写进视图模型
 				$this->view->account = new stdClass;
 				$this->view->account->uid = $tokenResult['id'];
 				$this->view->account->name = $tokenResult['name'];

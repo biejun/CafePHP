@@ -12,7 +12,8 @@ $route->group('/admin',function($route){
 
 	$route->get('/index',function(){
 		$this->action->on('check:login');
-		$this->action->on('common:assets');
+		$this->action->on('common:assets',array('css'=>'css/ttt'));
+
 		$this->render('index');
 	});
 
@@ -25,9 +26,6 @@ $route->group('/admin',function($route){
 	/* 路径为 /admin/login */
 	$route->get('/login',function(){
 		$csrf = strtoupper( md5( uniqid(rand(), true) ) );
-		$suffixVersion = date('ymdHi');
-		$this->view->addCSS(['grid.css','css/login.css'], $suffixVersion);
-		$this->view->addJS(['ajax.js','js/login.js'], $suffixVersion);
 		$this->session->set('login_csrf',$csrf);
 		$this->view->assign('__csrf__',$csrf);
 		$this->render('login');
@@ -184,7 +182,7 @@ $route->group('/admin',function($route){
 		}
 	});
 
-
+	/* 给账号操作分一个路径组 规则: /admin/account/ */
 	$route->group('/account',function($route){
 
 		/* 登录账号 */
@@ -243,7 +241,10 @@ $route->group('/admin',function($route){
 		});
 	});
 
-	/* 定义一个公用API接口 */
+	/**
+	 * 定义一个公用API接口
+	 * 这条路由规则将会自动匹配components目录下的Api.php文件
+	 */
 	$route->post('/api/:func',function($func){
 
 		$this->action->on('check:login');

@@ -9,7 +9,7 @@
 			<div class="dashboard">
 				在这里显示站点统计信息
 				
-<button onclick="modal.modalToShow(true)">11</button>
+<button onclick="modal.modalToShow(true)">112222</button>
 			</div>
 		</div>
 		<div class="item-wrap">
@@ -17,7 +17,7 @@
 				<div id="logs" class="width-3-1">
 					<div class="item-box">
 						<header class="item-header">
-							<button type="button" class="ribbon-button fr" data-bind="text:'清理日志'"></button>
+							<button type="button" class="ribbon-button fr" data-bind="text:'清理日志',click:clearLogs"></button>
 							<h3>登录日志<i class="icon icon-angle-down"></i></h3>
 						</header>
 						<div class="item-body" data-bind="foreach:logs">
@@ -43,7 +43,7 @@
 				<div id="operates" class="width-3-1">
 					<div class="item-box">
 						<header class="item-header">
-							<button type="button" class="ribbon-button fr" data-bind="text:'清理日志'"></button>
+							<button type="button" class="ribbon-button fr" data-bind="text:'清理日志',click:clearLogs"></button>
 							<h3>操作日志<i class="icon icon-angle-down"></i></h3>
 						</header>
 						<div class="item-body" data-bind="foreach:operates">
@@ -186,9 +186,11 @@
 	var vm = new viewModel;
 	ko.applyBindings(vm,document.getElementById('plans'));
 
+	// 获取待办事项
 	a.post(path+'admin/api/todolists',{page:1,limit:10},function(res){
-		console.log(res)
-		vm.plans(res.data);
+		if(res.success){
+			vm.plans(res.data);
+		}
 	});
 
 })(new Ajax,_CONFIG_);
@@ -200,12 +202,17 @@
 		this.limit = ko.observable(10);
 		this.page = ko.observable(1);
 		this.logs = ko.observableArray([]);
+
+		this.clearLogs = function(){
+			alert('dd')
+		}
 	}
 	var vm = new viewModel,
 		path = c.path;
 
 	ko.applyBindings(vm,document.getElementById('logs'));
 
+	// 获取登录日志
 	a.post(path+'admin/api/loginlogs'
 		,{
 			page : vm.page()
@@ -226,12 +233,16 @@
 		this.limit = ko.observable(10);
 		this.page = ko.observable(1);
 		this.operates = ko.observableArray([]);
+
+		this.clearLogs = function(){
+			alert('dd')
+		}
 	}
 	var vm = new viewModel,
 		path = c.path;
 
 	ko.applyBindings(vm,document.getElementById('operates'));
-
+	// 获取操作日志
 	a.post(path+'admin/api/operatelogs'
 		,{
 			page : vm.page()
