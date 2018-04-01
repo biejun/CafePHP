@@ -25,9 +25,6 @@ use Coffee\Http\Router;
 
 class App
 {
-	/* 定义系统默认语言 */
-	public $lang = 'zh-CN';
-
 	public $version = '0.0.6/15.06.14';
 
 	public $request = null;
@@ -63,13 +60,15 @@ class App
 
 		$this->view = new View;
 
-		$this->view->lang = $this->lang;
-
 		$this->action = new Action;
 
 		$this->session = new Session;
 
 		$this->cookie = new Cookie;
+
+		$this->response->setCharset(CHARSET);
+
+		$this->response->setViewModel($this->view);
 
 		$this->sendHeaders();
 
@@ -160,7 +159,6 @@ class App
 	/* 匹配应用 */
 	public function matchApp()
 	{
-
 		$paths = $this->request->fetchPath();
 
 		$route = $action = [];
@@ -185,15 +183,6 @@ class App
 	public function load($component)
 	{
 		return Component::instance($component);
-	}
-
-	/* 渲染一个页面 */
-	public function render($tpl,$vars = null,$status = 200)
-	{
-		$this->response->status($status)
-			->header('Content-Type', 'text/html; charset='.CHARSET)
-			->write($this->view->tpl($tpl,$vars))
-			->send();
 	}
 
 	public function checkSystemInstall()

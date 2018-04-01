@@ -10,7 +10,7 @@
     'prefix' => 'coffee_',
     'charset' => 'utf8',
     'collate' => '',
-    'hash' => 'r|(!Pcn%PuQ_l>$w*X:iD~`P&pcWWgR{',
+    'hash' => 'HYdblRz0ZWbWwSNfCwVIJy85^o|Dj~#=',
     'create' => true,
   ),
   'cache' => 

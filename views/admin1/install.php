@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="<?=$this->lang;?>">
 <head>
-	<meta charset="<?=$this->charset;?>"/>
+	<meta charset="utf-8"/>
 	<meta name="robots" content="none" />
-	<!-- HTTP 1.1 -->
 	<meta http-equiv="pragma" content="no-cache">
-	<!-- HTTP 1.0 -->
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="renderer" content="webkit">

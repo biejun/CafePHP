@@ -20,10 +20,7 @@ namespace Coffee\Foundation;
 
 class View
 {
-
-	public $lang = '';
-
-	public $charset = CHARSET;
+	public $lang = 'zh-CN';
 
 	public $path = PATH;
 

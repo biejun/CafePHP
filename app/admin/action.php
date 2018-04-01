@@ -13,15 +13,15 @@ $action->add('route:before',function(){
 
 $action->add('route:failed',function(){
 	/* 发送一个404页 */
-	$this->render('404',null,404);
+	$this->response->status(404)->render('404');
 });
 
 /* 页面公用样式和脚本 */
 $action->add('common:assets',function($files = array(), $suffixVersion = null){
 	$suffixVersion = is_null($suffixVersion) ? null : date('YmdH');
 	$commonFiles = array(
-		'css' => ['normalize.css','grid.css','fonts.css','table.css','checkbox.css','common.css','css/admin.css'],
-		'js' => ['ajax.js','request.js','cookie.js','js/header.js','js/notify.js','js/modal.js'],
+		'css' => ['normalize.css','fonts.css','common.css','css/admin.css'],
+		'js' => ['vendor.js','request.js','js/admin.js'],
 	);
 	if($files){
 		foreach ($files as $type => $value) {

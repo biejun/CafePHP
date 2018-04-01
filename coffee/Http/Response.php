@@ -1,8 +1,5 @@
-<?php
+<?php namespace Coffee\Http;
 
-namespace Coffee\Http;
-
-use Coffee\Foundation\View;
 use Coffee\Http\Request;
 
 class Response{
@@ -84,6 +81,17 @@ class Response{
 		510 => 'Not Extended',
 		511 => 'Network Authentication Required'
 	);
+
+	public function setCharset($charset)
+	{
+		$this->charset = $charset;
+	}
+
+	public function setViewModel($view)
+	{
+		$this->view = $view;
+	}
+
 	public function status($code = null) {
 		if ($code === null) return $this->status;
 		if (array_key_exists($code, self::$codes)) {
@@ -110,13 +118,7 @@ class Response{
 		$this->body .= $str;
 		return $this;
 	}
-	public function clear() {
-		$this->status = 200;
-		$this->headers = array();
-		$this->body = '';
-		return $this;
-	}
-	public function cache($expires) {
+	public function cache($expires = false) {
 		if ($expires === false) {
 			$this->headers['Expires'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
 			$this->headers['Cache-Control'] = array(
@@ -195,47 +197,48 @@ class Response{
 		}
 	}
 
-	public function sendXML($data,$code=200,$charset=CHARSET)
+	public function xmlData($data)
 	{
-		$xml = '<?xml version="1.0" encoding="'.$charset.'"?>';
+		$xml = '<?xml version="1.0" encoding="'.$this->charset.'"?>';
 		$xml .= '<response>';
 		$xml .= $this->parseXml($data);
 		$xml .= '</response>';
-		$this->status($code)
-			->header('Content-Type', 'text/xml; charset='.$charset)
+		$this->header('Content-Type', 'text/xml; charset='.$this->charset)
 			->write($xml)
 			->send();
 	}
 
-	public function sendJSON($data,$success=true,$code=200,$charset=CHARSET)
+	public function jsonData($data,$success=true)
 	{
 		$res = new \StdClass;
 		$res->success = $success;
 		$res->data = $data;
-		$this->status($code)
-			->header('Content-Type', 'application/json; charset='.$charset)
+		$this->header('Content-Type', 'application/json; charset='.$this->charset)
 			->write(json_encode($res))
 			->send();
 	}
 
-	public function sendJSONP($data,$success=true,$code=200,$charset=CHARSET)
+	public function jsonpData($data,$success=true)
 	{
 		$callback = (new Request)->get('callback',uniqid('Callback_'));
-
 		$res = new \StdClass;
 		$res->success = $success;
 		$res->data = $data;
-		$this->status($code)
-			->header('Content-Type', 'application/json; charset='.$charset)
+		$this->header('Content-Type', 'application/json; charset='.$this->charset)
 			->write($callback.'('.json_encode($res).')')
+			->send();
+	}
+
+	public function render($tpl, $vars = null)
+	{
+		$this->header('Content-Type', 'text/html; charset='.$this->charset)
+			->write($this->view->tpl($tpl,$vars))
 			->send();
 	}
 
 	public function redirect($location)
 	{
-		$location = Request::safeUrl($location);
-
-		header('Location: ' . $location, false, 302);
+		header('Location: ' . Request::safeUrl($location) , false, 302);
 		exit;
 	}
 
@@ -249,7 +252,6 @@ class Response{
 	{
 		//获取来源
 		$referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-
 		//判断来源
 		if (!empty($referer)) {
 			if (!empty($suffix)) {
@@ -270,10 +272,8 @@ class Response{
 					$args = array_merge($args, $currentArgs);
 					$parts['query'] = http_build_query($args);
 				}
-
 				$referer = Request::buildUrl($parts);
 			}
-
 			$this->redirect($referer);
 		} else if (!empty($default)) {
 			$this->redirect($default);

@@ -14,13 +14,13 @@ $route->group('/admin',function($route){
 		$this->action->on('check:login');
 		$this->action->on('common:assets');
 
-		$this->render('index');
+		$this->response->render('index');
 	});
 
 	$route->get('/fonts',function(){
 		$this->action->on('check:login');
 		$this->action->on('common:assets');
-		$this->render('fonts');
+		$this->response->render('fonts');
 	});
 
 	/* 路径为 /admin/login */
@@ -28,7 +28,7 @@ $route->group('/admin',function($route){
 		$csrf = strtoupper( md5( uniqid(rand(), true) ) );
 		$this->session->set('login_csrf',$csrf);
 		$this->view->assign('__csrf__',$csrf);
-		$this->render('login');
+		$this->response->render('login');
 	});
 
 	/* 退出登录 */
@@ -46,7 +46,7 @@ $route->group('/admin',function($route){
 			$this->action->on('check:login');
 			$this->action->on('common:assets');
 			$this->view->assign('data',$this->load('admin')->getBackupFiles());
-			$this->render('console-backup');
+			$this->response->render('console-backup');
 		});
 
 		$route->post('/add/todo',function(){
@@ -55,7 +55,7 @@ $route->group('/admin',function($route){
 			$text = filter_var($data['text'],FILTER_UNSAFE_RAW);
 			$level = filter_var($data['level'],FILTER_VALIDATE_INT);
 			$this->load('admin@todolists')->add($uid, $text, $level);
-			$this->response->sendJSON('创建成功！');
+			$this->response->status(200)->jsonData('创建成功！');
 		});
 
 		$route->post('/backup/export',function(){
@@ -104,7 +104,7 @@ $route->group('/admin',function($route){
 		$route->get('/config',function(){
 			$this->action->on('check:login');
 			$this->action->on('common:assets');
-			$this->render('options-config');
+			$this->response->render('options-config');
 		});
 
 		$route->post('/update',function(){
@@ -112,11 +112,11 @@ $route->group('/admin',function($route){
 			try{
 				$this->load('admin@options')->updateAll($data);
 				$this->action->on('admin:notify','success','更新成功！!');
-				$this->response->sendJSON('更新成功！');
+				$this->response->status(200)->jsonData('更新成功！');
 
 			}catch(\Exception $e){
 				$this->action->on('admin:notify','error','更新失败！!');
-				$this->response->sendJSON($e->getMessage(),false);
+				$this->response->status(200)->jsonData($e->getMessage(),false);
 			}
 		});
 	});
@@ -126,7 +126,7 @@ $route->group('/admin',function($route){
 
 		extract($this->request->post());
 
-		if(!isset($step)) $this->response->sendJSON('请求参数错误',false);
+		if(!isset($step)) $this->response->status(200)->jsonData('请求参数错误',false);
 
 		switch ($step) {
 			case '1':
@@ -147,16 +147,16 @@ $route->group('/admin',function($route){
 				$file = "<?php\n return ".var_export($array,true).";";
 				/* 创建系统配置文件 */
 				if(!file_put_contents('config/database.php',$file,LOCK_EX)){
-					$this->response->sendJSON('文件写入失败，请检查config目录属性权限是否为0777可写',false);
+					$this->response->status(200)->jsonData('文件写入失败，请检查config目录属性权限是否为0777可写',false);
 				}
-				$this->response->sendJSON('文件写入成功！');
+				$this->response->status(200)->jsonData('文件写入成功！');
 				break;
 
 			case '2':
 				if(empty($username) || empty($password) || empty($passwordonce))
-					$this->response->sendJSON('请填写用户名和密码！',false);
+					$this->response->status(200)->jsonData('请填写用户名和密码！',false);
 
-				if(!isset($password{5})) $this->response->sendJSON('密码不能少于6位！',false);
+				if(!isset($password{5})) $this->response->status(200)->jsonData('密码不能少于6位！',false);
 
 				if(strcmp($password,$passwordonce) == 0){
 					$user = array();
@@ -171,12 +171,12 @@ $route->group('/admin',function($route){
 						$this->load('admin@install')->import('config/mysql.sql');
 						$this->load('admin@users')->add($user);
 					}catch(Exception $e){
-						$this->response->sendJSON($e->getMessage(),false);
+						$this->response->status(200)->jsonData($e->getMessage(),false);
 					}
 					$this->load('admin@install')->lock();
-					$this->response->sendJSON('创建成功！');
+					$this->response->status(200)->jsonData('创建成功！');
 				}else{
-					$this->response->sendJSON('两次输入的密码不一致！',false);
+					$this->response->status(200)->jsonData('两次输入的密码不一致！',false);
 				}
 				break;
 		}
@@ -197,13 +197,13 @@ $route->group('/admin',function($route){
 			$csrf = filter_var($data['__csrf__'],FILTER_UNSAFE_RAW);
 
 			if(is_null($this->session->get('login_csrf')) || $csrf != $this->session->get('login_csrf')){
-				$this->response->sendJSON('请求参数错误!',false);
+				$this->response->status(200)->jsonData('请求参数错误!',false);
 			}
 			if(empty($username)||!$this->load('admin@users')->checkUsername($username)){
-				$this->response->sendJSON('用户不存在!',false);
+				$this->response->status(200)->jsonData('用户不存在!',false);
 			}
 			if(empty($password)||!isset($password{5})){
-				$this->response->sendJSON('密码不能少于六位!',false);
+				$this->response->status(200)->jsonData('密码不能少于六位!',false);
 			}
 			if($this->load('admin@users')->checkPassword($username, $password)){
 				$tokens = $this->load('admin@users')->updateToken($username);
@@ -212,9 +212,9 @@ $route->group('/admin',function($route){
 				$this->session->delete('login_csrf');
 				// 登录日志
 				$this->load('admin@logs')->addLoginLog($username);
-				$this->response->sendJSON('登录成功!');
+				$this->response->status(200)->jsonData('登录成功!');
 			}else{
-				$this->response->sendJSON('用户名与密码不匹配！', false);
+				$this->response->status(200)->jsonData('用户名与密码不匹配！', false);
 			}
 		});
 
@@ -231,13 +231,13 @@ $route->group('/admin',function($route){
 		$route->get('/operate',function(){
 			$this->action->on('check:login');
 			$this->action->on('common:assets');
-			$this->render('account-operate');
+			$this->response->render('account-operate');
 		});
 
 		$route->get('/profile',function(){
 			$this->action->on('check:login');
 			$this->action->on('common:assets');
-			$this->render('account-profile');
+			$this->response->render('account-profile');
 		});
 	});
 
@@ -254,9 +254,9 @@ $route->group('/admin',function($route){
 		if(!empty($func)){
 			$data = $this->load('admin@api')->run($func,$args);
 			if($data){
-				$this->response->sendJSON($data);
+				$this->response->status(200)->jsonData($data);
 			}else{
-				$this->response->sendJSON('参数错误',false);
+				$this->response->status(200)->jsonData('参数错误',false);
 			}
 		}
 	});

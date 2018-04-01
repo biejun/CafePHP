@@ -1,4 +1,150 @@
-(function(global){
+/**
+ * 封装一个原生的ajax请求类
+ */
+;(function(global){
+
+	function parseData(data){
+		var rvalidchars = /^[\],:{}\s]*$/,
+			rvalidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,
+			rvalidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
+			rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g;
+
+		if(typeof data!== "string" || !data) return null;
+
+		data = data.trim();
+
+		if(global.JSON && global.JSON.parse){
+			return global.JSON.parse( data );
+		}
+		if(rvalidchars.test(data.replace(rvalidescape,"@").replace(rvalidtokens,"]").replace(rvalidbraces,""))){
+			return (new Function("return " + data))();
+		}
+	}
+
+	global.Ajax = function(){
+		var xhr;
+		if( typeof XMLHttpRequest !== 'undefined'){
+			xhr = new XMLHttpRequest();
+		}else{
+			var versions = [
+				"MSXML2.XmlHttp.6.0",
+				"MSXML2.XmlHttp.5.0",
+				"MSXML2.XmlHttp.4.0",
+				"MSXML2.XmlHttp.3.0",
+				"MSXML2.XmlHttp.2.0",
+				"Microsoft.XmlHttp"
+			];
+			for (var i = 0; i < versions.length; i++) {
+				try {
+					xhr = new ActiveXObject(versions[i]);
+					break;
+				} catch (e) {
+				}
+			}
+		}
+		this.xhr = xhr;
+		this.async = true;
+	}
+
+	Ajax.prototype.url = function(url) {
+		this.url = url;
+		return this;
+	}
+
+	Ajax.prototype.async = function(async) {
+		this.async = async;
+		return this;
+	}
+
+	Ajax.prototype.data = function(data) {
+		var query = [];
+		for (var key in data) {
+			query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+		}
+		this.query = query;
+		return this;
+	}
+
+	Ajax.prototype.get = function(success, fail){
+		var url = this.url, query = this.query,
+			xhr = this.xhr , async = this.async;
+		url = url + (query.length ? '?' + query.join('&') : '');
+		xhr.open('GET', url, async);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4) {
+				var status = xhr.status;
+				if (status >= 200 && status < 300) {
+					success && success(parseData(xhr.responseText),xhr.responseXML,xhr);
+				} else {
+					fail && fail(status);
+				}
+			}
+		}
+		xhr.send(null);
+	}
+
+	Ajax.prototype.post = function(success, fail){
+		var url = this.url, query = this.query,
+			xhr = this.xhr , async = this.async;
+		xhr.open('POST', url, async);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4) {
+				var status = xhr.status;
+				if (status >= 200 && status < 300) {
+					success && success(parseData(xhr.responseText),xhr.responseXML,xhr);
+				} else {
+					fail && fail(status);
+				}
+			}
+		}
+		xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		xhr.send(query.join('&'));
+	}
+})(this)
+/**
+ * 封装Cookie操作
+ */
+;(function(root){
+	root.cookie = function(name, value, options) {
+		if (typeof value != 'undefined') {
+			options = options || {};
+			if (value === null) {
+				value = '';
+				options.expires = -1;
+			}
+			var expires = '';
+			if (options.expires && (typeof options.expires == 'number' || options.expires.toUTCString)) {
+				var date;
+				if (typeof options.expires == 'number') {
+					date = new Date();
+					date.setTime(date.getTime() + (options.expires * 24 * 60 * 60 * 1000));
+				} else {
+					date = options.expires;
+				}
+				expires = '; expires=' + date.toUTCString(); // use expires attribute, max-age is not supported by IE
+			}
+			var path = options.path ? '; path=' + (options.path) : '';
+			var domain = options.domain ? '; domain=' + (options.domain) : '';
+			var secure = options.secure ? '; secure' : '';
+			document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('');
+		} else {
+			var cookieValue = null;
+			if (document.cookie && document.cookie != '') {
+				var cookies = document.cookie.split(';');
+				for (var i = 0; i < cookies.length; i++) {
+					var cookie = cookies[i].trim();
+					if (cookie.substring(0, name.length + 1) == (name + '=')) {
+						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+						break;
+					}
+				}
+			}
+			return cookieValue;
+		}
+	}
+})(this)
+/* MD5 加密 */
+;(function(global){
 
 	function safeAdd(x, y) {
 		var lsw = (x & 0xFFFF) + (y & 0xFFFF)
