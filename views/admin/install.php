@@ -14,7 +14,7 @@
 
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="<?=$this->path;?>assets/css/common.css" />
-	<link rel="stylesheet" type="text/css" href="<?=$this->currentViewPath;?>css/install.css?v=<?=$suffixVersion?>" />
+	<link rel="stylesheet" type="text/css" href="<?=$this->currentViewPath;?>/css/install.css?v=<?=$suffixVersion?>" />
 	<link rel="icon" href="<?=$this->path;?>favicon.ico" type="image/x-icon"/>
 </head>
 <body>
@@ -74,6 +74,6 @@
 	<script type="text/javascript" src="<?=$this->path;?>assets/js/ajax.js"></script>
 	<script type="text/javascript" src="<?=$this->path;?>assets/js/cookie.js"></script>
 	<script type="text/javascript" src="<?=$this->path;?>assets/js/request.js"></script>
-	<script type="text/javascript" src="<?=$this->currentViewPath;?>js/install.js?v=<?=$suffixVersion?>"></script>
+	<script type="text/javascript" src="<?=$this->currentViewPath;?>/js/install.js?v=<?=$suffixVersion?>"></script>
 </body>
 </html>

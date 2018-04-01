@@ -12,7 +12,7 @@ $route->group('/admin',function($route){
 
 	$route->get('/index',function(){
 		$this->action->on('check:login');
-		$this->action->on('common:assets',array('css'=>'css/ttt'));
+		$this->action->on('common:assets');
 
 		$this->render('index');
 	});

@@ -17,40 +17,31 @@ $action->add('route:failed',function(){
 });
 
 /* 页面公用样式和脚本 */
-$action->add('common:assets',function(){
-	$args = func_get_args();
-	$files = array(
+$action->add('common:assets',function($files = array(), $suffixVersion = null){
+	$suffixVersion = is_null($suffixVersion) ? null : date('YmdH');
+	$commonFiles = array(
 		'css' => ['normalize.css','grid.css','fonts.css','table.css','checkbox.css','common.css','css/admin.css'],
 		'js' => ['ajax.js','request.js','cookie.js','js/header.js','js/notify.js','js/modal.js'],
 	);
-	if($args){
-		$arg_1 = array_shift($args);
-		if(is_array($arg_1)){
-			foreach ($arg_1 as $type => $value) {
-				if(is_array($value)){
-					array_merge($files[$type],$arg_1);
-				}else{
-					array_push($files[$type],$arg_1);
-				}
+	if($files){
+		foreach ($files as $type => $value) {
+			if( is_array($value) ) {
+				$commonFiles[$type] = array_merge($commonFiles[$type],$value);
+			} else {
+				array_push($commonFiles[$type],$value);
 			}
 		}
-		$arg_2 = array_shift($args);
-		$suffixVersion = ($arg_2) ? date('YmdH') : null;
 	}
 	$view = $this->view;
-	foreach ($files as $type => $file) {
+	foreach ($commonFiles as $type => $file) {
 		foreach ($file as $key => $value) {
-			print_r($value);
-			echo $value;
-			// if(strpos($value, '/') !== false){
-			// 	$view->assets[$type][] = $view->fileJoinVersion($view->viewPathJoin($value), $suffixVersion);
-			// }else{
-			// 	$view->assets[$type][] = $view->fileJoinVersion($view->pathJoin('assets', $type, $value), $suffixVersion);
-			// }
+			if(strpos($value, '/') !== false){
+				$view->assets[$type][] = $view->fileJoinVersion($view->viewPathJoin($value), $suffixVersion);
+			}else{
+				$view->assets[$type][] = $view->fileJoinVersion($view->pathJoin('assets', $type, $value), $suffixVersion);
+			}
 		}
 	}
-	// $this->view->addCSS(['grid.css','fonts.css','table.css','checkbox.css','css/admin.css'],date('His'));
-	// $this->view->addJS(['ajax.js','request.js','cookie.js','js/header.js','js/notify.js','js/modal.js'],date('His'));
 });
 
 // 定义一个消息提醒的动作
