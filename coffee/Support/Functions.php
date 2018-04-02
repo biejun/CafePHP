@@ -10,48 +10,6 @@
  * @license This content is released under the MIT License.
  */
 
-/**
- * 获取任何全局配置部分或单个配置的值
- *
- * @param $section string 全局配置分组名
- * @param $value string 分组类的某个变量
- * @param $update string 更新某个值 例如：修改数据库缓存路径 G('cache', 'location', 'cache/db');
- */
-function G ($section = false, $value = false, $update = null) {
-
-	static $_G;
-
-    if($_G === null ){
-
-        $files = ['database.php']; // 这里可读取多个配置文件
-
-        foreach ($files as $file)
-        {
-            if(file_exists(CONFIG . $file)){
-                $_G = array_replace_recursive( (array) $_G
-                    , include (CONFIG . $file) );
-            }else{
-                throw new \Exception("没有找到".$file."配置文件");
-            }
-        }
-    }
-
-	// 读取或配置
-	if ( $section && $value ) {
-
-		if ($update !== null) {
-			$_G[$section][$value] = $update;
-		}
-		return isset($_G[$section][$value]) ? $_G[$section][$value] : false;
-	}
-
-    if ($section) {
-		return isset($_G[$section]) ? $_G[$section] : false;
-	}
-
-	return $_G;
-}
-
 /* password_hash() PolyFill 兼容PHP 5.0 以下版本 */
 
 if (!defined('PASSWORD_BCRYPT')) {

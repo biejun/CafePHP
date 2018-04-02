@@ -5,7 +5,7 @@
 $action->add('route:init',function(){
 
     /* 检查系统初始化安装配置 */
-    if($this->checkSystemInstall())
+    if($this->existLock())
     {
         /* 读取站点配置 */
         $options = $this->load('admin@options')->get();
@@ -14,7 +14,7 @@ $action->add('route:init',function(){
             $this->view->options->{$value['name']} = $value['value'];
         }
         /* 设置默认主题 */
-        $this->view->setView('pc');
+        $this->view->setView('admin');
     }
     else
     {
@@ -96,7 +96,7 @@ $action->add('check:login',function($redirect = null){
     if(!$allowAccess){
         if(is_null($redirect)){
             if($this->request->isAjax()){
-                $this->response->status(200)->jsonData('登录超时!',false);
+                $this->response->jsonData('登录超时!',false);
             }else{
                 $this->response->status(403)->render('403');
             }

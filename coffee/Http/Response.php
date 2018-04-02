@@ -87,7 +87,7 @@ class Response{
 		$this->charset = $charset;
 	}
 
-	public function setViewModel($view)
+	public function setViewRender($view)
 	{
 		$this->view = $view;
 	}
@@ -120,7 +120,7 @@ class Response{
 	}
 	public function cache($expires = false) {
 		if ($expires === false) {
-			$this->headers['Expires'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
+			$this->headers['Expires'] = gmdate('D, d M Y H:i:s', strtotime("-7 day")) . ' GMT';
 			$this->headers['Cache-Control'] = array(
 				'no-store, no-cache, must-revalidate',
 				'post-check=0, pre-check=0',
@@ -231,7 +231,7 @@ class Response{
 
 	public function render($tpl, $vars = null)
 	{
-		$this->header('Content-Type', 'text/html; charset='.$this->charset)
+		$this->cache()->header('Content-Type', 'text/html; charset='.$this->charset)
 			->write($this->view->tpl($tpl,$vars))
 			->send();
 	}

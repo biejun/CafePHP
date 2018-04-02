@@ -39,7 +39,7 @@ class View
 		if(!is_null($path)) $this->path = $path;
 
 		$this->currentView = is_null($view) ? '': $view;
-		$this->currentViewPath = $this->pathJoin('views', $this->currentView);
+		$this->currentViewPath = $this->pathJoin('view', $this->currentView);
 		return $this;
 	}
 
@@ -110,9 +110,9 @@ class View
 	private function getViewFilePath($page)
 	{
 		if(!$this->currentView){
-			$view = VIEWS . "/{$this->setView()->currentView}/{$page}";
+			$view = VIEW . "/{$this->setView()->currentView}/{$page}";
 		}else{
-			$view = VIEWS . "/{$this->currentView}/{$page}";
+			$view = VIEW . "/{$this->currentView}/{$page}";
 		}
 		return $view.$this->ext;
 	}

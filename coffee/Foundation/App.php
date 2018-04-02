@@ -10,36 +10,12 @@
  * @license This content is released under the MIT License.
  */
 
-/**
- * 系统应用层核心代码
- *
- * @package Coffee\Foundation\App
- * @since 0.0.5 包含应用初始化，定义了全局变量$route和$action
- */
-
 namespace Coffee\Foundation;
-
-use Coffee\Http\Request;
-use Coffee\Http\Response;
-use Coffee\Http\Router;
 
 class App
 {
 	public $version = '0.0.6/15.06.14';
 
-	public $request = null;
-
-	public $response = null;
-
-	public $view = null;
-
-	public $action = null;
-
-	public $session = null;
-
-	public $cookie = null;
-
-	/* 初始化设置 */
 	public function __construct()
 	{
 		$this->setCharset();
@@ -49,37 +25,22 @@ class App
 		$this->setEnvironment();
 
 		$this->exceptionAndErrorHandler();
-	}
-
-	/* 运行应用 */
-	public function run()
-	{
-		$this->request = new Request;
-
-		$this->response = new Response;
-
-		$this->view = new View;
-
-		$this->action = new Action;
-
-		$this->session = new Session;
-
-		$this->cookie = new Cookie;
-
-		$this->response->setCharset(CHARSET);
-
-		$this->response->setViewModel($this->view);
 
 		$this->sendHeaders();
-
-		$this->process();
 	}
+
 	/* 设置系统字符编码集 */
 	private function setCharset()
 	{
 		mb_internal_encoding(CHARSET);
 
 		header("Content-type: text/plain; charset=" . CHARSET);
+	}
+
+	/* 设置时区 */
+	private function setTimezone()
+	{
+		date_default_timezone_set(TIMEZONE);
 	}
 
 	/* 设置系统环境变量 */
@@ -116,82 +77,14 @@ class App
 		}
 	}
 
-	/* 设置时区 */
-	private function setTimezone()
-	{
-		date_default_timezone_set(TIMEZONE);
-	}
-
 	/* 向浏览器发送头部信息 */
 	private function sendHeaders()
 	{
 		header("X-Powered-By: Coffee/{$this->version}");
 	}
 
-	/* 处理一个请求 */
-	public function process()
-	{
-		$appFiles = $this->matchApp();
-
-		$route = new Router($this->request,$this->response);
-
-		// 加载路由
-		array_walk($appFiles['route'], function($file,$deep,$route)
-		{
-			if(file_exists($file))
-			{
-				include $file;
-			}
-		},$route);
-
-		// 加载动作
-		array_walk($appFiles['action'], function($file,$deep,$action)
-		{
-			if(file_exists($file))
-			{
-				include $file;
-			}
-		},$this->action);
-
-		$route->dispatch();
-	}
-
-	/* 匹配应用 */
-	public function matchApp()
-	{
-		$paths = $this->request->fetchPath();
-
-		$route = $action = [];
-
-		$route[] = APP . '/route.php';
-
-		$action[] = APP. '/action.php';
-
-		$app = array_shift($paths);
-
-		if(!empty($app))
-		{
-			$route[] = APP . '/' . strtolower($app) . '/route.php';
-
-			$action[] = APP . '/' . strtolower($app) . '/action.php';
-		}
-
-		return ['route' => $route, 'action' => $action];
-	}
-
-	/* 载入应用组件 */
-	public function load($component)
-	{
-		return Component::instance($component);
-	}
-
-	public function checkSystemInstall()
-	{
-		return file_exists(CONFIG . '/install.lock');
-	}
-
 	/* 系统异常和错误处理 */
-	public function exceptionAndErrorHandler()
+	private function exceptionAndErrorHandler()
 	{
 		set_error_handler(function($errNo, $errStr, $errFile, $errLine){
 			$error = [];
@@ -209,5 +102,19 @@ class App
 			$exception['trace'] = $e->getTraceAsString();
 			print_r($exception);
 		});
+	}
+
+	/* 匹配应用 */
+	public function matchApp($paths = [])
+	{
+		$routes = $actions = [];
+		$routes[] = APP . '/route.php';
+		$actions[] = APP. '/action.php';
+		$app = array_shift($paths);
+		if(!empty($app)) {
+			$routes[] = APP . '/' . strtolower($app) . '/route.php';
+			$actions[] = APP . '/' . strtolower($app) . '/action.php';
+		}
+		return ['routes' => $routes, 'actions' => $actions];
 	}
 }
