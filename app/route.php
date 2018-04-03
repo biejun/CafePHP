@@ -1,6 +1,6 @@
 <?php
 
 $route->get('/',function(){
-
-    $this->view($this->existLock()?'index':'install');
+    $this->action->on('check:install');
+    $this->view('index');
 });

@@ -44,10 +44,16 @@
         }
         this.xhr = xhr;
         this.async = true;
+        this.headers = {};
     }
 
     Ajax.prototype.http = function(url) {
         this.url = url;
+        return this;
+    }
+
+    Ajax.prototype.header = function(name, value) {
+        this.headers[name] = value;
         return this;
     }
 
@@ -98,6 +104,9 @@
             }
         }
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        for(var i in this.headers) {
+            xhr.setRequestHeader(i, this.headers[i]);
+        }
         xhr.send(query.join('&'));
     }
 })(this)

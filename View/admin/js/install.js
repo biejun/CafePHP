@@ -1,5 +1,7 @@
 var req = new Request,
-    ajax = new Ajax;
+    ajax = new Ajax,
+    app = document.getElementById('app'),
+    hash = app.getAttribute('data-hash');
 
 var randomHash = function(len){
     len = len || 32;
@@ -60,18 +62,19 @@ var viewModel = function () {
                 create:this.dbcreate()
             };
 
-            if(data.dbname === ''){
+            if(data.name === ''){
                 this.errors.push('数据库名称不能为空！');
             }
-            if(data.dbuser === ''){
+            if(data.user === ''){
                 this.errors.push('数据库用户名不能为空！');
             }
-            if(data.dbpassword === ''){
+            if(data.password === ''){
                 this.errors.push('数据库密码不能为空！');
             }
 
             if(this.errors().length === 0){
-                ajax.http(req.path+'admin/install-setup-one')
+                ajax.http(req.path+'admin/setup-one-'+hash)
+                    .header('Token',hash)
                     .data(data)
                     .post(function(res){
                         if(res.success){
@@ -99,7 +102,7 @@ var viewModel = function () {
             }
 
             if(this.errors().length === 0){
-                ajax.http(req.path+'admin/install-setup-two')
+                ajax.http(req.path+'admin/setup-two-'+hash)
                     .data(data)
                     .post(function(res){
                         if(res.success){
@@ -114,4 +117,4 @@ var viewModel = function () {
     };
 }
 
-ko.applyBindings(new viewModel(),document.getElementById('app'));
+ko.applyBindings(new viewModel(),app);

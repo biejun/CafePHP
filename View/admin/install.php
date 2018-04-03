@@ -16,7 +16,7 @@
     <![endif]-->
 </head>
 <body>
-    <div id="app">
+    <div id="app" data-hash="<?=$hash;?>">
         <div data-bind="text:title[step()-1]" class="post-header"></div>
         <div class="post-body">
             <div data-bind="visible:step()==1" class="post-form">

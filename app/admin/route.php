@@ -161,7 +161,7 @@ $route->group('/admin',function($route){
     });
 
     /* 程序安装 */
-    $route->post('/install-setup-one',function(){
+    $route->post('/step-one-'.HASH,function(){
 
         $data = $this->request->post();
 
@@ -174,8 +174,8 @@ $route->group('/admin',function($route){
         }
     });
 
-    $route->post('/install-setup-two',function(){
-        die('1212')
+    $route->post('/setup-two-'.HASH,function(){
+        die('1212');
         // extract($this->request->post());
 
         // if(empty($username) || empty($password) || empty($passwordonce))

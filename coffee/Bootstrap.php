@@ -42,6 +42,9 @@ define( 'CHARSET', 'UTF-8' );
 /* 定义系统请求响应缓存时间 */
 define( 'EXPIRES', 0 );
 
+/* 定义一个随机HASH码 */
+define( 'HASH', md5( uniqid(rand(), true) ));
+
 if(!defined('PATH')) {
 
     /* 伪静态配置 */
@@ -65,7 +68,7 @@ if(!defined('PATH')) {
     {
         $path = str_replace('index.php','',
             rtrim('/'.ltrim($_SERVER['SCRIPT_NAME'], '/'), '/'));
-        
+
         if(!file_exists('nginx.config')){
             $file = fopen('nginx.config', 'wb');
             fwrite($file, "location {$path} {\n".

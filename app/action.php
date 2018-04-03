@@ -12,11 +12,9 @@ $action->add('route:init',function(){
         while (list($key, $value) = each($options)) {
             $this->view->options->{$value['name']} = $value['value'];
         }
-        /* 设置视图读取文件夹 */
-        $this->view->folder('default');
-    }else{
-        $this->view->folder('admin');
     }
+    /* 设置视图读取文件夹 */
+    $this->view->folder('default');
 });
 
 /* 路由请求响应前挂载的动作 */
@@ -73,5 +71,13 @@ $action->add('check:login',function($redirect = null){
         }else{
             $this->response->redirect($redirect);
         }
+    }
+});
+/* 检查安装 */
+$action->add('check:install',function(){
+    if(!$this->existLock())
+    {
+        $this->view->folder('admin')->assign('hash',HASH);
+        $this->view('install');
     }
 });
