@@ -1,30 +1,32 @@
-<?php
+<?php namespace Coffee\Foundation;
 /**
  * AnyPHP Coffee
  *
  * An agile development core based on PHP.
  *
- * @version  0.0.6
+ * @version  0.1.0
  * @link 	 https://github.com/biejun/anyphp
  * @copyright Copyright (c) 2017-2018 Jun Bie
  * @license This content is released under the MIT License.
  */
 
-namespace Coffee\Foundation;
-
 class App
 {
-	public $version = '0.0.6/15.06.14';
+	public $version = 'cafe/1.0.0';
 
-	public function __construct()
+	public $routes = [];
+
+	public $actions = [];
+
+	public function __construct($response)
 	{
 		$this->setCharset();
 
 		$this->setTimezone();
 
-		$this->setEnvironment();
+		$this->exceptionAndErrorHandler($response);
 
-		$this->exceptionAndErrorHandler();
+		$this->setEnvironment();
 
 		$this->sendHeaders();
 	}
@@ -33,8 +35,6 @@ class App
 	private function setCharset()
 	{
 		mb_internal_encoding(CHARSET);
-
-		header("Content-type: text/plain; charset=" . CHARSET);
 	}
 
 	/* 设置时区 */
@@ -72,7 +72,7 @@ class App
 			break;
 			default:
 				header('HTTP/1.1 503 Service Unavailable.', true, 503);
-				echo('应用环境没有设置正确。');
+				throw new \Exception("应用环境没有设置正确", 1);
 				exit(1);
 		}
 	}
@@ -80,41 +80,50 @@ class App
 	/* 向浏览器发送头部信息 */
 	private function sendHeaders()
 	{
-		header("X-Powered-By: Coffee/{$this->version}");
+		header("X-Powered-By: {$this->version}");
 	}
 
 	/* 系统异常和错误处理 */
-	private function exceptionAndErrorHandler()
+	public function exceptionAndErrorHandler($response)
 	{
-		set_error_handler(function($errNo, $errStr, $errFile, $errLine){
+		set_error_handler(function($errNo, $errStr, $errFile, $errLine) use ($response) {
 			$error = [];
-			$error['message'] = $errStr;
-			$error['file'] = $errFile;
-			$error['line'] = $errLine;
-			print_r($error);
+			$error[] = 'Message '.$errStr;
+			$error[] = 'File '.$errFile;
+			$error[] = 'Line '.$errLine;
+			$response->text(implode("\n",$error));
 		});
 
-		set_exception_handler(function($e){
+		set_exception_handler(function($e)  use ($response) {
 			$exception = [];
-			$exception['message'] = $e->getMessage();
-			$exception['file'] = $e->getFile();
-			$exception['line'] = $e->getLine();
-			$exception['trace'] = $e->getTraceAsString();
-			print_r($exception);
+			$exception[] = 'Service exception.';
+			$exception[] = 'Message '.$e->getMessage();
+			$exception[] = 'File '.$e->getFile();
+			$exception[] = 'Line '.$e->getLine();
+			$exception[] = 'Trace at '.$e->getTraceAsString();
+			$response->text(implode("\n",$exception));
 		});
 	}
 
 	/* 匹配应用 */
-	public function matchApp($paths = [])
+	public function matchApp($request)
 	{
-		$routes = $actions = [];
-		$routes[] = APP . '/route.php';
-		$actions[] = APP. '/action.php';
+		$this->routes[] = APP . '/route.php';
+		$this->actions[] = APP . '/action.php';
+
+		$paths = $request->fetchPath();
 		$app = array_shift($paths);
+
 		if(!empty($app)) {
-			$routes[] = APP . '/' . strtolower($app) . '/route.php';
-			$actions[] = APP . '/' . strtolower($app) . '/action.php';
+			$this->routes[] = APP . '/' .strtolower($app). '/route.php';
+			$this->actions[] = APP . '/' .strtolower($app).'/action.php';
 		}
-		return ['routes' => $routes, 'actions' => $actions];
+
+		return $app;
+	}
+
+	public function appFiles()
+	{
+		return ['routes' => $this->routes , 'actions' => $this->actions];
 	}
 }

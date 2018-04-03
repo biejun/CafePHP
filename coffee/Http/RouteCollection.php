@@ -41,7 +41,7 @@ class RouteCollection implements Countable
         $this->allRoutes[$method.$uri] = $route;
     }
 
-    public function matchs($request,$response)
+    public function matchs($request, $response)
     {
 
         $route = $this->matchAgainstRoutes($this->get($request->getMethod()), $request);

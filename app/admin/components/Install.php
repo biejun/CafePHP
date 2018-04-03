@@ -5,18 +5,20 @@ use Coffee\Foundation\Component;
 class Install extends Component
 {
 
-	public function import($sqlFile)
+	public function import()
 	{
-		$sql = file_get_contents($sqlFile);
-		if(empty($sql)) throw new \Exception("{$sqlFile}文件中没有找到可执行的SQL语句", 1);
-		$sql = str_replace('$prefix$',$this->db->prefix, $sql);
-		$sql = str_replace('$charset$',$this->db->charset, $sql);
-		$sql = str_replace('$collate$',$this->db->collate, $sql);
-		foreach (explode(';', $sql) as $query) {
-			$query = trim($query);
-			if ($query) {
-				$this->db->query($query);
+		$file = 'Config/default_install.sql';
+		if(file_exists($file)){
+			$sql = file_get_contents($file);
+			if(empty($sql)) throw new \Exception("{$file}文件中没有找到可执行的SQL语句");
+			foreach (explode(';', $sql) as $query) {
+				$query = trim($query);
+				if ($query) {
+					$this->db->query($query);
+				}
 			}
+		}else{
+			throw new \Exception("没有找到文件{$file}");
 		}
 	}
 

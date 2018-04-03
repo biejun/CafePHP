@@ -11,6 +11,10 @@ class Response{
 	# 响应内容
 	protected $body;
 
+	public $appPath = '';
+
+	private $charset = CHARSET;
+
 	public static $codes = array(
 		100 => 'Continue',
 		101 => 'Switching Protocols',
@@ -82,16 +86,6 @@ class Response{
 		511 => 'Network Authentication Required'
 	);
 
-	public function setCharset($charset)
-	{
-		$this->charset = $charset;
-	}
-
-	public function setViewRender($view)
-	{
-		$this->view = $view;
-	}
-
 	public function status($code = null) {
 		if ($code === null) return $this->status;
 		if (array_key_exists($code, self::$codes)) {
@@ -118,26 +112,19 @@ class Response{
 		$this->body .= $str;
 		return $this;
 	}
-	public function cache($expires = false) {
-		if ($expires === false) {
-			$this->headers['Expires'] = gmdate('D, d M Y H:i:s', strtotime("-7 day")) . ' GMT';
-			$this->headers['Cache-Control'] = array(
-				'no-store, no-cache, must-revalidate',
-				'post-check=0, pre-check=0',
-				'max-age=0'
-			);
-			$this->headers['Pragma'] = 'no-cache';
-		}else {
+	public function sendHeaders() {
+		$expires = EXPIRES;
+		if ($expires) {
 			$expires = is_int($expires) ? $expires : strtotime($expires);
 			$this->headers['Expires'] = gmdate('D, d M Y H:i:s', $expires) . ' GMT';
 			$this->headers['Cache-Control'] = 'max-age='.($expires - time());
 			if (isset($this->headers['Pragma']) && $this->headers['Pragma'] == 'no-cache'){
 				unset($this->headers['Pragma']);
 			}
+		}else {
+			$this->headers['Expires'] = 'Thu, 29 Oct 1992 08:30:00 GMT';
+			$this->headers['Pragma'] = 'no-cache';
 		}
-		return $this;
-	}
-	public function sendHeaders() {
 		// Send status code header
 		if (strpos(php_sapi_name(), 'cgi') !== false) {
 			header(
@@ -197,7 +184,7 @@ class Response{
 		}
 	}
 
-	public function xmlData($data)
+	public function xml($data)
 	{
 		$xml = '<?xml version="1.0" encoding="'.$this->charset.'"?>';
 		$xml .= '<response>';
@@ -208,7 +195,7 @@ class Response{
 			->send();
 	}
 
-	public function jsonData($data,$success=true)
+	public function json($data,$success=true)
 	{
 		$res = new \StdClass;
 		$res->success = $success;
@@ -218,7 +205,7 @@ class Response{
 			->send();
 	}
 
-	public function jsonpData($data,$success=true)
+	public function jsonp($data,$success=true)
 	{
 		$callback = (new Request)->get('callback',uniqid('Callback_'));
 		$res = new \StdClass;
@@ -229,16 +216,29 @@ class Response{
 			->send();
 	}
 
-	public function render($tpl, $vars = null)
+	public function html($html)
 	{
-		$this->cache()->header('Content-Type', 'text/html; charset='.$this->charset)
-			->write($this->view->tpl($tpl,$vars))
+		$this->header('Content-Type', 'text/html; charset='.$this->charset)
+			->write($html)
+			->send();
+	}
+
+	public function text($text)
+	{
+		$this->header('Content-Type', 'text/plain; charset='.$this->charset)
+			->write($text)
 			->send();
 	}
 
 	public function redirect($location)
 	{
-		header('Location: ' . Request::safeUrl($location) , false, 302);
+		header('Location: '.Request::safeUrl($location) , false, 302);
+		exit;
+	}
+
+	public function location($location)
+	{
+		header('Location: '.$this->appPath.$location , false, 302);
 		exit;
 	}
 

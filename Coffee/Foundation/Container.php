@@ -17,6 +17,12 @@ use Coffee\Http\Router;
 
 class Container
 {
+    /* 当前匹配的应用 */
+    public $app = '';
+
+    /* 当前匹配应用的路径 */
+    public $path = '';
+
     public function __construct()
     {
         $this->request = new Request;
@@ -32,20 +38,22 @@ class Container
         $this->cookie = new Cookie;
     }
 
-    public function init()
+    private function appFiles()
     {
-        $app = new App;
+        $app = new App($this->response);
 
-        $this->response->setCharset(CHARSET);
+        $this->app = $app->matchApp($this->request);
 
-        $this->response->setViewRender($this->view);
+        $this->path = PATH . (empty($this->app)?'':$this->app . '/');
 
-        return $app->matchApp($this->request->fetchPath());
+        $this->response->appPath = $this->path;
+
+        return $app->appFiles();
     }
 
     public function existLock()
     {
-        return file_exists( CONFIG . '/install.lock' );
+        return file_exists(CONFIG.'/install.lock');
     }
 
     /* 载入应用组件 */
@@ -54,11 +62,17 @@ class Container
         return Component::instance($component);
     }
 
+    public function view($template, $vars = null)
+    {
+        $this->response->html( $this->view->tpl($template, $vars) );
+    }
+
+    /* 运行应用 */
     public function run()
     {
-        $appFiles = $this->init();
+        $appFiles = $this->appFiles();
 
-        $route = new Router($this->request,$this->response);
+        $route = new Router;
 
         // 加载路由
         array_walk($appFiles['routes'], function($file,$deep,$route)
@@ -78,6 +92,6 @@ class Container
             }
         },$this->action);
 
-        $route->dispatch();
+        $route->dispatch($this->request, $this->response);
     }
 }

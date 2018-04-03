@@ -8,7 +8,7 @@ class Admin extends Component
 	public function is($uid)
 	{
 		return (bool) $this->db->from('usermeta')->select('value')
-				->where('`key`=%s and `uid`=%d','is_admin', $uid)
+				->where('`key`=%s adn `uid`=%d','is_admin', $uid)
 				->one();
 	}
 

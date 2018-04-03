@@ -39,9 +39,50 @@ define( 'TIMEZONE', 'PRC' );
 /* 定义系统默认字符编码集 */
 define( 'CHARSET', 'UTF-8' );
 
-/* 定义站点根目录 */
-define( 'PATH' , str_replace('index.php','',$_SERVER['SCRIPT_NAME']) );
+/* 定义系统请求响应缓存时间 */
+define( 'EXPIRES', 0 );
 
+if(!defined('PATH')) {
+
+    /* 伪静态配置 */
+    if(PHP_SAPI === 'apache2handler')
+    {
+        $path = str_replace('index.php','',$_SERVER['SCRIPT_NAME']);
+        if(!file_exists('.htaccess')){
+            $file = fopen('.htaccess', 'wb');
+            fwrite($file, "<IfModule mod_rewrite.c>\n".
+                "  Options +FollowSymlinks\n".
+                "  RewriteEngine On\n".
+                "  RewriteBase {$path}\n".
+                "  RewriteCond %{REQUEST_FILENAME} !-d\n".
+                "  RewriteCond %{REQUEST_FILENAME} !-f\n".
+                "  RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]\n".
+                "</IfModule>");
+            fclose($file);
+        }
+    }
+    else if(PHP_SAPI === 'fpm-fcgi' || PHP_SAPI === 'cgi-fcgi')
+    {
+        $path = str_replace('index.php','',
+            rtrim('/'.ltrim($_SERVER['SCRIPT_NAME'], '/'), '/'));
+        
+        if(!file_exists('nginx.config')){
+            $file = fopen('nginx.config', 'wb');
+            fwrite($file, "location {$path} {\n".
+                "  if (-f \$request_filename/index.php){\n".
+                "    rewrite (.*) $1/index.php;\n".
+                "  }\n".
+                "  if (!-f \$request_filename){\n".
+                "    rewrite (.*) /index.php;\n".
+                "  }\n".
+            "}");
+            fclose($file);
+        }
+    }
+
+    /* 定义站点根目录 */
+    define('PATH', $path);
+}
 
 /* 载入系统模块加载器 */
 require __DIR__  . '/Loader.php';

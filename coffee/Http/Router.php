@@ -12,17 +12,9 @@ class Router
 
 	protected $routes;
 
-	protected $request;
-
-	protected $response;
-
-	public function __construct(Request $request, Response $response)
+	public function __construct()
 	{
 		$this->routes = new RouteCollection;
-
-		$this->request = $request;
-
-		$this->response = $response;
 	}
 
 	public function get( $uri, $action )
@@ -102,9 +94,8 @@ class Router
 		return (empty($this->groupStack))?'':end($this->groupStack);
 	}
 
-	public function dispatch()
+	public function dispatch($request, $response)
 	{
-
-		$this->routes->matchs($this->request,$this->response);
+		$this->routes->matchs($request,$response);
 	}
 }

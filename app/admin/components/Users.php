@@ -10,24 +10,24 @@ class Users extends Component
 	{
 		if(!$this->checkUsername($user['name'])){
 
-			$this->db->from('users')->insert([
-				'name'=>trim($user['name'])
-				,'password'=>password_hash($user['password'],PASSWORD_BCRYPT)
-				,'created' => date('Y-m-d H:i:s')
-			]);
+			// $this->db->from('users')->insert([
+			// 	'name'=>trim($user['name'])
+			// 	,'password'=>password_hash($user['password'],PASSWORD_BCRYPT)
+			// 	,'created' => date('Y-m-d H:i:s')
+			// ]);
 
-			$uid = $this->db->id();
+			// $uid = $this->db->id();
 
-			$this->db->from('usermeta')->multi_insert(array('uid','key','value')
-				,array(
-					array($uid,'is_admin', isset($user['is_admin']) ? $user['is_admin'] : 'false')
-					,array($uid,'email', isset($user['email']) ? $user['email'] : '')
-					,array($uid,'avatar', isset($user['avatar']) ? $user['avatar'] : '')
-					,array($uid,'description', isset($user['description']) ? $user['description'] : '')
-					,array($uid,'level', isset($user['level']) ? $user['level'] : '1')
-					,array($uid,'safetycode', isset($user['safetycode']) ? password_hash($user['safetycode'],PASSWORD_BCRYPT) : '')
-				)
-			);
+			// $this->db->from('usermeta')->multi_insert(array('uid','key','value')
+			// 	,array(
+			// 		array($uid,'is_admin', isset($user['is_admin']) ? $user['is_admin'] : 'false')
+			// 		,array($uid,'email', isset($user['email']) ? $user['email'] : '')
+			// 		,array($uid,'avatar', isset($user['avatar']) ? $user['avatar'] : '')
+			// 		,array($uid,'description', isset($user['description']) ? $user['description'] : '')
+			// 		,array($uid,'level', isset($user['level']) ? $user['level'] : '1')
+			// 		,array($uid,'safetycode', isset($user['safetycode']) ? password_hash($user['safetycode'],PASSWORD_BCRYPT) : '')
+			// 	)
+			// );
 		}
 	}
 
@@ -53,7 +53,7 @@ class Users extends Component
 	/* 检查用户名是否存在 */
 	public function checkUsername($username)
 	{
-		return (bool) $this->db->from('users')->select('count(*)')->where('`name`=%s',$username)->one();
+		return $this->db->prepare("select count(*) from ~prefix~users where `name`=%s",$username)->query()->repeat();
 	}
 
 	/*  检查密码是否正确 */

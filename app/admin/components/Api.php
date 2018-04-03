@@ -1,10 +1,5 @@
 <?php namespace App\Admin\Components;
-/**
- * 我们把权限操作少的代码集中在这个API文件里，
- * 前端通过请求 /admin/api/函数名即可获取数据，
- * 不建议你将具有update、delete等危险操作的接口定义在这里，
- * 如有需要请定义在route.php文件中，以便更好的控制访问权限。
- */
+
 use Coffee\Foundation\Component;
 
 class Api extends Component

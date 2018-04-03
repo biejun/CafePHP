@@ -11,4 +11,4 @@
  */
 
 /* 载入核心 */
-require __DIR__ .'/coffee/Bootstrap.php';
+require __DIR__ .'/Coffee/Bootstrap.php';

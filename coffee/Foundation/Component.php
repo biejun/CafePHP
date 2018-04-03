@@ -18,8 +18,8 @@
  */
 namespace Coffee\Foundation;
 
-use Coffee\DataBase\DB;
-use Coffee\Cache\Cache;
+use Coffee\DataBase\DataManager;
+//use Coffee\Cache\Cache;
 
 abstract class Component
 {
@@ -33,50 +33,13 @@ abstract class Component
 
 	public $cookie;
 
-	/* 当前组件操作的数据库名 */
-	public $database = null;
-
-	/* 是否创建数据库 */
-	public $create = false;
-
-	/* 当前组件操作的表名 */
-	public $table = '';
-
 	public function __construct()
 	{
-
-		$this->db = $this->initDB();
-
-		$this->db->connect($this->database,$this->create?$this->create:G('database','create'));
-
-		$this->cache = $this->initCache();
-
+		$this->db = new DataManager;
 		$this->session = new Session;
-
 		$this->cookie = new Cookie;
 
-		if( !empty($this->table) ) $this->db->from($this->table);
 		if( method_exists( $this, '_initialize' ) ) $this->_initialize();
-	}
-
-	private function initDB()
-	{
-		static $_connect;
-
-		if(!isset($_connect)){
-			$_connect = new DB(G('database'));
-		}
-		return $_connect;
-	}
-
-	private function initCache()
-	{
-		static $_cacheHandler;
-
-		if($_cacheHandler === null){
-			$_cacheHandler = Cache::init(G('cache'));
-		}
-		return $_cacheHandler;
 	}
 
 	/**

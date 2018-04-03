@@ -3,8 +3,7 @@
 
 /* 路由器初始化时挂载的动作 */
 $action->add('route:init',function(){
-
-    /* 检查系统初始化安装配置 */
+    /* 判断系统是否已安装 */
     if($this->existLock())
     {
         /* 读取站点配置 */
@@ -13,40 +12,10 @@ $action->add('route:init',function(){
         while (list($key, $value) = each($options)) {
             $this->view->options->{$value['name']} = $value['value'];
         }
-        /* 设置默认主题 */
-        $this->view->setView('admin');
-    }
-    else
-    {
-        $php_sapi = PHP_SAPI;
-        $path = PATH;
-        /* 伪静态配置 */
-        if($php_sapi === 'apache2handler')
-        {
-            $file = fopen('.htaccess', 'wb');
-            fwrite($file, "<IfModule mod_rewrite.c>\n".
-                "  Options +FollowSymlinks\n".
-                "  RewriteEngine On\n".
-                "  RewriteBase {$path}\n".
-                "  RewriteCond %{REQUEST_FILENAME} !-d\n".
-                "  RewriteCond %{REQUEST_FILENAME} !-f\n".
-                "  RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]\n".
-                "</IfModule>\n");
-        }
-        else if($php_sapi === 'fpm-fcgi' || $php_sapi === 'cgi-fcgi')
-        {
-            $file = fopen('nginx.config', 'wb');
-            fwrite($file, 'location '.$path. '{ \n'.
-                'if (-f $request_filename/index.php){\n'.
-                '  rewrite (.*) $1/index.php;\n'.
-                '}\n'.
-                'if (!-f $request_filename){\n'.
-                '  rewrite (.*) /index.php;\n'.
-                '}\n'.
-            '}');
-        }
-
-        $this->view->setView('admin');
+        /* 设置视图读取文件夹 */
+        $this->view->folder('default');
+    }else{
+        $this->view->folder('admin');
     }
 });
 
@@ -96,9 +65,10 @@ $action->add('check:login',function($redirect = null){
     if(!$allowAccess){
         if(is_null($redirect)){
             if($this->request->isAjax()){
-                $this->response->jsonData('登录超时!',false);
+                $this->response->json('登录超时!',false);
             }else{
-                $this->response->status(403)->render('403');
+                $this->response->status(403);
+                $this->view('403');
             }
         }else{
             $this->response->redirect($redirect);

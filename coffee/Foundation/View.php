@@ -26,23 +26,23 @@ class View
 
 	public $ext = '.php';
 
-	public $assets = array();
-
 	protected $currentView = '';
 
-	protected $currentViewPath;
+	protected $viewPath;
 
 	protected $vars = [];
 
-	public function setView($view = null ,$path = null)
+	/* 视图文件存放目录 */
+	public function folder($view = null ,$path = null)
 	{
 		if(!is_null($path)) $this->path = $path;
 
 		$this->currentView = is_null($view) ? '': $view;
-		$this->currentViewPath = $this->pathJoin('view', $this->currentView);
+		$this->viewPath = $this->pathJoin('view', $this->currentView);
 		return $this;
 	}
 
+	/* 视图文件后缀 */
 	public function setExt($ext)
 	{
 		$this->ext = $ext;
@@ -72,7 +72,7 @@ class View
 				$path[] = $value;
 			}
 		}
-		return $this->currentViewPath. '/' . join('/', $path);
+		return $this->viewPath. '/' . join('/', $path);
 	}
 
 	/* 给文件资源加上版本号 */
@@ -81,6 +81,7 @@ class View
 		return $filePath . (is_null($suffixVersion) ? '' : '?v='.$suffixVersion);
 	}
 
+	/* 将数据赋值到视图中 */
 	public function assign($key,$value='')
 	{
 		if(is_array($key)) {
@@ -90,7 +91,7 @@ class View
 		}
 		return $this;
 	}
-
+	/* 读取一个模板 */
 	public function tpl($tpl,$vars = null)
 	{
 		if (func_num_args () > 2) {
@@ -102,7 +103,7 @@ class View
 		if($content = $this->render($tpl,$vars)){
 			return $content;
 		}else{
-			throw new \Exception("{$this->currentViewPath}目录下缺少模板文件'{$tpl}{$this->ext}'");
+			throw new \Exception("{$this->viewPath}目录下缺少模板文件'{$tpl}{$this->ext}'");
 		}
 	}
 
