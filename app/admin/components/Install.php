@@ -14,7 +14,7 @@ class Install extends Component
 			foreach (explode(';', $sql) as $query) {
 				$query = trim($query);
 				if ($query) {
-					$this->db->query($query);
+					$this->exec($query)->query();
 				}
 			}
 		}else{
@@ -24,7 +24,7 @@ class Install extends Component
 
 	public function lock()
 	{
-		$fp = fopen(CONFIG . 'install.lock', 'wb');
+		$fp = fopen(CONFIG . '/install.lock', 'wb');
 		fwrite($fp, '');
 		fclose($fp);
 	}

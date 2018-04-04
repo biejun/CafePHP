@@ -3,7 +3,7 @@
 class DataManager
 {
     /* 数据库连接句柄 */
-    static $handler = null;
+    static $handler;
 
     private $result = null;
     /* 执行影响行数 */
@@ -20,28 +20,27 @@ class DataManager
     public $sql = '';
 
     public function __construct()
-    {        
+    {   
+        $db = $this->configs();
         if(is_null(self::$handler)) {
-            $db = $this->configs();
             self::$handler = new \mysqli($db['host'], $db['user'], $db['password'], $db['port']);
             if(self::$handler->connect_errno){
                 throw new \Exception('Connect Error (' .
                     self::$handler->connect_errno . ') '.
                     self::$handler->connect_error);
             }
-
             $this->setPrefix($db['prefix']);
-
             $this->setCharset( (isset($db['charset']) ? $db['charset'] : 'utf8'),
                 (isset($db['collate']) ? $db['collate'] : null ));
         }
+        $this->connect($db['name']);
     }
 
     public function configs()
     {
         static $_conf;
-        $file = CONFIG . '/config.db.php';
         if(is_null($_conf)) {
+            $file = CONFIG . '/config.db.php';
             if( !file_exists($file) ) throw new \Exception("数据库配置文件不存在！");
             $_conf = include($file);
         }
@@ -98,12 +97,6 @@ class DataManager
         return array_shift($row);
     }
 
-    # 判断某个字段的值是否存在
-    public function repeat()
-    {
-        return (bool) $this->row(MYSQLI_BOTH);
-    }
-
     /**
      * 连接指定数据库
      *
@@ -111,16 +104,13 @@ class DataManager
      * @param  boolean $create  数据库不存在是否新建
      * @return $this
      */
-    public function connect($database = null,$create = false)
+    public function connect($database = null)
     {
-        if(is_null($database)) return false;
-        $exists = self::$handler->select_db($database);
-        if(!$exists){
+        if($database === null) return false;
+        if(!self::$handler->select_db($database)){
             // 自动创建数据库
-            if($create){
-                $this->create($database);
-                self::$handler->select_db($database);
-            }else{
+            $this->create($database);
+            if(!self::$handler->select_db($database)){
                 throw new \Exception("Can't select MySQL database(".$database.")!");
             }
         }
@@ -212,6 +202,11 @@ class DataManager
         return $this;
     }
 
+    public function result()
+    {
+        return $this->result;
+    }
+
     # 取得当前数据库版本
     public function version()
     {
@@ -257,8 +252,11 @@ class DataManager
      *   %s (string) 字符串型
      *   %% (literal percentage sign - no argument needed)
      */
-    public function prepare($query, $args)
+    public function prepare()
     {
+        $args = func_get_args ();
+        $query = array_shift($args);
+
         $query = str_replace('~prefix~', $this->prefix, $query);
         $query = str_replace('~charset~', $this->charset, $query);
         $query = str_replace('~collate~', $this->collate, $query);
@@ -269,7 +267,7 @@ class DataManager
                 $query = preg_replace( '|(?<!%)%f|' , '%F', $query );
                 $query = preg_replace( '|(?<!%)%s|', "'%s'", $query );
                 array_walk( $args, array( $this, 'escape_by_ref' ) );
-                return @vsprintf( $query, $args );
+                $this->sql = @vsprintf( $query, $args );
             }
         }
         $this->sql = $query;

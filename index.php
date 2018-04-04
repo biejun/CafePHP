@@ -10,5 +10,8 @@
  * @license This content is released under the MIT License.
  */
 
+/* 载入系统常量 */
+require __DIR__ .'/Config/constants.php';
+
 /* 载入核心 */
 require __DIR__ .'/Coffee/Bootstrap.php';

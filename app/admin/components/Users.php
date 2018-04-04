@@ -10,6 +10,12 @@ class Users extends Component
 	{
 		if(!$this->checkUsername($user['name'])){
 
+			$this->exec( "INSERT INTO ~prefix~users (`name`,`password`,`created`) VALUES (%s,%s,%s)"
+				,$user['name']
+				,password_hash($user['password'],PASSWORD_BCRYPT)
+				,date('Y-m-d H:i:s') )->query();
+
+			$uid = $this->db->id();
 			// $this->db->from('users')->insert([
 			// 	'name'=>trim($user['name'])
 			// 	,'password'=>password_hash($user['password'],PASSWORD_BCRYPT)
@@ -53,7 +59,7 @@ class Users extends Component
 	/* 检查用户名是否存在 */
 	public function checkUsername($username)
 	{
-		return $this->db->prepare("select count(*) from ~prefix~users where `name`=%s",$username)->query()->repeat();
+		return (bool) $this->exec("select count(*) from ~prefix~users where `name`=%s",$username)->query()->one();
 	}
 
 	/*  检查密码是否正确 */

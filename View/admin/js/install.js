@@ -1,9 +1,4 @@
-var req = new Request,
-    ajax = new Ajax,
-    app = document.getElementById('app'),
-    hash = app.getAttribute('data-hash');
-
-var randomHash = function(len){
+function randomHash(len){
     len = len || 32;
     var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_ []{}<>~`+=,.;:/?|',
         maxLen = chars.length;
@@ -14,52 +9,53 @@ var randomHash = function(len){
     return hash;
 }
 
-var viewModel = function () {
+(function guide() {
 
-    this.step = ko.observable(function(){
-        var step = 1;
-        if(step){
-            return (step > 3) ? 3 : step;
-        }else{
-            return 1;
-        }
-    }());
+    var req = new Request,
+        fetch = new Ajax,
+        app = document.getElementById('App');
 
-    this.title = ['数据库连接配置','创建管理员账号','安装完成'];
+    var TOKEN = app.getAttribute('data-token');
 
-    this.buttonText = ['下一步','完成'];
+    function KO() {
+        this.step = ko.observable(function(){
+            var step = 1;
+            if(step){
+                return (step > 3) ? 3 : step;
+            }else{
+                return 1;
+            }
+        }());
 
-    this.errors = ko.observableArray([]);
+        this.welcome = '开始安装';
 
-    this.dbname = ko.observable('coffee');
-    this.dbuser = ko.observable('');
-    this.dbpassword = ko.observable('');
-    this.dbprefix = ko.observable('coffee_');
-    this.dbcreate = ko.observable(true);
-    this.dbhost = ko.observable('localhost');
-    this.dbhash = ko.observable(randomHash());
+        this.checkVersion = ko.observable(Boolean(app.getAttribute('data-allow-install')));
 
-    this.username = ko.observable('');
-    this.password = ko.observable('');
-    this.passwordonce = ko.observable('');
-    this.safetycode = ko.observable('');
+        this.errors = ko.observableArray([]);
+        this.success = ko.observable('');
 
-    this.saveConf = function(){
+        this.dbname = ko.observable('coffee');
+        this.dbuser = ko.observable('');
+        this.dbpassword = ko.observable('');
+        this.dbprefix = ko.observable('coffee_');
+        this.dbhost = ko.observable('localhost');
 
-        this.errors([]);
 
-        var step = this.step();
+        this.username = ko.observable('');
+        this.password = ko.observable('');
+        this.passwordonce = ko.observable('');
+        this.safetycode = ko.observable('');
+        this.hash = ko.observable(randomHash());
 
-        if(step === 1){
+        this.setupOne = function(){
+            this.errors([]);
 
             var data = {
-                host:this.dbhost(),
-                name:this.dbname(),
-                user:this.dbuser(),
-                password:this.dbpassword(),
-                hash:this.dbhash(),
-                prefix:this.dbprefix(),
-                create:this.dbcreate()
+                name : this.dbname()
+                ,user : this.dbuser()
+                ,password : this.dbpassword()
+                ,prefix : this.dbprefix()
+                ,host : this.dbhost()
             };
 
             if(data.name === ''){
@@ -72,26 +68,29 @@ var viewModel = function () {
                 this.errors.push('数据库密码不能为空！');
             }
 
-            if(this.errors().length === 0){
-                ajax.http(req.path+'admin/setup-one-'+hash)
-                    .header('Token',hash)
-                    .data(data)
-                    .post(function(res){
-                        if(res.success){
-                            this.step(2);
-                        }else{
-                            this.errors.push(res.data);
-                        }
-                    }.bind(this)
-                );
-            }
-        }else if(step === 2){
+            if(this.errors().length > 0) return false;
 
+            fetch.http(req.path + 'admin/setup-one')
+                .header('TOKEN',TOKEN)
+                .data(data)
+                .post(function(res){
+                    if(res.success){
+                        this.step(3);
+                        this.success(res.data);
+                    }else{
+                        this.errors.push(res.data);
+                    }
+                }.bind(this))
+        }
+
+        this.setupTwo = function() {
+            this.errors([]);
             var data = {
                 username:this.username(),
                 password:this.password(),
                 passwordonce:this.passwordonce(),
-                safetycode:this.safetycode()
+                safetycode:this.safetycode(),
+                hash:this.hash()
             }
 
             if(data.username === ''){
@@ -101,20 +100,24 @@ var viewModel = function () {
                 this.errors.push('密码不能为空!');
             }
 
-            if(this.errors().length === 0){
-                ajax.http(req.path+'admin/setup-two-'+hash)
-                    .data(data)
-                    .post(function(res){
-                        if(res.success){
-                            this.step(3);
-                        }else{
-                            this.errors.push(res.data);
-                        }
-                    }.bind(this)
-                );
+            if(data.password !== data.passwordonce){
+                this.errors.push('两次输入的密码不一致!');
             }
-        }
-    };
-}
 
-ko.applyBindings(new viewModel(),app);
+            if(this.errors().length > 0) return false; 
+            fetch.http(req.path+'admin/setup-two')
+                .header('TOKEN',TOKEN)
+                .data(data)
+                .post(function(res){
+                    if(res.success){
+                        //window.location.href = req.path + 'admin/login';
+                    }else{
+                        this.errors.push(res.data);
+                    }
+                }.bind(this)
+            );
+        }
+    }
+
+    ko.applyBindings(new KO,app);
+})();

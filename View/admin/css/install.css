@@ -1,25 +1,104 @@
 @charset 'UTF-8';
-body{
-	background: #f8f8f8;
+html,body{
+	height: 100%;
 }
-.post-header{
-	height:100px;
-	line-height: 100px;
-	background: #353535;
-	font-size: 32px;
-	color: #fff;
+.admin-body{
+	background-color: #a9c6e3;
+	display: table;
+	width: 100%;
+	overflow: hidden;
+}
+.wrap{
+	display: table-cell;
+	width: 100%;
+	vertical-align: middle;
+}
+.box{
+	position: relative;
+	width: 400px;
+	margin: auto;
+	background-color: #fff;
+	box-shadow: 1px 4px 4px #9ab8d7;
+	border-radius: 2px;
+	padding: 30px;
+	box-sizing: border-box;
+	display: none;
+}
+
+.welcome{
+	height: 35px;
+	line-height: 35px;
+	font-weight: normal;
+	font-size: 35px;
+	margin: 30px auto;
+	text-align: center;
+	color: #6494c4;
+}
+
+.step-1,.step-2,.step-3{
+	display: block;
+}
+
+.step-1{
 	text-align: center;
 }
-.post-body{
-	width: 350px;
-	margin:30px auto;
+
+.tip{
+	color: #b4c3d3;
+	font-size: 14px;
+	height: 30px;
 }
-.post-body .post-form{
-	padding: 15px 0;
+
+.button[large]{
+	background-color: #7398bc;
+	height: 35px;
+	padding: 0;
+	line-height: 35px;
+	border-radius: 2px;
+	width: 100%;
+	text-align: center;
+	color: #fff;
+	font-size: 14px;
+	border: 1px solid #5885b1;
+	cursor: pointer;
+}
+
+.button[simple] {
+	background: transparent;
+	border: none;
+	color: #4f8dca;
+	font-size: 16px;
+	cursor: pointer;
+	height: 30px;
+}
+
+.copyright{
+	position: absolute;
+	bottom: -40px;
+	left: 0;
+	right: 0;
+	text-align: center;
+	color: #7398bc;
 	font-size: 12px;
 }
-.post-body .post-form input[type=text],
-.post-body .post-form input[type=password]{
+
+.title{
+	font-size: 20px;
+	font-weight: normal;
+	height: 20px;
+	line-height: 20px;
+	margin: 0;
+	text-align: center;
+}
+
+.post-form{
+	margin-top: 20px;
+	padding: 20px 0;
+	border-top: 1px solid #ededed;
+	font-size: 12px;
+}
+.post-form input[type=text],
+.post-form input[type=password]{
 	display: block;
 	width: 100%;
 	padding: 0 8px;
@@ -29,55 +108,48 @@ body{
 	border:1px solid #ddd;
 	border-radius: 2px;
 }
-.post-body .post-form label{
+.post-form label{
 	display: block;
 	font-size: 12px;
 	font-weight: bold;
 	margin-bottom: 5px;
 }
-.post-body .post-form input{
+.post-form input{
 	margin-bottom: 10px;
 }
 
-.post-body .post-form input + em{
+.post-form input + em{
 	margin-bottom:10px;
 	margin-top: -5px;
 	color:#888;
 	display: block;
 }
-
-.post-body .post-form input[verify]{
-	width: 300px;
-	display: inline-block;
-	margin-right: 5px;
+.hash .hash-input{
+	width: 80%;
+	float: left;
+}
+.hash .hash-btn{
+	width: 20%;
+	float: right;
 }
 
-.post-body .post-form a[button]{
-	font-size: 12px;
-	display: inline-block;
-}
-.post-body .post-errors{
+.post-errors{
 	font-size: 12px;
 	line-height: 1.777;
 	margin-bottom: 10px;
 	color: red;
-}
-.post-body .post-buttons button{
-	border:1px solid #ddd;
-	padding: 6px 10px;
-	border-radius: 2px;
-	font-size: 12px;
-	display: inline-block;
-	background: #fff;
-	cursor: pointer;
-	opacity: .8;
-}
-.post-body .post-buttons button:first-child{
-	background: #3b98fd;
-	border-color: #3b98fd;
-	color: #fff;
+	font-weight: bold;
 }
 
-.post-body .post-buttons button:hover{
-	opacity: 1;
+.post-success{
+	position: absolute;
+	top: -60px;
+	left: 30px;
+	right: 30px;
+	padding: 8px 12px;
+    background-color: #4cc64c;
+    border-radius: 5px;
+    color: #e2f6e2;
+	font-size: 12px;
+	font-weight: bold;
 }

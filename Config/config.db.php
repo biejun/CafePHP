@@ -1,10 +1,9 @@
-<?php if(!defined(ABSPATH)) die();
+<?php
  return array (
   'host' => 'localhost',
-  'name' => 'coffee',
   'user' => 'root',
   'password' => 'root',
-  'hash' => '^Hiqux+)*2,Cn09s+@0@:%BO(p+&[?Pj',
+  'name' => 'coffee',
+  'port' => NULL,
   'prefix' => 'coffee_',
-  'create' => 'true',
 );

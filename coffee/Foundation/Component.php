@@ -42,6 +42,12 @@ abstract class Component
 		if( method_exists( $this, '_initialize' ) ) $this->_initialize();
 	}
 
+	/* 执行SQL语句的方法 */
+	public function exec()
+	{
+		return call_user_func_array(array($this->db,'prepare'),func_get_args());
+	}
+
 	/**
 	 *  执行应用组件中的方法
 	 *

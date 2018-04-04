@@ -161,46 +161,64 @@ $route->group('/admin',function($route){
     });
 
     /* 程序安装 */
-    $route->post('/step-one-'.HASH,function(){
+    $route->post('/setup-one',function(){
+        if(isset($_SERVER['HTTP_TOKEN']) && IS_DEVELOPMENT) {
+            extract($this->request->post());
 
-        $data = $this->request->post();
+            $data = [];
 
-        $db = "<?php if(!defined(ABSPATH)) die();\n return ".var_export($data,true).";";
+            $data['host'] = $host;
+            $data['user'] = $user;
+            $data['password'] = $password;
+            $data['name'] = $name;
+            $data['port'] = null;
+            $data['prefix'] = $prefix;
 
-        if(file_put_contents('Config/config.db.php',$db,LOCK_EX)){
-            $this->response->json('Successful!');
-        }else{
-            $this->response->json('Unable to open file!',false);
+            $db = "<?php\n return ".var_export($data,true).";";
+
+            $file = 'Config/config.db.php';
+            if(file_put_contents($file,$db,LOCK_EX)){
+                $this->response->json('创建数据库配置文件成功!');
+            }else{
+                $this->response->json('创建数据库配置文件失败!',false);
+            }
         }
     });
 
-    $route->post('/setup-two-'.HASH,function(){
-        die('1212');
-        // extract($this->request->post());
+    $route->post('/setup-two',function() {
+        if(isset($_SERVER['HTTP_TOKEN']) && IS_DEVELOPMENT) {
+            extract($this->request->post());
 
-        // if(empty($username) || empty($password) || empty($passwordonce))
-        //     $this->response->json('请填写用户名和密码！',false);
-        // if(!isset($password{5})) $this->response->json('密码不能少于6位！',false);
-        // if(strcmp($password,$passwordonce) == 0){
-        //     $user = array();
-        //     $user['name'] = trim($username);
-        //     $user['password'] = trim($password);
-        //     $user['level'] = '10';
-        //     $user['is_admin'] = 'true';
+            if(empty($username) || empty($password) || empty($passwordonce)) {
+                $this->response->json('请填写用户名和密码！',false);
+            }
+            if(!isset($password{5})) $this->response->json('密码不能少于6位！',false);
+            if(strcmp($password,$passwordonce) == 0){
+                $user = array();
+                $user['name'] = trim($username);
+                $user['password'] = trim($password);
+                $user['level'] = '10';
+                $user['is_admin'] = 'true';
 
-        //     if(!empty($safetycode)) $user['safetycode'] = $safetycode;
-
-        //     try{
-        //         $this->load('admin@install')->import();
-        //         $this->load('admin@users')->add($user);
-        //     }catch(Exception $e){
-        //         $this->response->json($e->getMessage(),false);
-        //     }
-        //     $this->load('admin@install')->lock();
-        //     $this->response->json('创建成功！');
-        // }else{
-        //     $this->response->json('两次输入的密码不一致！',false);
-        // }
+                if(!defined('HASH')){
+                    $file = fopen('Config/constants.php', 'ab');
+                    fwrite($file, "\n/* 数据加密密钥 (Non modifiable) */\ndefine( 'HASH', '{$hash}' );");
+                    fclose($file);
+                }
+                
+                if(!empty($safetycode)) $user['safetycode'] = $safetycode;
+                try{
+                    //$this->load('admin@install')->import();
+                    $this->load('admin@users')->add($user);
+                }catch(Exception $e){
+                    $this->response->json($e->getMessage(),false);
+                }
+                $this->load('admin@install')->lock();
+                //$this->response->json('创建成功！');
+            }else{
+                $this->response->json('两次输入的密码不一致！',false);
+            }
+        }
     });
 
     /**

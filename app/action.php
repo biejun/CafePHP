@@ -77,7 +77,8 @@ $action->add('check:login',function($redirect = null){
 $action->add('check:install',function(){
     if(!$this->existLock())
     {
-        $this->view->folder('admin')->assign('hash',HASH);
+        $this->view->folder('admin')->assign('token',TOKEN)
+            ->assign('checkVersion',version_compare(PHP_VERSION,'5.5.0', '>'));
         $this->view('install');
     }
 });

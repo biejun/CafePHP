@@ -3,12 +3,12 @@
 DROP TABLE IF EXISTS `~prefix~users`;
 CREATE TABLE IF NOT EXISTS `~prefix~users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) COLLATE $collate$ NOT NULL DEFAULT '',
-  `password` varchar(60) COLLATE $collate$ NOT NULL DEFAULT '',
+  `name` varchar(32) COLLATE ~collate~ NOT NULL DEFAULT '',
+  `password` varchar(60) COLLATE ~collate~ NOT NULL DEFAULT '',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `logged` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `timeout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `token` varchar(32) COLLATE $collate$ NOT NULL DEFAULT '',
+  `token` varchar(32) COLLATE ~collate~ NOT NULL DEFAULT '',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
@@ -20,8 +20,8 @@ DROP TABLE IF EXISTS `~prefix~usermeta`;
 CREATE TABLE IF NOT EXISTS `~prefix~usermeta` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uid` int(10) unsigned NOT NULL DEFAULT '0',
-  `key` nvarchar(255) COLLATE $collate$ NOT NULL DEFAULT '',
-  `value` text COLLATE $collate$ NOT NULL,
+  `key` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
+  `value` text COLLATE ~collate~ NOT NULL,
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   KEY `key` (`key`)
@@ -30,11 +30,11 @@ CREATE TABLE IF NOT EXISTS `~prefix~usermeta` (
 DROP TABLE IF EXISTS `~prefix~options`;
 CREATE TABLE IF NOT EXISTS `~prefix~options` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` nvarchar(255) COLLATE $collate$ NOT NULL DEFAULT '',
-  `alias` nvarchar(255) COLLATE $collate$ NOT NULL DEFAULT '',
-  `value` text COLLATE $collate$ NOT NULL,
+  `name` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
+  `alias` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
+  `value` text COLLATE ~collate~ NOT NULL,
   `type` enum('input','textarea','select','switch') NOT NULL DEFAULT 'input',
-  `description` nvarchar(255) COLLATE $collate$ NOT NULL DEFAULT '',
+  `description` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
   `rules` nvarchar(255) NOT NULL DEFAULT 'text',
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
@@ -57,8 +57,8 @@ INSERT INTO `~prefix~options` (`id`,`name`,`alias`,`value`,`type`,`description`,
 DROP TABLE IF EXISTS `~prefix~optionextra`;
 CREATE TABLE IF NOT EXISTS `~prefix~optionextra` (
   `id` int(10) unsigned NOT NULL,
-  `key` nvarchar(255) COLLATE $collate$ NOT NULL DEFAULT '',
-  `value` nvarchar(255) COLLATE $collate$ NOT NULL DEFAULT '',
+  `key` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
+  `value` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
   KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=~charset~ COLLATE=~collate~;
 
