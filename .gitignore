@@ -1,4 +1,5 @@
-/Config/install.lock
-/Config/config.db.php
+Config/install.lock
+Config/config.db.php
+Config/constants.php
 .htaccess
 nginx.config

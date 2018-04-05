@@ -7,7 +7,7 @@ $action->add('route:init',function(){
     if($this->existLock())
     {
         /* 读取站点配置 */
-        $options = $this->load('admin@options')->get();
+        $options = $this->load('admin@options')->select('name,value');
         $this->view->options = new stdClass;
         while (list($key, $value) = each($options)) {
             $this->view->options->{$value['name']} = $value['value'];
@@ -62,13 +62,15 @@ $action->add('check:login',function($redirect = null){
 
     if(!$allowAccess){
         if(is_null($redirect)){
+            /* 没有设置指定页就按请求方式返回信息 */
             if($this->request->isAjax()){
-                $this->response->json('登录超时!',false);
+                $this->response->json('请先登录!',false);
             }else{
                 $this->response->status(403);
                 $this->view('403');
             }
         }else{
+            /* 要是没有登录就重定向到指定页 */
             $this->response->redirect($redirect);
         }
     }

@@ -3,7 +3,7 @@
 $route->group('/admin',function($route){
 
     $route->get('/index',function(){
-        //$this->action->on('check:login');
+        $this->action->on('check:login');
         $this->view('index');
     });
 
@@ -166,7 +166,6 @@ $route->group('/admin',function($route){
             extract($this->request->post());
 
             $data = [];
-
             $data['host'] = $host;
             $data['user'] = $user;
             $data['password'] = $password;
@@ -208,13 +207,13 @@ $route->group('/admin',function($route){
                 
                 if(!empty($safetycode)) $user['safetycode'] = $safetycode;
                 try{
-                    //$this->load('admin@install')->import();
+                    $this->load('admin@install')->import();
                     $this->load('admin@users')->add($user);
                 }catch(Exception $e){
                     $this->response->json($e->getMessage(),false);
                 }
                 $this->load('admin@install')->lock();
-                //$this->response->json('创建成功！');
+                $this->response->json('创建成功！');
             }else{
                 $this->response->json('两次输入的密码不一致！',false);
             }

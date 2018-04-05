@@ -75,3 +75,5 @@ define( 'CHARSET', 'UTF-8' );
 define( 'EXPIRES', 0 );
 /* 定义一个随机令牌 */
 define( 'TOKEN', md5( uniqid(rand(), true) ));
+/* 数据加密密钥 (Non modifiable) */
+define( 'HASH', '+|G^fe~< *tffy1lTs02>Leq/r5l7{zl' );

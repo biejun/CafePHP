@@ -6,7 +6,7 @@ class Api extends Component
 {
 	public function options()
 	{
-		return $this->db->from('options')->select('*')->rows();
+		return $this->load('admin@options')->all();
 	}
 
 	public function loginLogs($page, $limit)
@@ -28,7 +28,7 @@ class Api extends Component
 	{
 		$page = filter_var($page,FILTER_VALIDATE_INT,array("min_range"=>1));
 		$limit = filter_var($limit,FILTER_VALIDATE_INT,array("max_range"=>100));
-		return $this->load('admin@users')->result($page, $limit);
+		return $this->load('admin@users')->getData($page, $limit);
 	}
 
 	public function operatelogs($page, $limit)

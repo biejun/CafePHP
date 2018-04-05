@@ -18,15 +18,11 @@
  */
 
 use Coffee\DataBase\DataManager;
-//use Coffee\Cache\Cache;
+use Coffee\Cache\Cache;
 
 abstract class Component
 {
-    /* 当前数据库连接对象 */
-    public $db;
-
-    /* 当前数据缓存对象 */
-    public $cache;
+    protected $bindings = [];
 
     public $session;
 
@@ -34,17 +30,52 @@ abstract class Component
 
     public function __construct()
     {
-        $this->db = new DataManager;
         $this->session = new Session;
         $this->cookie = new Cookie;
+        
+        /* 数据库 */
+        $this->bind('mysql',function(){
+            static $_conf, $_db;
+            if(is_null($_conf)) {
+                $file = CONFIG . '/config.db.php';
+                if( !file_exists($file) ){
+                    throw new \Exception("数据库配置文件不存在！");
+                }
+                $_conf = include($file);
+            }
+            if(is_null($_db)){
+                $_db = new DataManager($_conf);
+            }
+            return $_db;
+        });
+
+        /* 数据缓存 */
+        $this->bind('data',function(){
+            return Cache::init();
+        });
+        /* 日志缓存 */
+        $this->bind('log',function(){
+            return Cache::init(['folder'=>'Cache/logstore']);
+        });
 
         if( method_exists( $this, '_initialize' ) ) $this->_initialize();
     }
 
-    /* 执行SQL语句的方法 */
-    public function exec()
+    public function bind($abstract, $concrete = null)
     {
-        return call_user_func_array(array($this->db,'prepare'),func_get_args());
+        if(isset($this->bindings[$abstract])) return false;
+        $this->bindings[$abstract] = $concrete;
+    }
+
+    public function getBind($abstract)
+    {
+        return $this->bindings[$abstract]();
+    }
+
+    /* 执行SQL语句的方法 */
+    public function db()
+    {
+        return call_user_func_array(array($this->getBind('mysql'),'prepare'),func_get_args());
     }
 
     /**

@@ -14,7 +14,7 @@ class Install extends Component
 			foreach (explode(';', $sql) as $query) {
 				$query = trim($query);
 				if ($query) {
-					$this->exec($query)->query();
+					$this->db($query)->query();
 				}
 			}
 		}else{

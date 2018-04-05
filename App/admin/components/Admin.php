@@ -7,15 +7,14 @@ class Admin extends Component
 	/* 是否为管理员 */
 	public function is($uid)
 	{
-		return (bool) $this->db->from('usermeta')->select('value')
-				->where('`key`=%s adn `uid`=%d','is_admin', $uid)
-				->one();
+		return (bool) $this->db("SELECT value FROM ~prefix~usermeta WHERE `key`='is_admin' AND `uid`=%d",$uid)
+				->query()->one();
 	}
 
 	// 检查备份目录
 	private function checkBackupFolder()
 	{
-		$dir = 'cache/backup';
+		$dir = 'Cache/backup';
 		if (! file_exists ($dir)) {
 			if (! is_writeable (dirname ($dir))) {
 				die ('Backup folder must be writeable to continue.');
@@ -52,7 +51,7 @@ class Admin extends Component
 	{
 		$dir = $this->checkBackupFolder();
 
-		$backup = $this->db->export();
+		$backup = $this->db()->export();
 
 		$filename = date('YmdHis') . mt_rand(0,99999) . '.sql';
 
@@ -72,7 +71,7 @@ class Admin extends Component
 			$backup = explode(";", str_replace(array("\n\n", "\n"), "", $query));
 			foreach ($backup as $key => $value) {
 				if(!empty($value)){
-					$this->db->query($value);
+					$this->db($value)->query();
 				}
 			}
 			return true;

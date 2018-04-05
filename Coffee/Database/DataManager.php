@@ -29,32 +29,27 @@ class DataManager
     /* 数据库语句拼接 */
     public $sql = '';
 
-    public function __construct()
-    {   
-        $db = $this->configs();
-        if(is_null(self::$handler)) {
-            self::$handler = new \mysqli($db['host'], $db['user'], $db['password'], $db['port']);
-            if(self::$handler->connect_errno){
+    public function __construct($conf)
+    {
+        if(is_null(self::$handler))
+        {
+            $host = isset($conf['host']) ? $conf['host'] : 'localhost';
+            $user = isset($conf['user']) ? $conf['user'] : '';
+            $password = isset($conf['password']) ? $conf['password'] : 'password';
+            $port = isset($conf['port']) ? $conf['port'] : null;
+
+            self::$handler = new \mysqli($host, $user, $password, $port);
+            if(self::$handler->connect_errno)
+            {
                 throw new \Exception('Connect Error (' .
                     self::$handler->connect_errno . ') '.
                     self::$handler->connect_error);
             }
-            $this->setPrefix($db['prefix']);
-            $this->setCharset( (isset($db['charset']) ? $db['charset'] : 'utf8'),
-                (isset($db['collate']) ? $db['collate'] : null ));
         }
-        $this->connect($db['name']);
-    }
-
-    public function configs()
-    {
-        static $_conf;
-        if(is_null($_conf)) {
-            $file = CONFIG . '/config.db.php';
-            if( !file_exists($file) ) throw new \Exception("数据库配置文件不存在！");
-            $_conf = include($file);
-        }
-        return $_conf;
+        $this->prefix = isset($conf['prefix']) ? $conf['prefix'] : 'coffee_';
+        $this->setCharset(isset($conf['charset']) ? $conf['charset'] : 'utf8'
+            ,isset($conf['collate']) ? $conf['collate'] : null);
+        $this->connect(isset($conf['name']) ? $conf['name'] : null);
     }
 
     public function setCharset($charset = 'utf8', $collate = null)
@@ -69,12 +64,6 @@ class DataManager
         }else{
             $this->collate = $collate;
         }
-        return $this;
-    }
-
-    public function setPrefix($prefix)
-    {
-        $this->prefix = $prefix;
         return $this;
     }
 
@@ -237,6 +226,38 @@ class DataManager
             self::$handler->commit();   # 提交事务
         }
     }
+
+    /**
+     * 创建插入多条数据SQL语句
+     *
+     * @param  array  $fields  字段 array('category','price','stock');
+     * @param  array  $records 多条数据记录 array(array('friuts','199','999'),array('drinks','199','999'));
+     * @param  boolean $debug  调试返回值是否正确
+     * @return string (`category`,`price`,`stock`) VALUES ('friuts', '199', '999'), ('drinks', '199', '999');
+     */
+    public function insertRows($fields=array(),$records=array(),$debug=false)
+    {
+        if(empty($fields)||empty($records)) return false;
+        $number_fields = count( $fields );
+        $keys = array();
+        $sql = '';
+        // 遍历所有字段
+        foreach ($fields as $field) {
+            $keys[] = '`'.$field.'`';
+        }
+        $keys = "(".implode(',', $keys).")";
+        $values = array();
+        foreach( $records as $record ){
+            // 如果值与字段数相匹配
+            if( count($record) == $number_fields )
+                $values[] = "('". implode( "', '", array_map(array($this,"escape"),array_values($record))) ."')";
+        }
+        $values = implode( ", ", $values);
+        $sql .= $keys .' VALUES '. $values .';';
+        if($debug) throw new \Exception($sql);
+        return $sql;
+    }
+
     # 防止SQL注入
     public function escape($data)
     {
@@ -264,23 +285,25 @@ class DataManager
      */
     public function prepare()
     {
-        $args = func_get_args ();
-        $query = array_shift($args);
-
-        $query = str_replace('~prefix~', $this->prefix, $query);
-        $query = str_replace('~charset~', $this->charset, $query);
-        $query = str_replace('~collate~', $this->collate, $query);
-        if(strpos($query, '%')){
-            if(count($args)>0){
-                $query = str_replace( "'%s'", '%s', $query );
-                $query = str_replace( '"%s"', '%s', $query );
-                $query = preg_replace( '|(?<!%)%f|' , '%F', $query );
-                $query = preg_replace( '|(?<!%)%s|', "'%s'", $query );
-                array_walk( $args, array( $this, 'escape_by_ref' ) );
-                $this->sql = @vsprintf( $query, $args );
+        $args = func_get_args();
+        if(isset($args)) {
+            $query = array_shift($args);
+            $query = str_replace('~prefix~', $this->prefix, $query);
+            $query = str_replace('~charset~', $this->charset, $query);
+            $query = str_replace('~collate~', $this->collate, $query);
+            if(strpos($query, '%')){
+                if(count($args)>0){
+                    $query = str_replace( "'%s'", '%s', $query );
+                    $query = str_replace( '"%s"', '%s', $query );
+                    $query = preg_replace( '|(?<!%)%f|' , '%F', $query );
+                    $query = preg_replace( '|(?<!%)%s|', "'%s'", $query );
+                    array_walk( $args, array( $this, 'escape_by_ref' ) );
+                    $this->sql = @vsprintf( $query, $args );
+                }
+            }elseif($query!==''){
+                $this->sql = $query;
             }
         }
-        $this->sql = $query;
         return $this;
     }
     private function _real_escape($string)

@@ -6,30 +6,35 @@ class TodoLists extends Component
 {
 	public $data = array();
 
-	public function name($uid)
+	/* 待办记录ID [组件所在应用]:[用户ID]:[组件名] */
+	public function id($uid)
 	{
-		return "admin:{$uid}:plans";
+		return "admin:{$uid}:todolist";
 	}
-	public function get($uid)
+
+	/* 获取数据 */
+	public function getData($uid)
 	{
-		$this->data = $this->cache->get($this->name($uid));
+		$this->data = $this->getBind('data')->get($this->id($uid));
 		return $this;
 	}
 
-	public function add($uid, $planText, $level = 1)
+	/* 添加待办 */
+	public function add($uid, $todo, $level = 1)
 	{
-		$data = $this->get($uid)->all();
+		$data = $this->getData($uid)->all();
 
 		$data[] = [
-			'text'=>$planText,
+			'text'=>$text,
 			'time' => date('Y-m-d H:i:s'),
 			'completed' => 0,
 			'level' => $level
 		];
 
-		$this->cache->set($this->name($uid),$data);
+		$this->getBind('data')->set($this->name($uid),$data);
 	}
 
+	/* 获取全部数据 */
 	public function all()
 	{
 		if(!empty($this->data)){
@@ -38,7 +43,8 @@ class TodoLists extends Component
 		return array();
 	}
 
-	public function result($page = 1, $limit = 10)
+	/* 数据分页 */
+	public function page($page = 1, $limit = 10)
 	{
 		if(!empty($this->data)){
 			return array_reverse(array_slice($this->data, $limit * ($page - 1), $limit));
@@ -46,8 +52,26 @@ class TodoLists extends Component
 		return array();
 	}
 
-	public function delete()
+	/* 已完成 */
+	public function completed($uid, $todo = [])
 	{
-		
+		$data = $this->getData($uid)->all();
+		foreach ($data as &$value) {
+			if($value['time'] === $todo['time']) {
+				$value['completed'] = 1;
+				break;
+			}
+		}
+		$this->getBind('data')->set($this->name($uid),$data);
+	}
+
+	/* 删除待办 */
+	public function delete($uid, $todo = [])
+	{
+		$data = $this->getData($uid)->all();
+		$data = array_filter($data, function($v) use ($todo) {
+			return ($v !== $todo);
+		});
+		$this->getBind('data')->set($this->name($uid),$data);
 	}
 }

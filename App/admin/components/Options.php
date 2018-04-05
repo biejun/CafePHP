@@ -4,20 +4,24 @@ use Coffee\Foundation\Component;
 
 class Options extends Component
 {
-	public function get()
+	public function select($select)
 	{
-		return $this->db->from('options')->select('name,value')->rows();
+		return $this->db("SELECT {$select} FROM ~prefix~options")->query()->rows();
 	}
 
-	public function updateAll($data)
+	public function all()
 	{
-		$query = "INSERT INTO #table#options(id,name,alias,value,type,description,rules) VALUES";
+		return $this->select("*");
+	}
+
+	public function update($data)
+	{
+		$query = "INSERT INTO ~prefix~options (id,name,alias,value,type,description,rules) VALUES";
 		foreach ($data as $object) {
 			$query .= "(\"$object->id\",\"$object->name\",\"$object->alias\",
 					\"$object->value\",\"$object->type\",\"$object->description\",\"$object->rules\"),";
 		}
-		$query = str_replace('#table#', G('database','prefix'),
-			rtrim($query,",")." ON DUPLICATE KEY UPDATE value=VALUES(value)");
-		$this->db->query($query);
+		$query = rtrim($query,",")." ON DUPLICATE KEY UPDATE value=VALUES(value)";
+		$this->db($query)->query();
 	}
 }

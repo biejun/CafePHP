@@ -110,7 +110,7 @@ function randomHash(len){
                 .data(data)
                 .post(function(res){
                     if(res.success){
-                        //window.location.href = req.path + 'admin/login';
+                        window.location.href = req.path + 'admin/login';
                     }else{
                         this.errors.push(res.data);
                     }
