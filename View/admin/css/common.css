@@ -1,0 +1,88 @@
+@charset "utf-8";
+
+*,*:after,*:before{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+
+[v-cloak]{display:none}/*Vue模板标签隐藏*/
+
+.small,small{font-size:85%}
+.text-right{text-align:right}
+.text-center{text-align:center}/*文本居中*/
+.text-nowrap{white-space:nowrap}/*段落文本不换行*/
+.text-wrap,.text-wrap td,.text-wrap th{word-wrap: break-word;word-break: break-all;} /*强制段落文本换行*/
+.text-ellipsis{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} /*文本超出省略*/
+.text-lowercase{text-transform:lowercase}
+.text-uppercase{text-transform:uppercase}
+.text-capitalize{text-transform:capitalize}
+.text-underline{text-decoration:underline}
+.text-hide{color: transparent;} /*文本隐藏*/
+.text-muted{color:#888}
+.text-primary{color:#337ab7}
+
+/*浮动*/
+
+.fl{float: left;}
+.fr{float: right;}
+.cf{zoom: 1;} 
+.cf:before,.cf:after{content: '';display: block;height: 0;overflow: hidden;visibility: hidden;}
+.cf:after{clear: both;}
+
+.mg{margin: 0;}
+.mg-5{margin: 5px;}
+.mg-10{margin: 10px;}
+.mg-15{margin: 15px;}
+.mg-20{margin: 20px;}
+
+.mt{margin-top: 0;}
+.mt-5{margin-top: 5px;}
+.mt-10{margin-top: 10px;}
+.mt-15{margin-top: 15px;}
+.mt-20{margin-top: 20px;}
+
+.ml{margin-left: 0;}
+.ml-5{margin-left: 5px;}
+.ml-10{margin-left: 10px;}
+.ml-15{margin-left: 15px;}
+.ml-20{margin-left: 20px;}
+
+.mr{margin-right: 0;}
+.mr-5{margin-right: 5px;}
+.mr-10{margin-right: 10px;}
+.mr-15{margin-right: 15px;}
+.mr-20{margin-right: 20px;}
+
+.mb{margin-bottom: 0;}
+.mb-5{margin-bottom: 5px;}
+.mb-10{margin-bottom: 10px;}
+.mb-15{margin-bottom: 15px;}
+.mb-20{margin-bottom: 20px;}
+
+.pd{padding: 0;}
+.pd-5{padding: 5px;}
+.pd-10{padding: 10px;}
+.pd-15{padding: 15px;}
+.pd-20{padding: 20px;}
+
+.pt{padding-top: 0;}
+.pt-5{padding-top: 5px;}
+.pt-10{padding-top: 10px;}
+.pt-15{padding-top: 15px;}
+
+.pl{padding-left: 0;}
+.pl-5{padding-left: 5px;}
+.pl-10{padding-left: 10px;}
+.pl-15{padding-left: 15px;}
+
+.pr{padding-right: 0;}
+.pr-5{padding-right: 5px;}
+.pr-10{padding-right: 10px;}
+.pr-15{padding-right: 15px;}
+
+.pb{padding-bottom: 0;}
+.pb-5{padding-bottom: 5px;}
+.pb-10{padding-bottom: 10px;}
+.pb-15{padding-bottom: 15px;}
+
+/*元素显示与隐藏*/
+.hide{display:none}
+.show{display:block}
+.invisible{visibility:hidden}
