@@ -1,7 +1,6 @@
 <?php echo $this->tpl('tpl/start')?>
 
-<div>dsfsdf</div>
-<div>12222</div>
+登录一下
 
 <?php echo $this->tpl('tpl/scripts')?>
 

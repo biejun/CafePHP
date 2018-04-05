@@ -6,9 +6,11 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="renderer" content="webkit">
 	<meta name="force-rendering" content="webkit">
-	<link rel="icon" href="<?=$this->path;?>favicon.ico" type="image/x-icon"/>
-	<title><?=$this->options->title;?></title>
-	<script type="text/javascript" src="<?=$this->path;?>assets/js/knockout-3.4.2.js"></script>
+    <link rel="stylesheet" href="<?=$this->viewPath;?>/css/normalize.css">
+    <link rel="stylesheet" href="<?=$this->viewPath;?>/css/common.css">
+    <link rel="stylesheet" href="<?=$this->viewPath;?>/css/admin.css">
+	<link rel="icon" href="<?=$this->viewPath;?>/favicon.ico" type="image/x-icon"/>
+	<title>后台管理中心</title>
 	<!--[if lt IE 9]>
 	<script src="<?=$this->path;?>assets/js/html5shiv.js"></script>
 	<![endif]-->
