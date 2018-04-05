@@ -1,16 +1,14 @@
-<?php
+<?php namespace Coffee\Http;
 /**
- * AnyPHP Coffee
+ * Cafe PHP
  *
  * An agile development core based on PHP.
  *
- * @version  0.0.6
+ * @version  1.0.0
  * @link     https://github.com/biejun/anyphp
  * @copyright Copyright (c) 2017-2018 Jun Bie
  * @license This content is released under the MIT License.
  */
-
-namespace Coffee\Http;
 
 use Countable;
 use Coffee\Support\Arr;

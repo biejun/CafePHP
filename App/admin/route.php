@@ -2,10 +2,10 @@
 /* $this->grounp() 为相同前缀路径分组*/
 $route->group('/admin',function($route){
 
-	$route->get('/index',function(){
-		//$this->action->on('check:login');
-		$this->view('index');
-	});
+    $route->get('/index',function(){
+        //$this->action->on('check:login');
+        $this->view('index');
+    });
 
     /* 路径为 /admin/login */
     $route->get('/login',function(){

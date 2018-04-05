@@ -1,0 +1,4 @@
+/Config/install.lock
+/Config/config.db.php
+.htaccess
+nginx.config

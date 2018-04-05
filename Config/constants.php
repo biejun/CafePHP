@@ -1,6 +1,6 @@
 <?php
 /**
- * AnyPHP Coffee
+ * Cafe PHP
  *
  * This is a base configuration file that
  * defines the constants of a system.
@@ -63,6 +63,8 @@ define( 'VIEW', ABSPATH . 'View' );
  * 定义系统运行环境
  *
  * 0 生产环境 1 开发环境
+ *
+ * 部署到生产环境后请务必将此处修改为0
  */
 define( 'IS_DEVELOPMENT', 1 );
 /* 定义系统时区 */
