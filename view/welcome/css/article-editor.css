@@ -1,0 +1,52 @@
+.article-editor-wrapper{
+  width: 80%;
+  margin: auto;
+  padding: 60px;
+}
+
+.editor-wrapper{
+  background-color: #fff;
+  padding: 50px 80px;
+  border-radius: 5px;
+}
+
+.editor-header{
+  cursor: text;
+}
+
+.editor-header input{
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 700;
+  border: none;
+  line-height: 1.2;
+  padding: 5px 2px;
+  margin-bottom: 5px;
+}
+
+.editor-selectable{
+
+}
+
+.editor-block{
+  position: relative;
+}
+
+.editor-widget{
+  position: absolute;
+  right: 100%;
+  padding-right: 10px;
+}
+
+.editor-selectable .text{
+  padding: 5px 2px;
+  font-size: 14px;
+  -webkit-font-smoothing: auto;
+}
+.widget-has-popover{
+  opacity: 0;
+}
+
+.block-add{
+  width: 300px;
+}
