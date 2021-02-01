@@ -9,11 +9,11 @@
  * @license MIT License
  */
 
-namespace Coffee\Minify;
+namespace Cafe\Minify;
 
-use Coffee\Minify\Exceptions\FileImportException;
-use Coffee\Minify\PathConverter\ConverterInterface;
-use Coffee\Minify\PathConverter\Converter;
+use Cafe\Minify\Exceptions\FileImportException;
+use Cafe\Minify\PathConverter\ConverterInterface;
+use Cafe\Minify\PathConverter\Converter;
 
 /**
  * CSS minifier

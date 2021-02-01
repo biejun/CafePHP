@@ -53,7 +53,7 @@ if(!defined('PATH')) {
 define( 'ABSPATH', realpath(__DIR__ . '/..') . '/' );
 
 /* 定义系统核心层目录 (Non modifiable) */
-define( 'CORE', ABSPATH . 'cafe' );
+define( 'CAFE', ABSPATH . 'cafe' );
 /* 定义系统应用层目录 (Non modifiable) */
 define( 'APP', ABSPATH . 'app' );
 /* 定义系统配置目录 */

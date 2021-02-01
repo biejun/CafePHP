@@ -1,4 +1,4 @@
-<?php namespace Coffee\Cache;
+<?php namespace Cafe\Cache;
 
 class MemcacheXCache {
 	/**

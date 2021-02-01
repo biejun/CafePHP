@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2012, Matthias Mullie. All rights reserved
  * @license MIT License
  */
-namespace Coffee\Minify\Exceptions;
+namespace Cafe\Minify\Exceptions;
 
-use Coffee\Minify\Exception;
+use Cafe\Minify\Exception;
 
 /**
  * Basic Exception Class

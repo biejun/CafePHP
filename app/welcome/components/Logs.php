@@ -1,6 +1,6 @@
 <?php namespace App\Welcome\Components;
 
-use Coffee\Foundation\Component;
+use Cafe\Foundation\Component;
 
 class Logs extends Component
 {

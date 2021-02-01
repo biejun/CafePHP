@@ -5,12 +5,12 @@
  * An agile development core based on PHP.
  *
  * @version  1.0.0
- * @link     https://github.com/biejun/anyphp
+ * @link     https://github.com/biejun/CafePHP
  * @copyright Copyright (c) 2017-2018 Jun Bie
  * @license This content is released under the MIT License.
  */
 
-namespace Coffee;
+namespace Cafe;
 
 class Loader
 {
@@ -49,13 +49,13 @@ class Loader
     {
         static $_functions;
 
-        spl_autoload_register('Coffee\\Loader::autoload', true, true);
+        spl_autoload_register('Cafe\\Loader::autoload', true, true);
 
-        self::addNamespace([ 'Coffee' => CORE , 'App' => APP ]);
+        self::addNamespace([ 'Cafe' => CAFE , 'App' => APP ]);
 
         // 载入函数库，包含Polyfil
         if(!$_functions){
-            $file = CORE . '/Support/Functions.php';
+            $file = CAFE . '/Support/Functions.php';
             (file_exists($file)) && include $file;
             $_functions = true;
         }

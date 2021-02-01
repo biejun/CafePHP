@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2012, Matthias Mullie. All rights reserved
  * @license MIT License
  */
-namespace Coffee\Minify;
+namespace Cafe\Minify;
 
 /**
  * JavaScript Minifier Class

@@ -6,7 +6,7 @@
  *
  * @author Matthias Mullie <minify@mullie.eu>
  */
-namespace Coffee\Minify;
+namespace Cafe\Minify;
 
 /**
  * Base Exception Class

@@ -1,11 +1,11 @@
-<?php namespace Coffee\Cache;
+<?php namespace Cafe\Cache;
 /**
  * Cafe PHP
  *
  * An agile development core based on PHP.
  *
  * @version  1.0.0
- * @link     https://github.com/biejun/anyphp
+ * @link     https://github.com/biejun/CafePHP
  * @copyright Copyright (c) 2017-2018 Jun Bie
  * @license This content is released under the MIT License.
  */
@@ -49,13 +49,13 @@ class Cache
 
         if('xcache' === $extension && extension_loaded('xcache'))
         {
-            return new \Coffee\Cache\MemcacheXCache ();
+            return new \Cafe\Cache\MemcacheXCache ();
         } 
         elseif ($server)
         {
             if ($extension === 'redis' && extension_loaded ('redis'))
             {
-                $cache = new \Coffee\Cache\MemcacheRedis ();
+                $cache = new \Cafe\Cache\MemcacheRedis ();
             }
             elseif (extension_loaded ('memcache'))
             {

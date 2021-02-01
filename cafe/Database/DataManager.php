@@ -1,4 +1,4 @@
-<?php namespace Coffee\Database;
+<?php namespace Cafe\Database;
 
 use PDO;
 
@@ -8,7 +8,7 @@ use PDO;
  * An agile development core based on PHP.
  *
  * @version  1.0.0
- * @link     https://github.com/biejun/anyphp
+ * @link     https://github.com/biejun/CafePHP
  * @copyright Copyright (c) 2017-2018 Jun Bie
  * @license This content is released under the MIT License.
  */

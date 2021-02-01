@@ -1,6 +1,6 @@
 <?php
 
-namespace Coffee\Minify\PathConverter;
+namespace Cafe\Minify\PathConverter;
 
 /**
  * Convert paths relative from 1 file to another.

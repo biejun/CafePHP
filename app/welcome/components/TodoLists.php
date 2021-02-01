@@ -1,7 +1,7 @@
 <?php namespace App\Welcome\Components;
 
-use Coffee\Foundation\Component;
-use Coffee\Support\Str;
+use Cafe\Foundation\Component;
+use Cafe\Support\Str;
 
 class TodoLists extends Component
 {

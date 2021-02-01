@@ -1,4 +1,4 @@
-<?php namespace Coffee\Minify;
+<?php namespace Cafe\Minify;
 /**
  * Abstract minifier class
  *
@@ -10,7 +10,7 @@
  */
 
 
-use Coffee\Minify\Exceptions\IOException;
+use Cafe\Minify\Exceptions\IOException;
 /**
  * Abstract minifier class.
  *

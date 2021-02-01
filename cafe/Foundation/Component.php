@@ -1,11 +1,11 @@
-<?php namespace Coffee\Foundation;
+<?php namespace Cafe\Foundation;
 /**
  * Cafe PHP
  *
  * An agile development core based on PHP.
  *
  * @version  1.0.0
- * @link     https://github.com/biejun/anyphp
+ * @link     https://github.com/biejun/CafePHP
  * @copyright Copyright (c) 2017-2018 Jun Bie
  * @license This content is released under the MIT License.
  */
@@ -13,12 +13,12 @@
 /**
  * 系统应用层组件核心代码
  *
- * @package Coffee\Foundation\Component
+ * @package Cafe\Foundation\Component
  * @since 0.0.5 所有应用数据操作基于此类
  */
 
-use Coffee\DataBase\DataManager;
-use Coffee\Cache\Cache;
+use Cafe\DataBase\DataManager;
+use Cafe\Cache\Cache;
 
 abstract class Component
 {
