@@ -1,4 +1,5 @@
 <?php namespace Cafe\Foundation;
+
 /**
  * Cafe PHP
  *
@@ -46,27 +47,23 @@ class App
     /* 设置系统环境变量 */
     private function setEnvironment()
     {
-        $this->environment( !isset($_SERVER['CI_ENV'])?:$_SERVER['CI_ENV'] );
+        $this->environment(!isset($_SERVER['CI_ENV'])?:$_SERVER['CI_ENV']);
     }
 
     private function environment($env)
     {
         $env = $env || IS_DEVELOPMENT ? 'development' : 'production';
 
-        switch ($env)
-        {
+        switch ($env) {
             case 'production':
                 error_reporting(-1);
                 ini_set('display_errors', 0);
             break;
             case 'development':
                 ini_set('display_errors', 1);
-                if (version_compare(PHP_VERSION, '5.3', '>='))
-                {
+                if (version_compare(PHP_VERSION, '5.3', '>=')) {
                     error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
-                }
-                else
-                {
+                } else {
                     error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
                 }
             break;
@@ -86,22 +83,22 @@ class App
     /* 系统异常和错误处理 */
     public function exceptionAndErrorHandler($response)
     {
-        set_error_handler(function($errNo, $errStr, $errFile, $errLine) use ($response) {
+        set_error_handler(function ($errNo, $errStr, $errFile, $errLine) use ($response) {
             $error = [];
             $error[] = 'Message '.$errStr;
             $error[] = 'File '.$errFile;
             $error[] = 'Line '.$errLine;
-            $response->text(implode("\n",$error));
+            $response->text(implode("\n", $error));
         });
 
-        set_exception_handler(function($e)  use ($response) {
+        set_exception_handler(function ($e) use ($response) {
             $exception = [];
             $exception[] = 'Service exception.';
             $exception[] = 'Message '.$e->getMessage();
             $exception[] = 'File '.$e->getFile();
             $exception[] = 'Line '.$e->getLine();
             $exception[] = 'Trace at '.$e->getTraceAsString();
-            $response->text(implode("\n",$exception));
+            $response->text(implode("\n", $exception));
         });
     }
 
@@ -114,7 +111,7 @@ class App
         $paths = $request->fetchPath();
         $app = array_shift($paths);
 
-        if(!empty($app)) {
+        if (!empty($app)) {
             $this->routes[] = APP . '/' .strtolower($app). '/route.php';
             $this->actions[] = APP . '/' .strtolower($app).'/action.php';
         }

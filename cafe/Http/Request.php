@@ -1,4 +1,5 @@
 <?php namespace Cafe\Http;
+
 /**
  * Cafe PHP
  *
@@ -14,7 +15,7 @@ class Request
 {
     public $method;
 
-    public $uri = NULL;
+    public $uri = null;
 
     public function __construct()
     {
@@ -25,7 +26,7 @@ class Request
 
     public function getUri()
     {
-        if(!$this->uri) {
+        if (!$this->uri) {
             if (isset($_SERVER['REQUEST_URI'])) {
                 return self::safeUrl($_SERVER['REQUEST_URI']);
             }
@@ -75,13 +76,13 @@ class Request
     */
     public static function buildUrl($params)
     {
-        return (isset($params['scheme']) ? $params['scheme'] . '://' : NULL)
-        . (isset($params['user']) ? $params['user'] . (isset($params['pass']) ? ':' . $params['pass'] : NULL) . '@' : NULL)
-        . (isset($params['host']) ? $params['host'] : NULL)
-        . (isset($params['port']) ? ':' . $params['port'] : NULL)
-        . (isset($params['path']) ? $params['path'] : NULL)
-        . (isset($params['query']) ? '?' . $params['query'] : NULL)
-        . (isset($params['fragment']) ? '#' . $params['fragment'] : NULL);
+        return (isset($params['scheme']) ? $params['scheme'] . '://' : null)
+        . (isset($params['user']) ? $params['user'] . (isset($params['pass']) ? ':' . $params['pass'] : null) . '@' : null)
+        . (isset($params['host']) ? $params['host'] : null)
+        . (isset($params['port']) ? ':' . $params['port'] : null)
+        . (isset($params['path']) ? $params['path'] : null)
+        . (isset($params['query']) ? '?' . $params['query'] : null)
+        . (isset($params['fragment']) ? '#' . $params['fragment'] : null);
     }
 
     public function getMethod()
@@ -92,7 +93,7 @@ class Request
     public function parseUrl()
     {
         $info = [];
-        if ( false !== strpos($this->uri,'?') ){
+        if (false !== strpos($this->uri, '?')) {
             $info = parse_url($this->uri);
             return $info;
         }
@@ -106,12 +107,12 @@ class Request
 
     public function fetchPath($path = '')
     {
-        return $this->splitUrl( ((empty($path)) ? $this->getPath() : $path) );
+        return $this->splitUrl(((empty($path)) ? $this->getPath() : $path));
     }
 
     public function getPath()
     {
-        $this->uri = preg_replace('/\.html$/i','',$this->uri);
+        $this->uri = preg_replace('/\.html$/i', '', $this->uri);
         $info = $this->parseUrl();
 
         return (isset($info['path'])) ? $info['path'] : $this->uri;
@@ -122,8 +123,8 @@ class Request
         $query = [];
         $info = $this->parseUrl();
 
-        if(isset($info['query'])) {
-            parse_str($info['query'],$query);
+        if (isset($info['query'])) {
+            parse_str($info['query'], $query);
         }
         return $query;
     }

@@ -1,4 +1,5 @@
 <?php namespace Cafe\Foundation;
+
 /**
  * Cafe PHP
  *
@@ -34,36 +35,40 @@ abstract class Component
         $this->cookie = new Cookie;
         
         /* 数据库 */
-        $this->bind('mysql',function(){
+        $this->bind('mysql', function () {
             static $_conf, $_db;
-            if(is_null($_conf)) {
+            if (is_null($_conf)) {
                 $file = CONFIG . '/config.db.php';
-                if( !file_exists($file) ){
+                if (!file_exists($file)) {
                     throw new \Exception("数据库配置文件不存在！");
                 }
                 $_conf = include($file);
             }
-            if(is_null($_db)){
+            if (is_null($_db)) {
                 $_db = new DataManager($_conf);
             }
             return $_db;
         });
 
         /* 数据缓存 */
-        $this->bind('data',function(){
+        $this->bind('data', function () {
             return Cache::init();
         });
         /* 日志缓存 */
-        $this->bind('log',function(){
+        $this->bind('log', function () {
             return Cache::init(['folder'=> STORAGE .'/logs']);
         });
 
-        if( method_exists( $this, '_initialize' ) ) $this->_initialize();
+        if (method_exists($this, '_initialize')) {
+            $this->_initialize();
+        }
     }
 
     public function bind($abstract, $concrete = null)
     {
-        if(isset($this->bindings[$abstract])) return false;
+        if (isset($this->bindings[$abstract])) {
+            return false;
+        }
         $this->bindings[$abstract] = $concrete;
     }
 
@@ -75,10 +80,11 @@ abstract class Component
     /* 执行SQL语句的方法 */
     public function db()
     {
-        return call_user_func_array( array(
-		  $this->getBind('mysql'), 'prepare'),
-		  func_get_args()
-		);
+        return call_user_func_array(
+            array(
+          $this->getBind('mysql'), 'prepare'),
+            func_get_args()
+        );
     }
 
     /**
@@ -94,29 +100,28 @@ abstract class Component
         $reflection = new \ReflectionClass($this);
         $parentClass = $reflection->getParentClass();
 
-        if($parentClass){
-
+        if ($parentClass) {
             $parentMethods = $parentClass->getMethods();
             // 过滤父类方法
             while ($it = current($parentMethods)) {
-                if($func === $it->getName()){
+                if ($func === $it->getName()) {
                     return false;
-                }else{
+                } else {
                     next($parentMethods);
                 }
             }
-            if($reflection->hasMethod($func)){
+            if ($reflection->hasMethod($func)) {
                 $method = $reflection->getMethod($func);
-                if($method->isPublic()){
+                if ($method->isPublic()) {
                     $params = [];
                     foreach ($method->getParameters() as $arg) {
-                        if($args[$arg->name]){
+                        if ($args[$arg->name]) {
                             $params[$arg->name] = $args[$arg->name];
-                        }else{
+                        } else {
                             $params[$arg->name] = null;
                         }
                     }
-                    return $method->invokeArgs($this,$params);
+                    return $method->invokeArgs($this, $params);
                 }
             }
         }
@@ -137,21 +142,19 @@ abstract class Component
      */
     public static function instance($component)
     {
-        if(empty($component)) return false;
-        $parts = (strpos($component,'@')!==false) ? explode( '@', $component ) : [ucfirst($component)];
+        if (empty($component)) {
+            return false;
+        }
+        $parts = (strpos($component, '@')!==false) ? explode('@', $component) : [ucfirst($component)];
         $app = array_shift($parts);
         $appNameSpace = '\\App\\'.ucfirst($app).'\\Components\\';
 
-        if( count($parts) > 0 )
-        {
+        if (count($parts) > 0) {
             $className = $appNameSpace;
-            foreach ($parts as $value)
-            {
+            foreach ($parts as $value) {
                 $className .= ucfirst($value);
             }
-        }
-        else
-        {
+        } else {
             $className = $appNameSpace.ucfirst($app);
         }
         return new $className();
@@ -173,5 +176,7 @@ abstract class Component
      *
      * @return void
      */
-    public function _initialize(){}
+    public function _initialize()
+    {
+    }
 }

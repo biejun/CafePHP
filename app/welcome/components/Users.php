@@ -7,25 +7,26 @@ class Users extends Component
     /* 添加一个用户 */
     public function add($user)
     {
-        if(!$this->checkUsername($user['name'])) {
-
-            $this->db("INSERT INTO users (`name`,`password`,`created`) VALUES (?,?,?)"
-                ,$user['name']
-                ,password_hash($user['password'],PASSWORD_BCRYPT)
-                ,date('Y-m-d H:i:s')
+        if (!$this->checkUsername($user['name'])) {
+            $this->db(
+                "INSERT INTO users (`name`,`password`,`created`) VALUES (?,?,?)",
+                $user['name'],
+                password_hash($user['password'], PASSWORD_BCRYPT),
+                date('Y-m-d H:i:s')
             );
             /* 取出最新插入的ID */
             $uid = $this->db()->id();
             // 输出结果 (`uid`,`key`,`value`) VALUES (1,'is_admin','false'),(1,'email','12345@demo.com')
-            $meta = $this->db()->insertRows(['uid','key','value']
-                ,[
+            $meta = $this->db()->insertRows(
+                ['uid','key','value'],
+                [
                     [$uid,'is_admin', isset($user['is_admin']) ? $user['is_admin'] : 'false']
                     ,[$uid,'email', isset($user['email']) ? $user['email'] : '']
                     ,[$uid,'avatar', isset($user['avatar']) ? $user['avatar'] : '']
                     ,[$uid,'description', isset($user['description']) ? $user['description'] : '']
                     ,[$uid,'level', isset($user['level']) ? $user['level'] : '1']
-                    ,[$uid,'safetycode', isset($user['safetycode']) 
-                        ? password_hash($user['safetycode'],PASSWORD_BCRYPT)
+                    ,[$uid,'safetycode', isset($user['safetycode'])
+                        ? password_hash($user['safetycode'], PASSWORD_BCRYPT)
                         : '']
                 ]
             );
@@ -72,18 +73,19 @@ class Users extends Component
     /* 更新登录令牌 */
     public function updateToken($username, $days = 1)
     {
-        $timeout = date('Y-m-d H:i:s',strtotime("+{$days} day")); // 登录状态记录一天
+        $timeout = date('Y-m-d H:i:s', strtotime("+{$days} day")); // 登录状态记录一天
         $data = [
             'logged' => date('Y-m-d H:i:s'),
             'timeout' => $timeout,
-            'token' => md5( HASH . md5($username) . $timeout )
+            'token' => md5(HASH . md5($username) . $timeout)
         ];
 
-        $this->db("UPDATE users SET `logged`=?,`timeout`=?,`token`=? WHERE `name`=?"
-            ,$data['logged']
-            ,$data['timeout']
-            ,$data['token']
-            ,$username
+        $this->db(
+            "UPDATE users SET `logged`=?,`timeout`=?,`token`=? WHERE `name`=?",
+            $data['logged'],
+            $data['timeout'],
+            $data['token'],
+            $username
         );
         
         return $data;
@@ -93,9 +95,11 @@ class Users extends Component
     public function checkToken($loginToken)
     {
         $currentTime = date('Y-m-d H:i:s');
-        $verifications = $this->db("SELECT id,name,timeout FROM users WHERE `token`=?",
-            $loginToken)->row();
-        if($verifications && $currentTime < $verifications['timeout']){
+        $verifications = $this->db(
+            "SELECT id,name,timeout FROM users WHERE `token`=?",
+            $loginToken
+        )->row();
+        if ($verifications && $currentTime < $verifications['timeout']) {
             return $verifications;
         }
         return false;

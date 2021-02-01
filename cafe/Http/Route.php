@@ -1,4 +1,5 @@
 <?php namespace Cafe\Http;
+
 /**
  * Cafe PHP
  *
@@ -24,7 +25,6 @@ class Route
 
     public function __construct($methods, $uri, $action)
     {
-
         $this->methods = (array) $methods;
 
         $this->uri = $uri;
@@ -48,13 +48,14 @@ class Route
 
     public function match($request, $reqPattern)
     {
-
         $uriPattern = $request->fetchPath($this->uri);
 
         // 如果请求地址长度大于路由配置地址直接退出
-        if(count($reqPattern) > count($uriPattern)) return false;
+        if (count($reqPattern) > count($uriPattern)) {
+            return false;
+        }
 
-        return $this->parseArg($reqPattern,$uriPattern);
+        return $this->parseArg($reqPattern, $uriPattern);
     }
 
     private function parseArg($reqPattern, $uriPattern)
@@ -62,55 +63,53 @@ class Route
         // 匹配链接中带:的参数
         preg_match_all('|(?mi-Us):\\w+\\??|', $this->uri, $matches);
 
-        foreach ( $uriPattern as $k => $v ) {
+        foreach ($uriPattern as $k => $v) {
 
             // 如果路由配置中存在参数
-            if ( isset($matches[0]) && in_array( $v, $matches[0] ) ) {
-
+            if (isset($matches[0]) && in_array($v, $matches[0])) {
                 $paramName = trim($v, ':');
 
                 // 懒惰匹配
                 if (substr($v, -1) == '?') {
-
                     $paramName = rtrim($paramName, '?');
 
                     if (array_key_exists($k, $reqPattern)) {
-
                         $this->args[$paramName] = $reqPattern[$k];
                         continue;
-                    }else{
-                        $this->args[$paramName] = NULL;
+                    } else {
+                        $this->args[$paramName] = null;
                         return true;
                     }
-
-                }else{
+                } else {
                     // 全局匹配
                     if (array_key_exists($k, $reqPattern)) {
                         $this->args[$paramName] = $reqPattern[$k];
                         continue;
-                    }else{
+                    } else {
                         return false;
                     }
                 }
             }
             // 无参数请求
-            $uriValue = array_key_exists( $k, $reqPattern ) ? $reqPattern[$k] : NULL;
+            $uriValue = array_key_exists($k, $reqPattern) ? $reqPattern[$k] : null;
 
-            if ($v != $uriValue) return false;
+            if ($v != $uriValue) {
+                return false;
+            }
         }
         return true;
     }
 
-    public function __set($key,$value)
+    public function __set($key, $value)
     {
-        if(!isset($this->container[$key])){
+        if (!isset($this->container[$key])) {
             $this->container[$key] = $value;
         }
     }
 
     public function __get($name)
     {
-        if(isset($this->container[$name])){
+        if (isset($this->container[$name])) {
             return $this->container[$name];
         }
         return false;

@@ -1,4 +1,5 @@
 <?php namespace Cafe\Http;
+
 /**
  * Cafe PHP
  *
@@ -16,7 +17,6 @@ use Cafe\Foundation\Action;
 
 class RouteCollection implements Countable
 {
-
     protected $routes = [];
 
     protected $allRoutes = [];
@@ -41,29 +41,23 @@ class RouteCollection implements Countable
 
     public function matchs($request, $response)
     {
-
         $route = $this->matchAgainstRoutes($this->get($request->getMethod()), $request);
 
         $action = new Action;
 
         $action->on('route:init');
 
-        if( $route ){
-
-            if( is_callable( $route->action ) ) {
-
+        if ($route) {
+            if (is_callable($route->action)) {
                 $action->on('route:before');
 
-                call_user_func_array($route->action,$route->args);
+                call_user_func_array($route->action, $route->args);
 
                 $action->on('route:after');
-
-            }else{
-
+            } else {
                 throw new \Exception("路由第二个参数必须为一个回调函数");
             }
-
-        }else{
+        } else {
             $action->on('route:failed');
         }
     }
@@ -78,8 +72,8 @@ class RouteCollection implements Countable
     {
         $reqPattern = $request->fetchPath();
 
-        return Arr::first($routes,function($value) use ($request, $reqPattern){
-            return $value->match($request,$reqPattern);
+        return Arr::first($routes, function ($value) use ($request, $reqPattern) {
+            return $value->match($request, $reqPattern);
         });
     }
 

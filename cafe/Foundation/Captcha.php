@@ -1,4 +1,5 @@
 <?php namespace Cafe\Foundation;
+
 /**
  * Cafe PHP
  *

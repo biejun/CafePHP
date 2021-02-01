@@ -66,10 +66,11 @@ class Container
 
     public function view($template, $vars = null)
     {
-        $this->response->html( $this->view->tpl($template, $vars) );
+        $this->response->html($this->view->tpl($template, $vars));
     }
 
-    public function captchaImage($id) {
+    public function captchaImage($id)
+    {
         //$content = ;
         $this->response->header('Content-Type', 'image/jpeg')
             ->write($this->captcha->create($id))
@@ -83,22 +84,18 @@ class Container
         $route = new Router;
 
         // 加载路由
-        array_walk($appFiles['routes'], function($file,$deep,$route)
-        {
-            if(file_exists($file))
-            {
+        array_walk($appFiles['routes'], function ($file, $deep, $route) {
+            if (file_exists($file)) {
                 include $file;
             }
-        },$route);
+        }, $route);
 
         // 加载动作
-        array_walk($appFiles['actions'], function($file,$deep,$action)
-        {
-            if(file_exists($file))
-            {
+        array_walk($appFiles['actions'], function ($file, $deep, $action) {
+            if (file_exists($file)) {
                 include $file;
             }
-        },$this->action);
+        }, $this->action);
 
         $route->dispatch($this->request, $this->response);
     }

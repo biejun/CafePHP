@@ -1,4 +1,5 @@
 <?php namespace Cafe\Foundation;
+
 /**
  * Cafe PHP
  *
@@ -35,8 +36,7 @@ class Cookie
 
         $httponly = '';
 
-        if(!empty($httponly))
-        {
+        if (!empty($httponly)) {
             ini_set('session.cookie_httponly', 1);
         }
     }
@@ -109,7 +109,9 @@ class Cookie
     {
         $key = $this->prefix . $key;
 
-        if (!isset($_COOKIE[$key])) return;
+        if (!isset($_COOKIE[$key])) {
+            return;
+        }
 
         setcookie($key, '', $_SERVER['REQUEST_TIME'] - 3600, $this->path, $this->domain, $this->secure, $this->httponly);
 

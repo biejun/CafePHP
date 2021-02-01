@@ -26,11 +26,8 @@ class Loader
         $prefix = $class;
 
         while (false !== $pos = strrpos($prefix, '\\')) {
-
             $prefix = substr($class, 0, $pos + 1);
-
             $relativeClass = substr($class, $pos + 1);
-
             $mappedFile = self::loadMappedFile($prefix, $relativeClass);
             if ($mappedFile) {
                 return $mappedFile;
@@ -54,7 +51,7 @@ class Loader
         self::addNamespace([ 'Cafe' => CAFE , 'App' => APP ]);
 
         // 载入函数库，包含Polyfil
-        if(!$_functions){
+        if (!$_functions) {
             $file = CAFE . '/Support/Functions.php';
             (file_exists($file)) && include $file;
             $_functions = true;
@@ -91,20 +88,18 @@ class Loader
 
     protected static function loadMappedFile($prefix, $relativeClass)
     {
-
         if (isset(self::$_namespace[$prefix]) === false) {
             return false;
         }
 
         foreach (self::$_namespace[$prefix] as $baseDir) {
-
             $file = $baseDir
                 . str_replace('\\', '/', $relativeClass)
                 . '.php';
 
             if (self::requireFile($file)) {
                 return $file;
-            }else{
+            } else {
                 throw new \Exception("没有找到".$file."文件", 1);
             }
         }

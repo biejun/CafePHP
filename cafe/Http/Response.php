@@ -1,4 +1,5 @@
 <?php namespace Cafe\Http;
+
 /**
  * Cafe PHP
  *
@@ -12,7 +13,8 @@
 
 use Cafe\Http\Request;
 
-class Response{
+class Response
+{
 
     # 响应状态码
     protected $status = 200;
@@ -96,42 +98,49 @@ class Response{
         511 => 'Network Authentication Required'
     );
 
-    public function status($code = null) {
-        if ($code === null) return $this->status;
+    public function status($code = null)
+    {
+        if ($code === null) {
+            return $this->status;
+        }
         if (array_key_exists($code, self::$codes)) {
             $this->status = $code;
-        }else {
+        } else {
             throw new \Exception('Invalid status code.');
         }
         return $this;
     }
-    public function header($name, $value = null) {
+    public function header($name, $value = null)
+    {
         if (is_array($name)) {
             foreach ($name as $k => $v) {
                 $this->headers[$k] = $v;
             }
-        }else {
+        } else {
             $this->headers[$name] = $value;
         }
         return $this;
     }
-    public function headers() {
+    public function headers()
+    {
         return $this->headers;
     }
-    public function write($str) {
+    public function write($str)
+    {
         $this->body .= $str;
         return $this;
     }
-    public function sendHeaders() {
+    public function sendHeaders()
+    {
         $expires = EXPIRES;
         if ($expires) {
             $expires = is_int($expires) ? $expires : strtotime($expires);
             $this->headers['Expires'] = gmdate('D, d M Y H:i:s', $expires) . ' GMT';
             $this->headers['Cache-Control'] = 'max-age='.($expires - time());
-            if (isset($this->headers['Pragma']) && $this->headers['Pragma'] == 'no-cache'){
+            if (isset($this->headers['Pragma']) && $this->headers['Pragma'] == 'no-cache') {
                 unset($this->headers['Pragma']);
             }
-        }else {
+        } else {
             $this->headers['Expires'] = 'Thu, 29 Oct 1992 08:30:00 GMT';
             $this->headers['Pragma'] = 'no-cache';
         }
@@ -145,13 +154,14 @@ class Response{
                 ),
                 true
             );
-        }else {
+        } else {
             header(
                 sprintf(
                     '%s %d %s',
                     (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1'),
                     $this->status,
-                    self::$codes[$this->status]),
+                    self::$codes[$this->status]
+                ),
                 true,
                 $this->status
             );
@@ -161,7 +171,7 @@ class Response{
                 foreach ($value as $v) {
                     header($field.': '.$v, false);
                 }
-            }else {
+            } else {
                 header($field.': '.$value);
             }
         }
@@ -170,7 +180,8 @@ class Response{
         }
         return $this;
     }
-    public function send() {
+    public function send()
+    {
         if (ob_get_length() > 0) {
             ob_end_clean();
         }
@@ -205,7 +216,7 @@ class Response{
             ->send();
     }
 
-    public function json($data,$success=true)
+    public function json($data, $success=true)
     {
         $res = new \StdClass;
         $res->success = $success;
@@ -215,9 +226,9 @@ class Response{
             ->send();
     }
 
-    public function jsonp($data,$success=true)
+    public function jsonp($data, $success=true)
     {
-        $callback = (new Request)->get('callback',uniqid('Callback_'));
+        $callback = (new Request)->get('callback', uniqid('Callback_'));
         $res = new \StdClass;
         $res->success = $success;
         $res->data = $data;
@@ -242,13 +253,13 @@ class Response{
 
     public function redirect($location)
     {
-        header('Location: '.Request::safeUrl($location) , false, 302);
+        header('Location: '.Request::safeUrl($location), false, 302);
         exit;
     }
 
     public function location($location)
     {
-        header('Location: '.$this->appPath.$location , false, 302);
+        header('Location: '.$this->appPath.$location, false, 302);
         exit;
     }
 
@@ -258,7 +269,7 @@ class Response{
     * @param string $suffix 附加地址
     * @param string $default 默认来路
     */
-    public function goBack($suffix = NULL, $default = NULL)
+    public function goBack($suffix = null, $default = null)
     {
         //获取来源
         $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
@@ -285,7 +296,7 @@ class Response{
                 $referer = Request::buildUrl($parts);
             }
             $this->redirect($referer);
-        } else if (!empty($default)) {
+        } elseif (!empty($default)) {
             $this->redirect($default);
         }
     }
