@@ -51,20 +51,29 @@ if(!defined('PATH')) {
 
 /* 定义系统绝对路径 (Non modifiable) */
 define( 'ABSPATH', realpath(__DIR__ . '/..') . '/' );
+
 /* 定义系统核心层目录 (Non modifiable) */
-define( 'CORE', ABSPATH . 'Coffee' );
+define( 'CORE', ABSPATH . 'cafe' );
 /* 定义系统应用层目录 (Non modifiable) */
-define( 'APP', ABSPATH . 'App' );
+define( 'APP', ABSPATH . 'app' );
 /* 定义系统配置目录 */
-define( 'CONFIG', ABSPATH . 'Config' );
+define( 'CONFIG', ABSPATH . 'config' );
 /* 定义系统前端文件目录 */
-define( 'VIEW', ABSPATH . 'View' );
+define( 'VIEW', ABSPATH . 'view' );
+/* 定义系统缓存目录 */
+define( 'STORAGE', ABSPATH . 'storage' );
+/* 定义系统前端资源目录 */
+define( 'SOURCES_DIR', 'sources' );
+define( 'SOURCES', ABSPATH . 'public/'. SOURCES_DIR );
+/* 定义系统前端资源输出目录 */
+define( 'STATIC_ASSETS_DIR', 'static-assets' );
+define( 'STATIC_ASSETS', ABSPATH . 'public/'. STATIC_ASSETS_DIR );
 /**
  * 定义系统运行环境
  *
  * 0 生产环境 1 开发环境
  *
- * 部署到生产环境后请务必将此处修改为0
+ * 部署到生产环境后请务必将此处修改为 0
  */
 define( 'IS_DEVELOPMENT', 1 );
 /* 定义系统时区 */

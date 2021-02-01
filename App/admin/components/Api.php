@@ -13,7 +13,7 @@ class Api extends Component
 	{
 		$page = filter_var($page,FILTER_VALIDATE_INT,array("min_range"=>1));
 		$limit = filter_var($limit,FILTER_VALIDATE_INT,array("max_range"=>100));
-		return $this->load('admin@logs')->getLoginLogs()->result($page, $limit);
+		return $this->load('admin@logs')->getData('logged')->page($page, $limit);
 	}
 
 	public function todolists($page, $limit)
@@ -21,7 +21,7 @@ class Api extends Component
 		$uid = $this->session->get('login_uid');
 		$page = filter_var($page,FILTER_VALIDATE_INT,array("min_range"=>1));
 		$limit = filter_var($limit,FILTER_VALIDATE_INT,array("max_range"=>100));
-		return $this->load('admin@todolists')->get($uid)->result();
+		return $this->load('admin@todolists')->getData($uid)->page($page, $limit);
 	}
 
 	public function users($page, $limit)
@@ -35,6 +35,6 @@ class Api extends Component
 	{
 		$page = filter_var($page,FILTER_VALIDATE_INT,array("min_range"=>1));
 		$limit = filter_var($limit,FILTER_VALIDATE_INT,array("max_range"=>100));
-		return $this->load('admin@logs')->getOperateLogs()->result($page, $limit);	
+		return $this->load('admin@logs')->getData('operate')->page($page, $limit);	
 	}
 }

@@ -16,12 +16,13 @@ class Options extends Component
 
 	public function update($data)
 	{
-		$query = "INSERT INTO ~prefix~options (id,name,alias,value,type,description,rules) VALUES";
+		$insert = "INSERT INTO ~prefix~options (id,name,alias,value,type,description,rules) VALUES ~replace~ ON DUPLICATE KEY UPDATE value=VALUES(value);";
+		$values = "";
 		foreach ($data as $object) {
-			$query .= "(\"$object->id\",\"$object->name\",\"$object->alias\",
+			$values .= "(\"$object->id\",\"$object->name\",\"$object->alias\",
 					\"$object->value\",\"$object->type\",\"$object->description\",\"$object->rules\"),";
 		}
-		$query = rtrim($query,",")." ON DUPLICATE KEY UPDATE value=VALUES(value)";
-		$this->db($query)->query();
+		$values = rtrim($values,",");
+		$this->db($insert, $values)->query();
 	}
 }

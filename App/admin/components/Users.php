@@ -34,7 +34,7 @@ class Users extends Component
         }
     }
 
-    /* 获取用户详细 */
+    /* 获取单个用户详细 */
     public function getMeta($uid)
     {
         return $this->db("SELECT max(case `key` when 'is_admin' then `value` else 'false' end) is_admin,

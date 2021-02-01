@@ -1,47 +1,47 @@
 -- 用户
 
-DROP TABLE IF EXISTS `~prefix~users`;
-CREATE TABLE IF NOT EXISTS `~prefix~users` (
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) COLLATE ~collate~ NOT NULL DEFAULT '',
-  `password` varchar(60) COLLATE ~collate~ NOT NULL DEFAULT '',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `logged` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `timeout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `token` varchar(32) COLLATE ~collate~ NOT NULL DEFAULT '',
+  `name` varchar(30) NOT NULL DEFAULT '',
+  `password` varchar(60) NOT NULL DEFAULT '',
+  `created` datetime DEFAULT NULL,
+  `logged` datetime DEFAULT NULL,
+  `timeout` datetime DEFAULT NULL,
+  `token` varchar(32) NOT NULL DEFAULT '',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=~charset~ COLLATE=~collate~ AUTO_INCREMENT=1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=1;
 
 -- 用户详细
 
-DROP TABLE IF EXISTS `~prefix~usermeta`;
-CREATE TABLE IF NOT EXISTS `~prefix~usermeta` (
+DROP TABLE IF EXISTS `usermeta`;
+CREATE TABLE IF NOT EXISTS `usermeta` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uid` int(10) unsigned NOT NULL DEFAULT '0',
-  `key` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
-  `value` text COLLATE ~collate~ NOT NULL,
+  `key` varchar(100) NOT NULL DEFAULT '',
+  `value` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`),
   KEY `key` (`key`)
-) ENGINE=MyISAM DEFAULT CHARSET=~charset~ COLLATE=~collate~ AUTO_INCREMENT=1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=1;
 
-DROP TABLE IF EXISTS `~prefix~options`;
-CREATE TABLE IF NOT EXISTS `~prefix~options` (
+DROP TABLE IF EXISTS `options`;
+CREATE TABLE IF NOT EXISTS `options` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
-  `alias` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
-  `value` text COLLATE ~collate~ NOT NULL,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `alias` varchar(200) NOT NULL DEFAULT '',
+  `value` text NOT NULL,
   `type` enum('input','textarea','select','switch') NOT NULL DEFAULT 'input',
-  `description` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
-  `rules` nvarchar(255) NOT NULL DEFAULT 'text',
+  `description` varchar(200) NOT NULL DEFAULT '',
+  `rules` varchar(100) NOT NULL DEFAULT 'text',
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=~charset~ COLLATE=~collate~ AUTO_INCREMENT=13;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=13;
 
-INSERT INTO `~prefix~options` (`id`,`name`,`alias`,`value`,`type`,`description`,`rules`) VALUES
-(1,'title','站点标题','','input','','text|required')
+INSERT INTO `options` (`id`,`name`,`alias`,`value`,`type`,`description`,`rules`) VALUES
+(1,'title','站点标题','站点标题','input','','text|required')
 ,(2,'subtitle','副标题','','input','','text')
 ,(3,'keywords','关键词','','input','多个关键词用英文逗号分隔','text')
 ,(4,'description','站点描述','','textarea','','maxLength=100|rows=3')
@@ -54,14 +54,14 @@ INSERT INTO `~prefix~options` (`id`,`name`,`alias`,`value`,`type`,`description`,
 ,(11,'smtp_password','邮件服务器密码','','input','','password')
 ,(12,'smtp_email','发件邮箱','','input','','email');
 
-DROP TABLE IF EXISTS `~prefix~optionextra`;
-CREATE TABLE IF NOT EXISTS `~prefix~optionextra` (
+DROP TABLE IF EXISTS `optionextra`;
+CREATE TABLE IF NOT EXISTS `optionextra` (
   `id` int(10) unsigned NOT NULL,
-  `key` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
-  `value` nvarchar(255) COLLATE ~collate~ NOT NULL DEFAULT '',
+  `key` varchar(200) NOT NULL DEFAULT '',
+  `value` varchar(200) NOT NULL DEFAULT '',
   KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=~charset~ COLLATE=~collate~;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- INSERT INTO `~prefix~optionextra` (`id`,`key`,`value`) VALUES
+-- INSERT INTO `optionextra` (`id`,`key`,`value`) VALUES
 -- (6,'不允许','0')
 -- ,(6,'允许','1');

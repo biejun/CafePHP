@@ -41,8 +41,9 @@ class Logs extends Component
 		return array();
 	}
 
-	public function delete()
+	public function delete($type)
 	{
-
+		$id = ('logged' === $type) ? $this->loggedId : $this->operateId;
+		return $this->getBind('log')->delete($id);
 	}
 }

@@ -3,7 +3,7 @@
   'host' => 'localhost',
   'user' => 'root',
   'password' => 'root',
-  'name' => 'coffee',
-  'port' => NULL,
-  'prefix' => 'coffee_',
+  'name' => 'cafe',
+  'port' => 8889,
+  'charset' => 'utf8mb4',
 );

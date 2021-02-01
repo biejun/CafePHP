@@ -7,7 +7,7 @@ class Install extends Component
 
 	public function import()
 	{
-		$file = 'Config/default_install.sql';
+		$file = CONFIG.'/default_install.sql';
 		if(file_exists($file)){
 			$sql = file_get_contents($file);
 			if(empty($sql)) throw new \Exception("{$file}文件中没有找到可执行的SQL语句");

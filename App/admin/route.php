@@ -7,78 +7,17 @@ $route->group('/admin',function($route){
         $this->view('index');
     });
 
-    /* 路径为 /admin/login */
-    $route->get('/login',function(){
-        $csrf = strtoupper( md5( uniqid(rand(), true) ) );
-        $this->session->set('login_csrf',$csrf);
-        $this->view->assign('__csrf__',$csrf);
-        $this->view('login');
+    $route->get('/profile',function(){
+        $this->action->on('check:login');
+        $uid = $this->session->get('login_uid');
+        $this->view->assign('data', $this->load('admin@users')->getMeta($uid));
+        $this->view('account-profile');
     });
 
-    /* 退出登录 */
-    $route->get('/logout',function(){
-        $this->session->destroy();
-        $this->cookie->delete('user_login_token');
-        $this->response->location('login');
-    });
-
-    /* 控制台页面 */
-    $route->group('/console',function($route){
-
-        /* 路径为 /admin/console/backup */
-        $route->get('/backup',function(){
-            $this->action->on('check:login');
-            $this->view->assign('data',$this->load('admin')->getBackupFiles());
-            $this->view('console-backup');
-        });
-
-        $route->post('/add/todo',function(){
-            $data = $this->request->post();
-            $uid = $this->session->get('login_uid');
-            $text = filter_var($data['text'],FILTER_UNSAFE_RAW);
-            $level = filter_var($data['level'],FILTER_VALIDATE_INT);
-            $this->load('admin@todolists')->add($uid, $text, $level);
-            $this->response->json('创建成功！');
-        });
-
-        $route->post('/backup/export',function(){
-            $this->action->on('check:login');
-            $username = $this->session->get('login_name');
-            if($this->load('admin')->exportBackup()){
-                $this->load('admin@logs')->addOperateLog($username,'备份了数据库');
-                $this->action->on('admin:notify','success','备份成功!');
-            }else{
-                $this->action->on('admin:notify','error','备份失败!');
-            }
-            $this->response->goBack();
-        });
-
-        $route->post('/backup/restore',function(){
-            $this->action->on('check:login');
-            $username = $this->session->get('login_name');
-            $file = trim($this->request->post('file'));
-            if($this->load('admin')->restoreBackup($file)){
-                $this->load('admin@logs')->addOperateLog($username,"还原了数据库备份文件：{$file}");
-                $this->action->on('admin:notify','success','还原成功!');
-            }else{
-                $this->action->on('admin:notify','error','还原失败!');
-            }
-            $this->response->goBack();
-        });
-
-        $route->post('/backup/delete',function(){
-            $this->action->on('check:login');
-            $username = $this->session->get('login_name');
-            $file = trim($this->request->post('file'));
-            if($this->load('admin')->deleteBackup($file)){
-                $this->load('admin@logs')->addOperateLog($username,"删除了数据库备份文件：{$file}");
-                $this->action->on('admin:notify','success','删除成功!');
-            }else{
-                $this->action->on('admin:notify','error','删除失败!');
-            }
-            $this->response->goBack();
-        });
-
+    $route->get('/backup',function(){
+        $this->action->on('check:login');
+        $this->view->assign('data',$this->load('admin')->getBackupFiles());
+        $this->view('console-backup');
     });
 
     /* 系统设置 */
@@ -92,7 +31,7 @@ $route->group('/admin',function($route){
         $route->post('/update',function(){
             $data = json_decode($this->request->post('data'));
             try{
-                $this->load('admin@options')->updateAll($data);
+                $this->load('admin@options')->update($data);
                 $this->action->on('admin:notify','success','更新成功！!');
                 $this->response->json('更新成功！');
 
@@ -103,60 +42,72 @@ $route->group('/admin',function($route){
         });
     });
 
-    /* 给账号操作分一个路径组 规则: /admin/account/ */
-    $route->group('/account',function($route){
+    $route->group('/api',function($route){
 
-        /* 登录账号 */
-        $route->post('/login',function(){
-
-            $data = $this->request->post();
-
-            $username = filter_var($data['username'],FILTER_SANITIZE_STRING);
-
-            $password = filter_var($data['password'],FILTER_UNSAFE_RAW);
-
-            $csrf = filter_var($data['__csrf__'],FILTER_UNSAFE_RAW);
-
-            if(is_null($this->session->get('login_csrf')) || $csrf != $this->session->get('login_csrf')){
-                $this->response->json('请求参数错误!',false);
-            }
-            if(empty($username)||!$this->load('admin@users')->checkUsername($username)){
-                $this->response->json('用户不存在!',false);
-            }
-            if(empty($password)||!isset($password{5})){
-                $this->response->json('密码不能少于六位!',false);
-            }
-            if($this->load('admin@users')->checkPassword($username, $password)){
-                $tokens = $this->load('admin@users')->updateToken($username);
-                $this->cookie->set('user_login_token', $tokens['token'], strtotime($tokens['timeout']));
-                // 从会话中删除已验证过得CSRF令牌
-                $this->session->delete('login_csrf');
-                // 登录日志
-                $this->load('admin@logs')->addLoginLog($username);
-                $this->response->json('登录成功!');
+        $route->post('/backup/export',function(){
+            $this->action->on('check:login');
+            $username = $this->session->get('login_name');
+            if($this->load('admin')->exportBackup()){
+                $this->load('admin@logs')->add('operate', $username, '进行了数据备份');
+                $this->action->on('admin:notify','success','备份成功!');
             }else{
-                $this->response->json('用户名与密码不匹配！', false);
+                $this->action->on('admin:notify','error','备份失败!');
+            }
+            $this->response->goBack();
+        });
+
+        $route->post('/backup/restore',function(){
+            $this->action->on('check:login');
+            $username = $this->session->get('login_name');
+            $file = trim($this->request->post('file'));
+            if($this->load('admin')->restoreBackup($file)){
+                $this->load('admin@logs')->add('operate', $username, "数据库备份文件“{$file}”已还原");
+                $this->action->on('admin:notify','success','还原成功!');
+            }else{
+                $this->action->on('admin:notify','error','还原失败!');
+            }
+            $this->response->goBack();
+        });
+
+        $route->post('/backup/delete',function(){
+            $this->action->on('check:login');
+            $username = $this->session->get('login_name');
+            $file = trim($this->request->post('file'));
+            if($this->load('admin')->deleteBackup($file)){
+                $this->load('admin@logs')->add('operate',$username,"数据库备份文件“{$file}”已删除");
+                $this->action->on('admin:notify','success','删除成功!');
+            }else{
+                $this->action->on('admin:notify','error','删除失败!');
+            }
+            $this->response->goBack();
+        });
+
+        $route->post('/config/update',function(){
+            $data = json_decode($this->request->post('data'));
+            try{
+                $this->load('admin@options')->update($data);
+                $this->response->json('更新成功！');
+            }catch(\Exception $e){
+                $this->response->json($e->getMessage(),false);
             }
         });
 
-        /* 添加账号 */
-        $route->post('/add',function(){
-
-        });
-
-        /* 删除账号 */
-        $route->post('/delete',function(){
-
-        });
-
-        $route->get('/operate',function(){
+        $route->post('/logged/delete',function(){
             $this->action->on('check:login');
-            $this->view('account-operate');
+            if($this->load('admin@logs')->delete('logged')){
+                $this->response->json('清空成功!', true);
+            }else{
+                $this->response->json('清空失败!', false);
+            }
         });
 
-        $route->get('/profile',function(){
+        $route->post('/operate/delete',function(){
             $this->action->on('check:login');
-            $this->view('account-profile');
+            if($this->load('admin@logs')->delete('operate')){
+                $this->response->json('清空成功!', true);
+            }else{
+                $this->response->json('清空失败!', false);
+            }
         });
     });
 
@@ -172,10 +123,11 @@ $route->group('/admin',function($route){
             $data['name'] = $name;
             $data['port'] = null;
             $data['prefix'] = $prefix;
+            $data['charset'] = $charset;
 
             $db = "<?php\n return ".var_export($data,true).";";
 
-            $file = 'Config/config.db.php';
+            $file = CONFIG.'/config.db.php';
             if(file_put_contents($file,$db,LOCK_EX)){
                 $this->response->json('创建数据库配置文件成功!');
             }else{
@@ -196,11 +148,11 @@ $route->group('/admin',function($route){
                 $user = array();
                 $user['name'] = trim($username);
                 $user['password'] = trim($password);
-                $user['level'] = '10';
+                $user['level'] = '-10';
                 $user['is_admin'] = 'true';
 
                 if(!defined('HASH')){
-                    $file = fopen('Config/constants.php', 'ab');
+                    $file = fopen(CONFIG.'/constants.php', 'ab');
                     fwrite($file, "\n/* 数据加密密钥 (Non modifiable) */\ndefine( 'HASH', '{$hash}' );");
                     fclose($file);
                 }
@@ -216,26 +168,6 @@ $route->group('/admin',function($route){
                 $this->response->json('创建成功！');
             }else{
                 $this->response->json('两次输入的密码不一致！',false);
-            }
-        }
-    });
-
-    /**
-     * 定义一个公用API接口
-     * 这条路由规则将会自动匹配components目录下的Api.php文件
-     */
-    $route->post('/api/:func',function($func){
-
-        $this->action->on('check:login');
-
-        $args = $this->request->post();
-
-        if(!empty($func)){
-            $data = $this->load('admin@api')->run($func,$args);
-            if($data){
-                $this->response->json($data);
-            }else{
-                $this->response->json('参数错误',false);
             }
         }
     });

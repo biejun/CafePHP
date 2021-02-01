@@ -7,9 +7,9 @@ $action->add('route:init',function(){
     if($this->existLock())
     {
         /* 读取站点配置 */
-        $options = $this->load('admin@options')->select('name,value');
+        $options = $this->load('welcome@options')->select('name,value');
         $this->view->options = new stdClass;
-        while (list($key, $value) = each($options)) {
+        foreach($options as $value) {
             $this->view->options->{$value['name']} = $value['value'];
         }
     }
@@ -41,7 +41,7 @@ $action->add('check:login',function($redirect = null){
         $loginToken = $this->cookie->get('user_login_token'); // 取出令牌
         if(!is_null($loginToken)){
             // 检查令牌
-            $tokenResult = $this->load('admin@users')->checkToken($loginToken);
+            $tokenResult = $this->load('welcome@users')->checkToken($loginToken);
             if($tokenResult){
                 $allowAccess = true;
                 // 如果令牌是正确的就将当前用户信息存到临时会话中
@@ -76,10 +76,10 @@ $action->add('check:login',function($redirect = null){
     }
 });
 /* 检查安装 */
-$action->add('check:install',function(){
+$action->add('check:install', function() {
     if(!$this->existLock())
     {
-        $this->view->folder('admin')->assign('token',TOKEN)
+        $this->view->folder('install')->assign('token',TOKEN)
             ->assign('checkVersion',version_compare(PHP_VERSION,'5.5.0', '>'));
         $this->view('install');
     }
