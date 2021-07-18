@@ -7,7 +7,7 @@
     }],
     "require": {
         "ezyang/htmlpurifier": "^4.13",
-        "illuminate/database": "~5.8",
+        "illuminate/database": "~6.20",
         "lcobucci/jwt": "^3.4",
         "league/plates": "^3.4",
         "matthiasmullie/minify": "^1.3"
