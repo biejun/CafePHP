@@ -48,26 +48,6 @@ if(!defined('PATH')) {
     /* 定义站点根目录 */
     define('PATH', $path);
 }
-
-/* 定义系统绝对路径 (Non modifiable) */
-define( 'ABSPATH', realpath(__DIR__ . '/..') . '/' );
-
-/* 定义系统核心层目录 (Non modifiable) */
-define( 'CAFE', ABSPATH . 'cafe' );
-/* 定义系统应用层目录 (Non modifiable) */
-define( 'APP', ABSPATH . 'app' );
-/* 定义系统配置目录 */
-define( 'CONFIG', ABSPATH . 'config' );
-/* 定义系统前端文件目录 */
-define( 'VIEW', ABSPATH . 'view' );
-/* 定义系统缓存目录 */
-define( 'STORAGE', ABSPATH . 'storage' );
-/* 定义系统前端资源目录 */
-define( 'SOURCES_DIR', 'sources' );
-define( 'SOURCES', ABSPATH . 'public/'. SOURCES_DIR );
-/* 定义系统前端资源输出目录 */
-define( 'STATIC_ASSETS_DIR', 'static-assets' );
-define( 'STATIC_ASSETS', ABSPATH . 'public/'. STATIC_ASSETS_DIR );
 /**
  * 定义系统运行环境
  *
@@ -76,8 +56,6 @@ define( 'STATIC_ASSETS', ABSPATH . 'public/'. STATIC_ASSETS_DIR );
  * 部署到生产环境后请务必将此处修改为 0
  */
 define( 'IS_DEVELOPMENT', 1 );
-/* 定义系统时区 */
-define( 'TIMEZONE', 'PRC' );
 /* 定义系统默认字符编码集 */
 define( 'CHARSET', 'UTF-8' );
 /* 定义系统请求响应缓存时间 */

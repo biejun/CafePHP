@@ -5,9 +5,8 @@
  *
  * An agile development core based on PHP.
  *
- * @version  1.0.0
  * @link     https://github.com/biejun/CafePHP
- * @copyright Copyright (c) 2017-2018 Jun Bie
+ * @copyright Copyright (c) 2021 Jun Bie
  * @license This content is released under the MIT License.
  */
 
@@ -16,12 +15,19 @@ class Request
     public $method;
 
     public $uri = null;
+    
+    private $_parmas = [];
 
     public function __construct()
     {
         $this->method = $this->getMethod();
 
         $this->uri = $this->getUri();
+    }
+    
+    public function getDomain()
+    {
+        return 'http'.((int)$_SERVER['SERVER_PORT'] == 443 ? 's' : '') . '://'.$_SERVER['SERVER_NAME'];
     }
 
     public function getUri()
@@ -128,23 +134,29 @@ class Request
         }
         return $query;
     }
-
-    public function get($name = null, $defaultValue = null)
+    
+    // 获取get提交的参数
+    public function get($name = null, $filterType = FILTER_SANITIZE_STRING, $defaultValue = '')
     {
-        if ($name === null) {
+        if(!$this->isGet()) return null;
+        if($name === null) {
             return $_GET;
-        } else {
-            return isset($_GET[$name]) ? $_GET[$name] : $defaultValue;
         }
+        
+        $defaultOptions = ['options' => ['default' => $defaultValue]];
+        return filter_input(INPUT_GET, $name, $filterType, $defaultOptions);
     }
-
-    public function post($name = null, $defaultValue = null)
+    // 获取post提交的参数
+    public function post($name = null, $filterType = FILTER_SANITIZE_STRING, $defaultValue = '')
     {
-        if ($name === null) {
+        if(!$this->isPost()) return null;
+        
+        if($name === null) {
             return $_POST;
-        } else {
-            return isset($_POST[$name]) ? $_POST[$name] : $defaultValue;
         }
+        
+        $defaultOptions = ['options' => ['default' => $defaultValue]];
+        return filter_input(INPUT_POST, $name, $filterType, $defaultOptions);
     }
 
     public function isPost()
@@ -159,6 +171,17 @@ class Request
 
     public function isAjax()
     {
-        return isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && 'XMLHttpRequest' == $_SERVER['HTTP_X_REQUESTED_WITH'];
+        return isset($_SERVER["HTTP_X_REQUESTED_WITH"]) 
+         && 'XMLHttpRequest' == $_SERVER['HTTP_X_REQUESTED_WITH'];
+    }
+    
+    public function setParams($parmas = array())
+    {
+        $this->_parmas = $parmas;
+    }
+    
+    public function param($name)
+    {
+        return $this->_parmas[$name];
     }
 }

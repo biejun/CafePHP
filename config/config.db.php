@@ -1,9 +1,12 @@
 <?php
  return array (
+  'driver' => 'mysql',
   'host' => 'localhost',
-  'user' => 'root',
+  'username' => 'root',
   'password' => 'root',
-  'name' => 'cafe',
-  'port' => 8889,
+  'database' => 'cafe',
+  'port' => 3306,
   'charset' => 'utf8mb4',
+  'collation' => 'utf8mb4_unicode_ci',
+  'prefix' => '',
 );

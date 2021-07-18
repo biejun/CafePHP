@@ -1,0 +1,54 @@
+.simditor-mention-popover {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  border: 1px solid #dcdcdc;
+  padding: 0;
+  background: #fff;
+  box-shadow: 1px 3px 5px rgb(165 165 165 / 17%);
+  border-radius: 2px;
+}
+.simditor-mention-popover .items {
+  max-height: 270px;
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+}
+.simditor-mention-popover .items .item {
+  position: relative;
+  display: block;
+  padding: 5px 10px 5px 50px;
+  min-width: 120px;
+  line-height: 1;
+  color: #333;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.simditor-mention-popover .items .item .user-avatar{
+    float: left;
+    margin-left: -40px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+.simditor-mention-popover .items .item .user-nickname{
+    font-size: 15px;
+    max-width: 160px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.simditor-mention-popover .items .item .user-name{
+    font-size: 13px;
+    color: #999;
+    max-width: 160px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.simditor-mention-popover .items .item.selected {
+  background: #f1f1f1;
+}

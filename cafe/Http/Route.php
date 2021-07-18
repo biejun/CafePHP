@@ -5,9 +5,8 @@
  *
  * An agile development core based on PHP.
  *
- * @version  1.0.0
  * @link     https://github.com/biejun/CafePHP
- * @copyright Copyright (c) 2017-2018 Jun Bie
+ * @copyright Copyright (c) 2021 Jun Bie
  * @license This content is released under the MIT License.
  */
 
@@ -20,16 +19,18 @@ class Route
     public $action;
 
     public $args = [];
+    
+    public $actions = [];
 
-    public $container;
-
-    public function __construct($methods, $uri, $action)
+    public function __construct($methods, $uri, $action, $actions)
     {
         $this->methods = (array) $methods;
 
         $this->uri = $uri;
 
         $this->action = $action;
+        
+        $this->actions = $actions;
 
         if (in_array('GET', $this->methods) && !in_array('HEAD', $this->methods)) {
             $this->methods[] = 'HEAD';
@@ -98,20 +99,5 @@ class Route
             }
         }
         return true;
-    }
-
-    public function __set($key, $value)
-    {
-        if (!isset($this->container[$key])) {
-            $this->container[$key] = $value;
-        }
-    }
-
-    public function __get($name)
-    {
-        if (isset($this->container[$name])) {
-            return $this->container[$name];
-        }
-        return false;
     }
 }

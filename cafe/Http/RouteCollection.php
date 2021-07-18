@@ -1,19 +1,16 @@
 <?php namespace Cafe\Http;
-
 /**
  * Cafe PHP
  *
  * An agile development core based on PHP.
  *
- * @version  1.0.0
  * @link     https://github.com/biejun/CafePHP
- * @copyright Copyright (c) 2017-2018 Jun Bie
+ * @copyright Copyright (c) 2021 Jun Bie
  * @license This content is released under the MIT License.
  */
 
 use Countable;
 use Cafe\Support\Arr;
-use Cafe\Foundation\Action;
 
 class RouteCollection implements Countable
 {
@@ -31,31 +28,30 @@ class RouteCollection implements Countable
     protected function addToCollections($route)
     {
         $uri = $route->uri();
-
         foreach ($route->methods() as $method) {
             $this->routes[$method][$uri] = $route;
         }
-
         $this->allRoutes[$method.$uri] = $route;
     }
 
-    public function matchs($request, $response)
+    public function matchs($action, $request, $response)
     {
         $route = $this->matchAgainstRoutes($this->get($request->getMethod()), $request);
-
-        $action = new Action;
-
         $action->on('route:init');
-
         if ($route) {
             if (is_callable($route->action)) {
+				$action->once('route:view');
                 $action->on('route:before');
-
-                call_user_func_array($route->action, $route->args);
-
+                
+                array_walk($route->actions, function($args, $key, $action) {
+                    call_user_func_array(array($action, 'on'), $args);
+                }, $action);
+                
+                $request->setParams($route->args);
+                call_user_func_array($route->action, [$request, $response]);
                 $action->on('route:after');
             } else {
-                throw new \Exception("路由第二个参数必须为一个回调函数");
+                throw new \Exception("路由的第二个参数必须是一个回调函数");
             }
         } else {
             $action->on('route:failed');

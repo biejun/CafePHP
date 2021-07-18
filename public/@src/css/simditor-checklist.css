@@ -1,0 +1,37 @@
+.simditor .simditor-toolbar .toolbar-item-checklist .simditor-icon-checklist{
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-weight: bold;
+  color: #444;
+}
+.simditor .simditor-toolbar .toolbar-item-checklist .simditor-icon-checklist:before{
+  content: "\e66d";
+}
+.simditor .simditor-body .simditor-checklist {
+  margin: 15px 0;
+  padding: 0 0 0 30px;
+  line-height: 1.6;
+  list-style-type: none;
+}
+
+.simditor .simditor-body .simditor-checklist > li {
+  margin: 0;
+  pointer-events: none;
+}
+.simditor .simditor-body .simditor-checklist > li::before {
+  font-family: "iconfont"!important;
+  content: "\e6d5";
+  pointer-events: all;
+  display: inline-block;
+  margin: 0 5px 0 -25px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  vertical-align: -2px;
+  font-size: 18px;
+  color: #a9adb5;
+}
+.simditor .simditor-body .simditor-checklist > li[checked]::before {
+  content: "\e6d4";
+  color: #0453e5;
+}

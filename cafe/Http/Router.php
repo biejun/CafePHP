@@ -1,13 +1,11 @@
 <?php namespace Cafe\Http;
-
 /**
  * Cafe PHP
  *
  * An agile development core based on PHP.
  *
- * @version  1.0.0
  * @link     https://github.com/biejun/CafePHP
- * @copyright Copyright (c) 2017-2018 Jun Bie
+ * @copyright Copyright (c) 2021 Jun Bie
  * @license This content is released under the MIT License.
  */
 
@@ -19,10 +17,20 @@ class Router
     protected $groupStack = [];
 
     protected $routes;
+    
+    protected $actions = [];
+	
+	public $container;
 
     public function __construct()
     {
         $this->routes = new RouteCollection;
+    }
+    
+    public function on()
+    {
+        $this->actions[] = func_get_args();
+        return $this;
     }
 
     public function get($uri, $action)
@@ -69,16 +77,27 @@ class Router
         }
 
         array_pop($this->groupStack);
+        
+        $this->emptyActions();
+    }
+    
+    protected function emptyActions()
+    {
+        if(count($this->actions) && count($this->groupStack) === 0) {
+            $this->actions = [];
+        }
     }
 
     protected function addRoute(array $methods, $uri, $action)
     {
-        return $this->routes->add($this->createRoute($methods, $uri, $action));
+        $route = $this->createRoute($methods, $uri, $action);
+        $this->emptyActions();
+        return $this->routes->add($route);
     }
 
     protected function createRoute($methods, $uri, $action)
     {
-        return (new Route($methods, $this->prefix($uri), $action));
+        return (new Route($methods, $this->prefix($uri), $action, $this->actions));
     }
 
     protected function prefix($uri)
@@ -91,8 +110,23 @@ class Router
         return (empty($this->groupStack))?'':end($this->groupStack);
     }
 
-    public function dispatch($request, $response)
+    public function dispatch($action, $request, $response)
     {
-        $this->routes->matchs($request, $response);
+        $this->routes->matchs($action, $request, $response);
     }
+	
+	public function __set($key, $value)
+	{
+	    if (!isset($this->container[$key])) {
+	        $this->container[$key] = $value;
+	    }
+	}
+	
+	public function __get($name)
+	{
+	    if (isset($this->container[$name])) {
+	        return $this->container[$name];
+	    }
+	    return false;
+	}
 }

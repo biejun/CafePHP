@@ -15,9 +15,9 @@ class Action
 {
     private static $_actions = [];
     /**
-     *  挂载一个函数到特定的动作中
+     *  增加一个行为钩子函数
      *
-     *  @param string $action 一个已定义的动作钩子，当钩子函数执行时，$function同时执行
+     *  @param string $action 钩子函数名
      *  @param function $function 当前需要挂载的函数
      */
     public function add($action, $function)
@@ -27,44 +27,54 @@ class Action
             static::$_actions[$action][$guid] = $function;
         }
     }
+    
+    /**
+     *  单例模式，重复执行会覆盖此钩子行为
+     *
+     *  @param string $action 钩子函数名
+     *  @param function $function 当前需要挂载的函数
+     */
+    public function single($action, $function)
+    {
+        if (!isset(static::$_actions[$action]['single'])) {
+            static::$_actions[$action]['single'] = $function;
+        }
+    }
 
     /**
-     *  执行某个动作钩子的函数
+     *  执行某个钩子函数
      *
-     *  @param string $action 一个已定义的动作钩子，当钩子函数执行时，$function同时执行
+     *  @param string $action 一个已定义的动作钩子，当同名钩子存在多个时将会队列执行
      */
     public function on($action)
     {
         $actions = static::$_actions;
         $args = array_slice(func_get_args(), 1);
         if (isset($actions[$action])) {
-            foreach ($actions[$action] as $function) {
+            $middlewares = $actions[$action];
+            while($function = current($middlewares)) {
                 if (!is_null($function)) {
                     call_user_func_array($function, $args);
                 }
+                next($middlewares);
             }
         }
     }
-
     /**
-     *  执行某个特定动作钩子的函数
+     *  执行某个动作钩子的函数
      *
-     *  @param string $action 一个已定义的动作钩子
-     *  @return mixed 有返回值，返回所有挂载在此类钩子上return的值
+     *  @param string $action 钩子函数名
      */
-    public function apply($action, $value)
+    public function once($action)
     {
         $actions = static::$_actions;
-        $args = func_get_args();
-        if (isset($actions[$action])) {
-            foreach ($actions[$action] as $function) {
-                if (!is_null($function)) {
-                    $args[1] = $value;
-                    $value = call_user_func_array($function, array_slice($args, 1));
-                }
+        $args = array_slice(func_get_args(), 1);
+        if (isset($actions[$action]['single'])) {
+            $function = $actions[$action]['single'];
+            if (!is_null($function)) {
+                call_user_func_array($function, $args);
             }
         }
-        return $value;
     }
 
     private function _toGuidString($mix)
@@ -77,15 +87,5 @@ class Action
             $mix = serialize($mix);
         }
         return md5($mix);
-    }
-
-    /**
-     *  导出所有的动作
-     *
-     *  @return array
-     */
-    public function export()
-    {
-        return static::$_actions;
     }
 }

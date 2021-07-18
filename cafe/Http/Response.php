@@ -1,13 +1,11 @@
 <?php namespace Cafe\Http;
-
 /**
  * Cafe PHP
  *
  * An agile development core based on PHP.
  *
- * @version  1.0.0
  * @link     https://github.com/biejun/CafePHP
- * @copyright Copyright (c) 2017-2018 Jun Bie
+ * @copyright Copyright (c) 2021 Jun Bie
  * @license This content is released under the MIT License.
  */
 
@@ -15,16 +13,13 @@ use Cafe\Http\Request;
 
 class Response
 {
-
     # 响应状态码
     protected $status = 200;
     # 响应头部信息
     protected $headers = array();
     # 响应内容
     protected $body;
-
-    public $appPath = '';
-
+    # 字符编码
     private $charset = CHARSET;
 
     public static $codes = array(
@@ -221,6 +216,7 @@ class Response
         $res = new \StdClass;
         $res->success = $success;
         $res->data = $data;
+		$res->code = $this->status;
         $this->header('Content-Type', 'application/json; charset='.$this->charset)
             ->write(json_encode($res))
             ->send();
@@ -232,6 +228,7 @@ class Response
         $res = new \StdClass;
         $res->success = $success;
         $res->data = $data;
+		$res->code = $this->status;
         $this->header('Content-Type', 'application/json; charset='.$this->charset)
             ->write($callback.'('.json_encode($res).')')
             ->send();
@@ -254,12 +251,6 @@ class Response
     public function redirect($location)
     {
         header('Location: '.Request::safeUrl($location), false, 302);
-        exit;
-    }
-
-    public function location($location)
-    {
-        header('Location: '.$this->appPath.$location, false, 302);
         exit;
     }
 

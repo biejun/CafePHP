@@ -5,122 +5,294 @@
  *
  * An agile development core based on PHP.
  *
- * @version  1.0.0
  * @link     https://github.com/biejun/CafePHP
- * @copyright Copyright (c) 2017-2018 Jun Bie
+ * @copyright Copyright (c) 2021 Jun Bie
  * @license This content is released under the MIT License.
  */
 
-class App
+use ArrayAccess;
+use Closure;
+use Cafe\Support\Arr;
+use Cafe\Foundation\View;
+use Cafe\Foundation\Captcha;
+use Cafe\Cache\Cache;
+use Illuminate\Database\Capsule\Manager as DatabaseManager;
+
+class App implements ArrayAccess
 {
-    public $version = 'cafe/1.0.0';
-
-    public $routes = [];
-
-    public $actions = [];
-
-    public function __construct($response)
+    const VERSION = 'cafe/1.1.0';
+    protected static $instance;
+    /* 依赖库函数绑定 */
+    protected $bindings = [];
+    /* 系统物理路径 */
+    protected $basePath;
+    /* 当前匹配的应用名称 */
+    protected $appName = '';
+    /* 当前匹配应用的路径 */
+    protected $appPath = '';
+    /* 系统配置 */
+    protected $config = [];
+    
+    public function __construct($basePath = null)
     {
-        $this->setCharset();
-
-        $this->setTimezone();
-
-        $this->exceptionAndErrorHandler($response);
-
-        $this->setEnvironment();
-
-        $this->sendHeaders();
+        if ($basePath) {
+            $this->setBasePath($basePath);
+        }
+        
+        $this->config = $this->loadConfig();
+        $this->registerBaseBindings();
     }
-
-    /* 设置系统字符编码集 */
-    private function setCharset()
+    
+    protected function registerBaseBindings()
     {
-        mb_internal_encoding(CHARSET);
+        static::setInstance($this);
+        
+        $this->bind('db.config', function ($app) {
+            $file = $app->configPath('config.db.php');
+            if (!file_exists($file)) {
+                throw new \Exception("数据库配置文件不存在！");
+            }
+            return include($file);
+        });
+        $this->bind('db', function ($app) {
+            $conf = $app->make('db.config');
+            $db = new DatabaseManager();
+            $db->addConnection($conf);
+            if($db->getConnection()) {
+               $db->setAsGlobal();
+            } 
+        });
+        $this->bind('view', View::class);
+        $this->bind('session', function($app) {
+            return new Session;
+        });
+        $this->bind('cookie', function($app) {
+            return new Cookie;
+        });
+        $this->bind('captcha', function($app) {
+            return new Captcha;
+        });
+        /* 数据缓存 */
+        $this->bind('data', function ($app) {
+            return Cache::init($app->storagePath('cache'));
+        });
+        /* 日志缓存 */
+        $this->bind('log', function ($app) {
+            return Cache::init(['folder'=> $app->storagePath('logs')]);
+        });
     }
-
-    /* 设置时区 */
-    private function setTimezone()
+    
+    // 设置系统根路径
+    public function setBasePath($basePath)
     {
-        date_default_timezone_set(TIMEZONE);
+        $this->basePath = rtrim($basePath, '\/');
+        return $this;
     }
-
-    /* 设置系统环境变量 */
-    private function setEnvironment()
+    // 应用目录
+    public function appPath($path = '')
     {
-        $this->environment(!isset($_SERVER['CI_ENV'])?:$_SERVER['CI_ENV']);
+        return $this->pathJoin('app', $path);
     }
-
-    private function environment($env)
+    // 配置目录
+    public function configPath($path = '')
     {
-        $env = $env || IS_DEVELOPMENT ? 'development' : 'production';
-
-        switch ($env) {
-            case 'production':
-                error_reporting(-1);
-                ini_set('display_errors', 0);
-            break;
-            case 'development':
-                ini_set('display_errors', 1);
-                if (version_compare(PHP_VERSION, '5.3', '>=')) {
-                    error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
-                } else {
-                    error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
+        return $this->pathJoin('config', $path);
+    }
+    // 公共目录
+    public function publicPath($path = '')
+    {
+        return $this->pathJoin('public', $path);
+    }
+    // 存储目录
+    public function storagePath($path = '')
+    {
+        return $this->pathJoin('storage', $path);
+    }
+    
+    // 公共目录
+    public function viewPath($path = '')
+    {
+        return $this->pathJoin('view', $path);
+    }
+    
+    /* 将多个参数组合成一个路径 */
+    public function pathJoin()
+    {
+        $path = array();
+        $args = func_get_args();
+        $spea = DIRECTORY_SEPARATOR;
+        if (count($args) > 0) {
+            foreach ($args as $key => $value) {
+                if ($value) {
+                    $path[] = $value;
                 }
-            break;
-            default:
-                header('HTTP/1.1 503 Service Unavailable.', true, 503);
-                throw new \Exception("应用环境没有设置正确", 1);
-                exit(1);
+            }
+        }
+        return $this->basePath.$spea.join($spea, $path);
+    }
+    
+    public static function getInstance()
+    {
+        if (is_null(static::$instance)) {
+            static::$instance = new static;
+        }
+    
+        return static::$instance;
+    }
+    
+    public static function setInstance($container = null)
+    {
+        return static::$instance = $container;
+    }
+    
+    public function version()
+    {
+        return static::VERSION;
+    }
+    // 绑定一个类
+    public function bind($abstract, $concrete = null)
+    {
+        if (is_null($concrete)) {
+            $concrete = $abstract;
+        }
+        $this->bindings[$abstract] = $concrete;
+    }
+    // 获取绑定
+    public function getBind($abstract)
+    {
+        return $this->bindings[$abstract];
+    }
+    // 调用给定名称的绑定
+    public function make($abstract)
+    {
+        $binding = $this->getBind($abstract);
+        if (!isset($binding)) {
+            return null;
+        }
+       
+        if (is_string($binding)) {
+            return new $binding($this);
+        } elseif ($binding instanceof Closure) {
+            return $binding($this);
         }
     }
-
-    /* 向浏览器发送头部信息 */
-    private function sendHeaders()
+    // 检查是否已安装
+    public function existLock()
     {
-        header("X-Powered-By: {$this->version}");
+        return file_exists($this->configPath('install.lock'));
     }
-
-    /* 系统异常和错误处理 */
-    public function exceptionAndErrorHandler($response)
+    // 加载配置文件
+    private function loadConfig()
     {
-        set_error_handler(function ($errNo, $errStr, $errFile, $errLine) use ($response) {
-            $error = [];
-            $error[] = 'Message '.$errStr;
-            $error[] = 'File '.$errFile;
-            $error[] = 'Line '.$errLine;
-            $response->text(implode("\n", $error));
-        });
-
-        set_exception_handler(function ($e) use ($response) {
-            $exception = [];
-            $exception[] = 'Service exception.';
-            $exception[] = 'Message '.$e->getMessage();
-            $exception[] = 'File '.$e->getFile();
-            $exception[] = 'Line '.$e->getLine();
-            $exception[] = 'Trace at '.$e->getTraceAsString();
-            $response->text(implode("\n", $exception));
-        });
-    }
-
-    /* 匹配应用 */
-    public function matchApp($request)
-    {
-        $this->routes[] = APP . '/route.php';
-        $this->actions[] = APP . '/action.php';
-
-        $paths = $request->fetchPath();
-        $app = array_shift($paths);
-
-        if (!empty($app)) {
-            $this->routes[] = APP . '/' .strtolower($app). '/route.php';
-            $this->actions[] = APP . '/' .strtolower($app).'/action.php';
+        if (file_exists($path = $this->configPath('config.site.php'))) {
+            return include $path;
         }
-
-        return $app;
+        return [];
     }
-
-    public function appFiles()
+    // 获取配置
+    public function getConfig($key, $default = null)
     {
-        return ['routes' => $this->routes , 'actions' => $this->actions];
+        return Arr::get($this->config, $key, $default);
+    }
+    // 匹配应用
+    public function matchApp($paths = [])
+    {
+        $routes = [];
+        $actions = [];
+        
+        $routePath = $this->appPath('routes');
+        if (count($paths) > 1) {
+            $firstPath = array_shift($paths);
+            if (!empty($firstPath)) {
+                $this->appName = strtolower($firstPath);
+                $routes[] = $routePath .'/'.$this->appName .'/route.php';
+                $actions[] = $routePath .'/'.$this->appName .'/action.php';
+            }
+        }
+        $routes[] = $routePath .'/route.php';
+        $actions[] = $routePath .'/action.php';
+        
+        $this->appPath = PATH .(!$this->appName?:$this->appName . '/');
+        
+        return [
+            'routes' => $routes,
+            'actions' => array_reverse($actions)
+        ];
+    }
+    /**
+     * Determine if the given abstract type has been bound.
+     *
+     * @param  string  $abstract
+     * @return bool
+     */
+    public function bound($abstract)
+    {
+        return isset($this->bindings[$abstract]);
+    }
+    /**
+     * Determine if a given offset exists.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    public function offsetExists($key)
+    {
+        return $this->bound($key);
+    }
+    
+    /**
+     * Get the value at a given offset.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    public function offsetGet($key)
+    {
+        return $this->make($key);
+    }
+    /**
+     * Set the value at a given offset.
+     *
+     * @param  string  $key
+     * @param  mixed  $value
+     * @return void
+     */
+    public function offsetSet($key, $value)
+    {
+        $this->bind($key, $value instanceof Closure ? $value : function () use ($value) {
+            return $value;
+        });
+    }
+    /**
+     * Unset the value at a given offset.
+     *
+     * @param  string  $key
+     * @return void
+     */
+    public function offsetUnset($key)
+    {
+        unset($this->bindings[$key]);
+    }
+    /**
+     * Dynamically access container services.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    public function __get($key)
+    {
+        return $this[$key];
+    }
+    
+    /**
+     * Dynamically set container services.
+     *
+     * @param  string  $key
+     * @param  mixed  $value
+     * @return void
+     */
+    public function __set($key, $value)
+    {
+        $this[$key] = $value;
     }
 }

@@ -24,9 +24,9 @@ class Cache
      */
     public $dir = '';
 
-    public function __construct($dir = STORAGE.'/datas')
+    public function __construct($dir = '')
     {
-        $this->dir = $dir;
+        if(!empty($dir)) $this->dir = $dir;
 
         if (! file_exists($this->dir)) {
             if (! is_writeable(dirname($this->dir))) {
@@ -44,7 +44,7 @@ class Cache
     public static function init($conf = array())
     {
         $server = isset($conf['server']) ? $conf['server'] : false; // 服务器地址
-        $dir = isset($conf['folder']) ? $conf['folder'] : STORAGE.'/datas'; // 缓存目录
+        $dir = isset($conf['folder']) ? $conf['folder'] : app()->storagePath('cache'); // 缓存目录
         $extension = isset($conf['extension']) ? $conf['extension'] : 'memcache'; // 缓存扩展类型
 
         if ('xcache' === $extension && extension_loaded('xcache')) {

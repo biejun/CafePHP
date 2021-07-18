@@ -1,0 +1,199 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 2358367 */
+  src: url('iconfont.woff2?t=1625498882808') format('woff2'),
+       url('iconfont.woff?t=1625498882808') format('woff'),
+       url('iconfont.ttf?t=1625498882808') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-cascades:before {
+  content: "\e67c";
+}
+
+.icon-list:before {
+  content: "\e682";
+}
+
+.icon-form:before {
+  content: "\e699";
+}
+
+.icon-friendfavor:before {
+  content: "\e6f1";
+}
+
+.icon-discover:before {
+  content: "\e67e";
+}
+
+.icon-settings:before {
+  content: "\e68a";
+}
+
+.icon-home:before {
+  content: "\e6b8";
+}
+
+.icon-square:before {
+  content: "\e6d5";
+}
+
+.icon-squarecheckfill:before {
+  content: "\e6d4";
+}
+
+.icon-dianzan:before {
+  content: "\e8ad";
+}
+
+.icon-fenxiang:before {
+  content: "\e8b0";
+}
+
+.icon-huati1:before {
+  content: "\e8b1";
+}
+
+.icon-pinglun:before {
+  content: "\e8b4";
+}
+
+.icon-shanchu:before {
+  content: "\e8b6";
+}
+
+.icon-shoucang:before {
+  content: "\e8b9";
+}
+
+.icon-dianzan1:before {
+  content: "\e8c3";
+}
+
+.icon-huati2:before {
+  content: "\e8c4";
+}
+
+.icon-shoucang1:before {
+  content: "\e8c6";
+}
+
+.icon-add:before {
+  content: "\e664";
+}
+
+.icon-attachment:before {
+  content: "\e667";
+}
+
+.icon-close:before {
+  content: "\e668";
+}
+
+.icon-drag:before {
+  content: "\e66e";
+}
+
+.icon-roundrightfill:before {
+  content: "\e65a";
+}
+
+.icon-roundright:before {
+  content: "\e65b";
+}
+
+.icon-questionfill:before {
+  content: "\e690";
+}
+
+.icon-question:before {
+  content: "\e691";
+}
+
+.icon-post:before {
+  content: "\e759";
+}
+
+.icon-redpacket_fill:before {
+  content: "\e7d3";
+}
+
+.icon-ashbin:before {
+  content: "\e666";
+}
+
+.icon-search:before {
+  content: "\e67d";
+}
+
+.icon-zoom-in:before {
+  content: "\e683";
+}
+
+.icon-zoom-out:before {
+  content: "\e684";
+}
+
+.icon-image:before {
+  content: "\e69f";
+}
+
+.icon-emoji:before {
+  content: "\e60b";
+}
+
+.icon-checklist:before {
+  content: "\e66d";
+}
+
+.icon-group:before {
+  content: "\e701";
+}
+
+.icon-location1:before {
+  content: "\e68e";
+}
+
+.icon-xiangji:before {
+  content: "\e763";
+}
+
+.icon-kong:before {
+  content: "\e708";
+}
+
+.icon-yinle:before {
+  content: "\e63b";
+}
+
+.icon-huati:before {
+  content: "\e703";
+}
+
+.icon-notification:before {
+  content: "\e679";
+}
+
+.icon-switch:before {
+  content: "\e72e";
+}
+
+.icon-videofill:before {
+  content: "\e7c7";
+}
+
+.icon-enter:before {
+  content: "\e6fa";
+}
+
+.icon-unfold:before {
+  content: "\e749";
+}
+

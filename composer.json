@@ -1,0 +1,27 @@
+{
+    "name": "biejun/cafe",
+    "description": "An agile development core based on PHP",
+    "authors": [{
+        "name": "xiaojun",
+        "email": "biejun1992@qq.com"
+    }],
+    "require": {
+        "ezyang/htmlpurifier": "^4.13",
+        "illuminate/database": "~5.8",
+        "lcobucci/jwt": "^3.4",
+        "league/plates": "^3.4",
+        "matthiasmullie/minify": "^1.3"
+    },
+    "autoload": {
+        "files": [
+            "cafe/Support/helpers.php"
+        ],
+        "psr-4": {
+            "Cafe\\": "cafe/",
+            "App\\": "app/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

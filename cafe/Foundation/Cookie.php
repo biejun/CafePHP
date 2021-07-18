@@ -28,19 +28,6 @@ class Cookie
     /* 设置httponly */
     private $httponly = '';
 
-    public function __construct()
-    {
-        $this->prefix = '';
-
-        $this->path = '/';
-
-        $httponly = '';
-
-        if (!empty($httponly)) {
-            ini_set('session.cookie_httponly', 1);
-        }
-    }
-
     /**
      * 设置前缀
      *
@@ -49,6 +36,12 @@ class Cookie
     public function setPrefix($prefix = '')
     {
         $this->prefix = $prefix;
+        return $this;
+    }
+    
+    public function setPath($path = '')
+    {
+        $this->path = $path;
         return $this;
     }
 

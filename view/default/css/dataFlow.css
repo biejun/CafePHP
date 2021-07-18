@@ -1,0 +1,193 @@
+.app-dataFlow{
+}
+
+.app-dataFlow .app-dataCard{
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    min-height: 40px;
+    margin-bottom: 10px;
+}
+
+.app-dataFlow .data-heading{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.app-dataFlow .data-userName{
+    display: block;
+    text-decoration: none;
+}
+
+.app-dataFlow .data-userName > *{
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.app-dataFlow .data-userName .data-userAvatar{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.app-dataFlow .data-userName .data-name{
+    color: #575859;
+    font-size: 14px;
+    margin-left: 3px;
+}
+
+.app-dataFlow .data-userName .data-name:hover{
+    color: #0453e5;
+}
+
+.app-dataCard .data-heading .data-options{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    flex-shrink: 0;
+    margin-left: 5px;
+    margin-right: -10px;
+    cursor: pointer;
+}
+.app-dataCard .data-heading .data-options .icon-switch{
+    font-size: 22px;
+    color: #86888c;
+}
+.app-dataCard.data-article h3{
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+.app-dataCard.data-article h3 a{
+    text-decoration: none;
+    color: #333;
+}
+.app-dataCard.data-article h3 a:hover{
+    color: #0453e5;
+}
+.app-dataCard.data-article .data-heading .data-userAvatar{
+    width: 20px;
+    height: 20px;
+}
+.app-dataCard .data-content{
+    padding: 10px 0;
+    font-size: 14px;
+    color: #333;
+    word-break: break-word;
+    line-height: 1.6;
+}
+
+.app-dataCard .data-content p{
+    margin: 0;
+    margin-bottom: 7px;
+}
+.app-dataCard .data-content p:last-child{
+    margin-bottom: 0;
+}
+
+.app-dataCard .data-footer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.app-dataFlow .data-footer .data-time{
+    color: #999;
+    font-size: 13px;
+}
+
+.app-dataFlow .data-footer .data-link{
+    font-size: 13px;
+}
+
+.app-dataFlow .data-footer .data-link a{
+    text-decoration: none;
+    color: #999;
+}
+
+/* BFC 布局 */
+.app-dataFlow .data-images{
+    overflow: hidden;
+}
+
+.app-dataFlow .data-images .data-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.app-dataFlow .data-images.image-count-1 .data-image{
+    height: 160px;
+}
+
+.app-dataFlow .data-images.image-count-2{
+    margin-left: -2.5px;
+    margin-right: -2.5px;
+}
+
+.app-dataFlow .data-images.image-count-2 .data-image{
+    padding: 2.5px;
+    float: left;
+    width: 50%;
+    height: 160px;
+}
+
+.app-dataFlow .data-images.image-count-3{
+    margin-left: -2.5px;
+    margin-right: -2.5px;
+}
+
+.app-dataFlow .data-images.image-count-3 .data-image{
+    padding: 2.5px;
+    float: left;
+}
+
+.app-dataFlow .data-images.image-count-3 .data-image:first-child{
+    height: 160px;
+    width: 45%;
+}
+
+.app-dataFlow .data-images.image-count-3 .data-image:first-child:nth-last-child(3) ~ .data-image{
+    width: 55%;
+    height: 80px;
+}
+
+.app-dataFlow .data-images.image-count-4{
+    margin-left: -2.5px;
+    margin-right: -2.5px;
+}
+.app-dataFlow .data-images.image-count-4 .data-image{
+    width: 40%;
+    height: 80px;
+    float: left;
+    padding: 2.5px;
+}
+
+.app-dataFlow .data-images.image-count-4 .data-image:first-child,
+.app-dataFlow .data-images.image-count-4 .data-image:last-child{
+    width: 60%;
+}
+
+.app-dataFlow .simditor-checklist {
+  margin: 10px 0;
+  line-height: 1.6;
+  list-style-type: none;
+  padding: 0;
+}
+
+.app-dataFlow .simditor-checklist > li {
+  margin: 0;
+  pointer-events: none;
+}
+
+.app-dataFlow .simditor-checklist > li [type=checkbox]{
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.app-dataFlow .simditor-checklist > li strike{
+    vertical-align: middle;
+}

@@ -13,7 +13,7 @@
 
 class Captcha
 {
-    protected $config = [
+    static $config = [
         'seKey'    =>  HASH,
         // 验证码加密密钥
         'codeSet'  => '2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY',
@@ -39,7 +39,7 @@ class Captcha
         // 验证码位数
         'fontttf'  => '',
         // 验证码字体，不设置随机获取
-        'bg'       => [239, 248, 247],
+        'bg'       => [255, 255, 255],
         // 背景颜色
         'reset'    => true,
         // 验证成功后是否重置
@@ -56,7 +56,7 @@ class Captcha
      */
     public function __construct($config = [])
     {
-        $this->config = array_merge($this->config, $config);
+        self::$config = array_merge(self::$config, $config);
         $this->session = new Session;
     }
 
@@ -68,7 +68,7 @@ class Captcha
      */
     public function __get($name)
     {
-        return $this->config[$name];
+        return self::$config[$name];
     }
 
     /**
@@ -80,8 +80,8 @@ class Captcha
      */
     public function __set($name, $value)
     {
-        if (isset($this->config[$name])) {
-            $this->config[$name] = $value;
+        if (isset(self::$config[$name])) {
+            self::$config[$name] = $value;
         }
     }
 
@@ -93,7 +93,7 @@ class Captcha
      */
     public function __isset($name)
     {
-        return isset($this->config[$name]);
+        return isset(self::$config[$name]);
     }
 
     /**

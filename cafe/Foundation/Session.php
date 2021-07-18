@@ -20,6 +20,14 @@ class Session
         if (!isset(self::$state) || self::$state == false) {
             session_name('cafe_session');
             ini_set('session.cookie_httponly', true);
+            //设置session路径到本地
+            if (strtolower(ini_get('session.save_handler')) == 'files') {
+                $session_dir = app()->storagePath('sessions');
+                if (!is_dir($session_dir)) {
+                    mkdir($session_dir, 0777, true);
+                }
+                session_save_path($session_dir);
+            }
             self::$state = $this->start();
         }
     }

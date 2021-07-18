@@ -5,166 +5,105 @@
  *
  * An agile development core based on PHP.
  *
- * @version  1.0.0
  * @link     https://github.com/biejun/CafePHP
- * @copyright Copyright (c) 2017-2018 Jun Bie
+ * @copyright Copyright (c) 2021 Jun Bie
  * @license This content is released under the MIT License.
  */
 
-use Cafe\Minify;
+use Cafe\Foundation\App;
+use League\Plates\Engine as TemplateEngine;
+use League\Plates\Extension\ExtensionInterface;
+use Cafe\Support\Arr;
 
-/**
- * 应用前端视图渲染
- *
- * @package Cafe\Foundation\View
- * @since 0.0.5
- */
+class ViewExtension implements ExtensionInterface
+{    
+    protected $app;
+
+    public function __construct(App $app)
+    {
+       $this->app = $app;
+    }
+    /**
+     * Register extension function.
+     * @param Engine $engine
+     * @return null
+     */
+    public function register(TemplateEngine $engine)
+    {
+        $engine->registerFunction('u', [$this, 'u']);
+        $engine->registerFunction('compress', [$this, 'compress']);
+        $engine->registerFunction('lang', [$this, 'lang']);
+        $engine->registerFunction('options', [$this, 'options']);
+        $engine->registerFunction('account', [$this, 'account']);
+    }
+    
+    // 前端路径生成
+    public function u($url = '')
+    {
+        return u($url);
+    }
+    // 前端代码压缩
+    public function compress($inputPath = '', $outputPath = '')
+    {
+        return new Compress($this->app, $inputPath, $outputPath);
+    }
+    // 页面语言
+    public function lang()
+    {
+        return $this->app->getConfig('locale');
+    }
+    // 读取站点配置
+    public function options($option)
+    {
+        return Arr::get($this->app->getConfig('options'), $option);
+    }
+    // 获取登录用户信息
+    public function account()
+    {
+        return model('Account');
+    }
+}
 
 class View
 {
-    public $lang = 'zh-CN';
-
-    public $path = PATH;
-
-    public $ext = '.php';
-
-    protected $currentView = '';
-
-    protected $viewPath;
-
-    protected $vars = [];
-
-    /* 视图文件存放目录 */
-    public function folder($view = null, $path = null)
+    protected $template;
+    
+    protected $app;
+    
+    public function __construct(App $app)
     {
-        if (!is_null($path)) {
-            $this->path = $path;
-        }
-
-        $this->currentView = is_null($view) ? '': $view;
-        $this->viewPath = $this->pathJoin('view', $this->currentView);
-        return $this;
+        $this->app = $app;
+        
+        $this->template = new TemplateEngine();
+        
+        $this->template->loadExtension(new ViewExtension($app));
+        
+        $this->folder($app->getConfig('template'));
+        
+        /* 添加一个公共模板目录，主要用于页面布局 */
+        $this->setTemplateFolder('common');
     }
-
-    /* 视图文件后缀 */
-    public function setExt($ext)
+    /* 添加一个模板目录 */
+    public function setTemplateFolder($template)
     {
-        $this->ext = $ext;
-        return $this;
-    }
-
-    /* 压缩JS $path 值为文件路径或者JS代码*/
-    public function minifyJS($mergeFiles, $outputFile, $version = '1.0.0')
-    {
-        if (IS_DEVELOPMENT) {
-            $minifier = new Minify\JS($mergeFiles);
-            $minifier->minify($this->pathJoin(STATIC_ASSETS, $outputFile));
-        }
-        $file = $this->fileJoinVersion($this->pathJoin(STATIC_ASSETS_DIR, $outputFile), $version);
-        echo "<script type=\"text/javascript\" src=\"$file\"></script>\n";
-    }
-
-    /* 压缩CSS $path 值为文件路径或者CSS代码*/
-    public function minifyCSS($mergeFiles, $outputFile, $version = '1.0.0')
-    {
-        if (IS_DEVELOPMENT) {
-            $minifier = new Minify\CSS($mergeFiles);
-            $minifier->minify($this->pathJoin(STATIC_ASSETS, $outputFile));
-        }
-        $file = $this->fileJoinVersion($this->pathJoin(STATIC_ASSETS_DIR, $outputFile), $version);
-        echo "<link rel=\"stylesheet\" href=\"$file\">\n";
+        $this->template->addFolder($template,$this->app->viewPath($template));
     }
     
-    public function sources($filePath)
+    public function folder($folderName)
     {
-        return $this->pathJoin(SOURCES_DIR, $filePath);
-    }
-
-    /* 将多个参数组合成一个路径 */
-    public function pathJoin()
-    {
-        $path = array();
-        $args = func_get_args();
-        if (count($args) > 0) {
-            foreach ($args as $key => $value) {
-                $path[] = $value;
-            }
-        }
-        return $this->path . join('/', $path);
-    }
-
-    /* 给文件资源加上版本号 */
-    public function fileJoinVersion($filePath, $suffixVersion = null)
-    {
-        return $filePath . (is_null($suffixVersion) ? '' : '?v='.$suffixVersion);
-    }
-
-    /* 将数据赋值到视图中 */
-    public function assign($key, $value='')
-    {
-        if (is_array($key)) {
-            $this->vars = array_merge($this->vars, $key);
-        } else {
-            $this->vars[$key] = $value;
-        }
+        $this->template->setDirectory($this->app->viewPath($folderName));
         return $this;
     }
-    /* 读取一个模板 */
-    public function tpl($tpl, $vars = null)
-    {
-        if (func_num_args() > 2) {
-            $vars = func_get_args();
-            array_shift($vars);
-        } elseif ($vars === null) {
-            $vars = $this->vars;
-        }
-        if ($content = $this->render($tpl, $vars)) {
-            return $content.PHP_EOL;
-        } else {
-            throw new \Exception("{$this->viewPath}目录下缺少模板文件'{$tpl}{$this->ext}'");
-        }
-    }
-
-    /* 获取视图文件路径 */
-    private function getViewFilePath($page)
-    {
-        if (!$this->currentView) {
-            $view = VIEW . "/{$this->setView()->currentView}/{$page}";
-        } else {
-            $view = VIEW . "/{$this->currentView}/{$page}";
-        }
-        return $view.$this->ext;
-    }
     /**
-     * 模板渲染
+     * Proxies all methods to the template.
      *
-     * @param string $tpl 模板路径
-     * @param string $vars 模板参数
-    **/
-    public function render($tpl, $vars)
+     * @param string  $method
+     * @param mixed[] $args
+     *
+     * @return mixed
+     */
+    public function __call($method, $args)
     {
-        $tpl = $this->getViewFilePath($tpl);
-        if (file_exists($tpl)) {
-            $obLevel = ob_get_level();
-            ob_start();
-            ob_implicit_flush(0);
-            extract($vars, EXTR_OVERWRITE);
-            // 使用 try/catch 捕获异常，防止局部代码发生错误前可能会出现的任何意外输出
-            try {
-                include $tpl;
-            } catch (Exception $e) {
-                $this->handleViewException($e, $obLevel);
-            }
-            return ob_get_clean();
-        }
-        return false;
-    }
-
-    protected function handleViewException($e, $obLevel)
-    {
-        while (ob_get_level() > $obLevel) {
-            ob_end_clean();
-        }
-        throw $e;
+        return call_user_func_array([$this->template, $method], $args);
     }
 }
